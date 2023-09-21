@@ -1,3 +1,3 @@
 # Website
-bsand-ep.github.io
+esbhandari.github.io
 Personal Website
