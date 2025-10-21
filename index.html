@@ -4,6 +4,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>esbhandari.github.io</title>
     <style>
+        /* --- 1. INITIAL SPARK ANIMATION (ON PAGE LOAD) --- */
+        @keyframes startupPulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- 2. CONTINUOUS HOVER ANIMATION --- */
+        @keyframes subtleGlow {
+            0% { text-shadow: none; }
+            50% { text-shadow: 0 0 5px currentColor; }
+            100% { text-shadow: none; }
+        }
+
         body {
             text-align: center;
             font-family: monospace;
@@ -21,7 +35,7 @@
         }
         
         .content-anchor {
-            transform: translateY(-10vh); 
+            transform: translateY(-10vh);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -34,6 +48,22 @@
             padding: 0;
         }
         
+        /* --- TARGETING THE H --- */
+        .h-hacker {
+            font-weight: 900; 
+            /* Triggers the single-run animation immediately on load */
+            animation: startupPulse 0.5s ease-out 1; 
+            /* Ensures smooth transition when hover is initiated */
+            transition: all 0.5s ease; 
+        }
+
+        /* --- HOVER BEHAVIOR --- */
+        .h-hacker:hover {
+            cursor: default; /* Optional: keeps the pointer style neutral */
+            /* Triggers the continuous glow animation on hover */
+            animation: subtleGlow 1.5s infinite alternate ease-in-out; 
+        }
+
         p {
             margin: 0; 
             padding: 0;
@@ -41,6 +71,7 @@
             line-height: 1; 
         }
 
+        /* Dark Mode Default */
         body {
             background-color: #000000;
             color: #ffffff;
@@ -51,14 +82,19 @@
                 background-color: #ffffff;
                 color: #000000;
             }
+            /* Ensure the glow works in light mode too (currentColor adapts) */
+            .h-hacker:hover {
+                animation: subtleGlow 1.5s infinite alternate ease-in-out;
+            }
         }
 
+        /* Responsiveness for small screens */
         @media (max-width: 600px) {
             body {
                 font-size: 1rem;
             }
             .content-anchor {
-                transform: translateY(-15vh); 
+                transform: translateY(-10vh); 
             }
             h1 {
                 font-size: 1.8em;
@@ -72,7 +108,9 @@
 </head>
 <body>
     <div class="content-anchor">
-        <h1>Hi there!</h1>
+        <h1>
+            <span class="h-hacker">H</span>i there!
+        </h1>
         <p>🐞</p>
     </div>
 </body>
