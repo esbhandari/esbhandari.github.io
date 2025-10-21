@@ -21,6 +21,7 @@
         }
         
         .content-anchor {
+            /* Shifts the content block upward from center to anchor the icon higher */
             transform: translateY(-10vh);
             display: flex;
             flex-direction: column;
@@ -30,31 +31,36 @@
         h1 {
             font-size: 2em; 
             line-height: 1.2;
+            /* Space between text and icon */
             margin: 0 0 0.5em 0; 
             padding: 0;
         }
         
-        /* 1. INITIAL TILT STATE */
+        /* Initial Tilted State */
         .h-interactive {
             display: inline-block;
             font-weight: 900; 
-            /* Starts tilted -15 degrees */
+            /* Starts tilted on page load */
             transform: rotate(-15deg); 
-            /* Ensures a smooth visual transition */
             transition: transform 0.5s ease; 
         }
         
-        /* 2. INTERACTIVE STRAIGHTENING STATE */
+        /* Interactive Straightening State on Hover (Desktop) */
         .h-interactive:hover {
-            cursor: pointer; /* Provides a visual cue for interaction */
-            /* Corrects the tilt to 0 degrees (straight) on hover */
+            cursor: pointer; 
+            transform: rotate(0deg); 
+        }
+
+        /* Interactive Straightening State on Active/Press (Mobile/Touch) */
+        .h-interactive:active {
+            /* Ensures immediate release on mobile, fixing the "stuck" state */
             transform: rotate(0deg); 
         }
 
         p {
             margin: 0; 
             padding: 0;
-            font-size: 2.5em;
+            font-size: 2.5em; /* Large size for the centered icon */
             line-height: 1; 
         }
 
@@ -71,6 +77,7 @@
             }
         }
 
+        /* Responsive Adjustments */
         @media (max-width: 600px) {
             body {
                 font-size: 1rem;
