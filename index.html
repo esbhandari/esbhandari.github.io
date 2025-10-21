@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>esbhandari.github.io</title>
     <style>
-        /* General Body and Centering Structure */
         body {
             text-align: center;
             font-family: monospace;
@@ -12,37 +11,29 @@
             transition: background-color 0.5s ease, color 0.5s ease;
 
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column; /* Stack children vertically */
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
             min-height: 100vh;
             margin: 0;
             padding: 0;
             overflow: hidden; 
         }
 
-        /* Styling for the Unified Content Block */
         h1 {
-            /* This margin shifts the entire content block (h1 + span) upwards */
-            margin: -10vh 0 0 0; 
-            
-            /* Text styling remains focused on clarity */
-            font-size: 2em;
+            /* Keep text relatively sized, ensure no default top/bottom margin */
+            font-size: 2em; 
             line-height: 1.2;
-            
-            /* The content is now inline, so no explicit p or h1 margin needed */
-            padding: 0;
+            margin-bottom: 0.5em; /* Space between text and icon */
+            margin-top: 0; /* No extra margin pushing it down */
         }
         
-        /* The span for the icon, ensuring it aligns perfectly on the baseline */
-        .icon-bug {
-            /* Vertical-align: bottom is key to aligning the emoji image 
-               with the text baseline, achieving that 'in-line' look. */
-            display: inline-block;
-            vertical-align: bottom; 
-            font-size: 0.8em; /* Slightly smaller size for better visual balance next to the text */
-            line-height: 0;
-            margin-left: 0.25em; /* Small space between text and icon */
+        p {
+            /* Style for the icon container */
+            margin: 0; /* Remove default paragraph margins */
+            padding: 0;
+            font-size: 1.5em; /* Make the icon slightly larger than the base text */
+            line-height: 1; /* Ensure tight spacing around the icon */
         }
 
         /* Dark Mode Default */
@@ -65,20 +56,17 @@
                 font-size: 1rem;
             }
             h1 {
-                /* Adjust the upward shift for smaller screens */
-                margin-top: -15vh; 
                 font-size: 1.8em;
+                margin-bottom: 0.4em; /* Adjust spacing for smaller screens */
             }
-            .icon-bug {
-                 font-size: 0.7em;
+            p {
+                font-size: 1.3em; /* Smaller icon on mobile */
             }
         }
     </style>
 </head>
 <body>
-    <h1>
-        Hi there!
-        <span class="icon-bug">👋</span>
-    </h1>
+    <h1>Hi there!</h1>
+    <p>🐞</p>
 </body>
 </html>
