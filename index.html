@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>esbhandari.github.io</title>
     <style>
+        /* General Body and Centering Structure */
         body {
             text-align: center;
             font-family: monospace;
@@ -20,21 +21,37 @@
             overflow: hidden; 
         }
 
+        /* Styling for the Unified Content Block */
         h1 {
+            /* This margin shifts the entire content block (h1 + span) upwards */
+            margin: -10vh 0 0 0; 
+            
+            /* Text styling remains focused on clarity */
             font-size: 2em;
             line-height: 1.2;
-            margin: 0 0 0.25em 0;
+            
+            /* The content is now inline, so no explicit p or h1 margin needed */
+            padding: 0;
         }
         
-        p {
-            margin: 0;
+        /* The span for the icon, ensuring it aligns perfectly on the baseline */
+        .icon-bug {
+            /* Vertical-align: bottom is key to aligning the emoji image 
+               with the text baseline, achieving that 'in-line' look. */
+            display: inline-block;
+            vertical-align: bottom; 
+            font-size: 0.8em; /* Slightly smaller size for better visual balance next to the text */
+            line-height: 0;
+            margin-left: 0.25em; /* Small space between text and icon */
         }
 
+        /* Dark Mode Default */
         body {
             background-color: #000000;
             color: #ffffff;
         }
 
+        /* Light Mode Auto-Switch */
         @media (prefers-color-scheme: light) {
             body {
                 background-color: #ffffff;
@@ -42,19 +59,26 @@
             }
         }
 
+        /* Responsiveness for small screens */
         @media (max-width: 600px) {
             body {
                 font-size: 1rem;
             }
             h1 {
+                /* Adjust the upward shift for smaller screens */
+                margin-top: -15vh; 
                 font-size: 1.8em;
-                margin-bottom: 0.2em;
+            }
+            .icon-bug {
+                 font-size: 0.7em;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Hi there!</h1>
-    <p>👋</p>
+    <h1>
+        Hi there!
+        <span class="icon-bug">👋</span>
+    </h1>
 </body>
 </html>
