@@ -21,7 +21,6 @@
         }
         
         .content-anchor {
-            /* Shifts the content block upward from center to anchor the icon higher */
             transform: translateY(-10vh);
             display: flex;
             flex-direction: column;
@@ -31,36 +30,37 @@
         h1 {
             font-size: 2em; 
             line-height: 1.2;
-            /* Space between text and icon */
             margin: 0 0 0.5em 0; 
             padding: 0;
         }
         
-        /* Initial Tilted State */
+        /* --- TILTED INITIAL STATE --- */
         .h-interactive {
             display: inline-block;
             font-weight: 900; 
             /* Starts tilted on page load */
             transform: rotate(-15deg); 
+            /* Transition applies to all states (tilted <-> straight) */
             transition: transform 0.5s ease; 
         }
         
-        /* Interactive Straightening State on Hover (Desktop) */
+        /* --- DESKTOP INTERACTIVITY (Visual Cue Only) --- */
         .h-interactive:hover {
+            /* Provide feedback that it is clickable, but do NOT apply the straighten transform */
             cursor: pointer; 
-            transform: rotate(0deg); 
         }
 
-        /* Interactive Straightening State on Active/Press (Mobile/Touch) */
+        /* --- MOBILE/TOUCH CORRECTION (Straightens ONLY while pressed) --- */
         .h-interactive:active {
-            /* Ensures immediate release on mobile, fixing the "stuck" state */
+            /* This is the ONLY place the straightening effect is applied. 
+               It is released immediately when the finger/mouse button lifts. */
             transform: rotate(0deg); 
         }
 
         p {
             margin: 0; 
             padding: 0;
-            font-size: 2.5em; /* Large size for the centered icon */
+            font-size: 2.5em;
             line-height: 1; 
         }
 
@@ -100,7 +100,7 @@
         <h1>
             Hi t<span class="h-interactive">h</span>ere!
         </h1>
-        <p>🍇</p>
+        <p>🐞</p>
     </div>
 </body>
 </html>
