@@ -4,26 +4,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>esbhandari.github.io</title>
     <style>
-        /* --- 1. INITIAL SPARK ANIMATION (ON PAGE LOAD) --- */
-        @keyframes startupPulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* --- 2. CONTINUOUS HOVER ANIMATION --- */
-        @keyframes subtleGlow {
-            0% { text-shadow: none; }
-            50% { text-shadow: 0 0 5px currentColor; }
-            100% { text-shadow: none; }
-        }
-
         body {
             text-align: center;
             font-family: monospace;
             font-size: 1.125rem;
             transition: background-color 0.5s ease, color 0.5s ease;
-
+            
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -48,20 +34,11 @@
             padding: 0;
         }
         
-        /* --- TARGETING THE H --- */
-        .h-hacker {
-            font-weight: 900; 
-            /* Triggers the single-run animation immediately on load */
-            animation: startupPulse 0.5s ease-out 1; 
-            /* Ensures smooth transition when hover is initiated */
-            transition: all 0.5s ease; 
-        }
-
-        /* --- HOVER BEHAVIOR --- */
-        .h-hacker:hover {
-            cursor: default; /* Optional: keeps the pointer style neutral */
-            /* Triggers the continuous glow animation on hover */
-            animation: subtleGlow 1.5s infinite alternate ease-in-out; 
+        /* The span wrapper for the lowercase 'h' */
+        .h-interactive {
+            display: inline-block; /* Essential for applying the transform */
+            /* Ensures smooth rotation when the JS updates the transform property */
+            transition: transform 0.1s linear; 
         }
 
         p {
@@ -81,10 +58,6 @@
             body {
                 background-color: #ffffff;
                 color: #000000;
-            }
-            /* Ensure the glow works in light mode too (currentColor adapts) */
-            .h-hacker:hover {
-                animation: subtleGlow 1.5s infinite alternate ease-in-out;
             }
         }
 
@@ -109,9 +82,47 @@
 <body>
     <div class="content-anchor">
         <h1>
-            <span class="h-hacker">H</span>i there!
+            Hi t<span class="h-interactive">h</span>ere!
         </h1>
-        <p>🐞</p>
+        <p>🍇</p>
     </div>
+
+    <script>
+        const hElement = document.querySelector('.h-interactive');
+        const maxTilt = 20; // Maximum rotation angle in degrees (20 degrees left or right)
+
+        // 1. DESKTOP INTERACTION (Mouse Tilt)
+        document.addEventListener('mousemove', (event) => {
+            // Calculate the horizontal position of the mouse relative to the center of the screen
+            const centerX = window.innerWidth / 2;
+            const mouseX = event.clientX;
+            
+            // Calculate a percentage offset from the center (-1 for left edge, +1 for right edge)
+            const offset = (mouseX - centerX) / centerX; 
+
+            // Map the offset to the tilt range (-maxTilt to +maxTilt)
+            const tiltAngle = offset * maxTilt;
+
+            // Apply the rotation transform
+            hElement.style.transform = `rotate(${tiltAngle}deg)`;
+        });
+
+        // 2. MOBILE INTERACTION (Device Orientation Tilt)
+        // Check if the device supports the Device Orientation API (mobile)
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (event) => {
+                // 'gamma' provides the front-to-back tilt (landscape) or left-to-right tilt (portrait)
+                // We use a small fraction of the tilt to keep the effect subtle and manageable
+                let tiltGamma = event.gamma; 
+                
+                // Limit the tilt angle to prevent excessive rotation
+                if (tiltGamma > maxTilt) tiltGamma = maxTilt;
+                if (tiltGamma < -maxTilt) tiltGamma = -maxTilt;
+                
+                // Apply the rotation transform. We reverse the sign so tilting right rotates the h right.
+                hElement.style.transform = `rotate(${tiltGamma}deg)`;
+            });
+        }
+    </script>
 </body>
 </html>
