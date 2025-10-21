@@ -12,32 +12,37 @@
 
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centers the whole block vertically */
+            justify-content: center; /* Still centers the block */
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 0;
             overflow: hidden; 
         }
+        
+        /* The container for the content block (H1 and P) */
+        .content-anchor {
+            /* This is the key: It shifts the entire centered block UPWARD. 
+               -20vh lifts the center point from 50% to 30% of the screen height,
+               making the icon appear in the upper-middle quadrant. */
+            transform: translateY(-20vh); 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
         h1 {
             font-size: 2em; 
             line-height: 1.2;
-            /* Margin bottom creates a small, defined gap between text and icon */
-            margin: 0 0 0.25em 0; 
+            margin: 0 0 0.5em 0; /* Ensures a clear, clean gap above the icon */
             padding: 0;
-            /* New: Shift the entire h1 up to adjust the overall centering */
-            transform: translateY(-50%); 
         }
         
         p {
-            /* This is the icon anchor, slightly larger */
             margin: 0; 
             padding: 0;
-            font-size: 2.5em; 
+            font-size: 2.5em; /* Icon is the central, visually dominant element */
             line-height: 1; 
-            /* New: Shift the entire p up to adjust the overall centering */
-            transform: translateY(-50%); 
         }
 
         /* Dark Mode Default */
@@ -59,9 +64,13 @@
             body {
                 font-size: 1rem;
             }
+            .content-anchor {
+                /* Adjust the upward shift for smaller screens */
+                transform: translateY(-15vh); 
+            }
             h1 {
                 font-size: 1.8em;
-                margin-bottom: 0.2em; 
+                margin-bottom: 0.4em; 
             }
             p {
                 font-size: 2em;
@@ -70,7 +79,9 @@
     </style>
 </head>
 <body>
-    <h1>Hi there!</h1>
-    <p>🐞</p>
+    <div class="content-anchor">
+        <h1>Hi there!</h1>
+        <p>🐞</p>
+    </div>
 </body>
 </html>
