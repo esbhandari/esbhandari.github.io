@@ -1,20 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>esbhandari.github.io</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>esbhandari.github.io</title>
+    <style>
+        /* ---------------------------------------------------- */
+        /* Base Styling: The foundational presence */
+        /* ---------------------------------------------------- */
+        body {
+            /* Using 'vh' (viewport height) for vertical padding 
+               creates a responsive space that scales with the screen. */
+            padding-top: 20vh; 
+            text-align: center;
+            font-family: monospace;
+            /* Using 'rem' for better, scalable font sizing */
+            font-size: 1.5rem; 
+            /* A subtle transition allows the colors to shift smoothly */
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* ---------------------------------------------------- */
+        /* Dark Mode: The primary, intentional default */
+        /* ---------------------------------------------------- */
+        body {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 2. The Auto-Switch: Honoring the preferred scheme */
+        /* This media query overrides the colors when the device's default 
+           is set to 'light', providing immediate harmony. */
+        /* ---------------------------------------------------- */
+        @media (prefers-color-scheme: light) {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+            }
+        }
+
+        /* ---------------------------------------------------- */
+        /* 3. Responsiveness: Adjusting the canvas for the compact form */
+        /* This query refines the layout for smaller viewports (e.g., mobile), 
+           preventing excessive whitespace and maintaining visual balance. */
+        /* ---------------------------------------------------- */
+        @media (max-width: 600px) {
+            body {
+                padding-top: 10vh;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
-<style>
-body {
-      padding-top:250px;
-      text-align:center;
-      font-family:monospace;
-      font-size:larger;
-      background-color:#000000;
-      color:#ffffff;
-     }
-</style>
 <body>
-   <h1>Hi there!</h1>
-   <p>🐞</p>
+    <h1>Hi there!</h1>
+    <p>🐞</p>
 </body>
 </html>
