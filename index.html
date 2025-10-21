@@ -34,28 +34,28 @@
             padding: 0;
         }
         
-        /* --- TILTED INITIAL STATE --- */
+        /* --- CORE INTERACTIVE STATE --- */
         .h-interactive {
             display: inline-block;
             font-weight: 900; 
-            /* Starts tilted on page load */
+            /* Starts tilted */
             transform: rotate(-15deg); 
-            /* Transition applies to all states (tilted <-> straight) */
             transition: transform 0.5s ease; 
+            
+            /* CRITICAL FIX: Prevents text selection pop-ups on all devices */
+            user-select: none; 
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
         }
         
-        /* --- DESKTOP INTERACTIVITY (Visual Cue Only) --- */
+        /* The stable, universal straightening mechanism */
         .h-interactive:hover {
-            /* Provide feedback that it is clickable, but do NOT apply the straighten transform */
             cursor: pointer; 
-        }
-
-        /* --- MOBILE/TOUCH CORRECTION (Straightens ONLY while pressed) --- */
-        .h-interactive:active {
-            /* This is the ONLY place the straightening effect is applied. 
-               It is released immediately when the finger/mouse button lifts. */
+            /* The desired straight position */
             transform: rotate(0deg); 
         }
+        
+        /* We remove the :active state entirely to prevent system menu conflicts */
 
         p {
             margin: 0; 
