@@ -18,6 +18,12 @@
             margin: 0;
             padding: 0;
             overflow: hidden; 
+
+            /* --- CRITICAL ADDITION: PREVENT SELECTION/COPY --- */
+            user-select: none;
+            -webkit-user-select: none; /* Safari/Chrome/Opera */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* IE/Edge */
         }
         
         .content-anchor {
@@ -34,34 +40,31 @@
             padding: 0;
         }
         
-        /* --- CORE INTERACTIVE STATE --- */
+        /* The 'h' must also specifically inherit or re-state the rule for reliability */
         .h-interactive {
             display: inline-block;
             font-weight: 900; 
-            /* Starts tilted */
             transform: rotate(-15deg); 
             transition: transform 0.5s ease; 
             
-            /* CRITICAL FIX: Prevents text selection pop-ups on all devices */
+            /* Ensures no text selection conflict for the interactive part */
             user-select: none; 
             -webkit-user-select: none; 
-            -moz-user-select: none; 
         }
         
-        /* The stable, universal straightening mechanism */
         .h-interactive:hover {
             cursor: pointer; 
-            /* The desired straight position */
             transform: rotate(0deg); 
         }
-        
-        /* We remove the :active state entirely to prevent system menu conflicts */
 
         p {
             margin: 0; 
             padding: 0;
-            font-size: 2.5em;
+            font-size: 2.5em; 
             line-height: 1; 
+            /* The icon container is also set to prevent selection */
+            user-select: none; 
+            -webkit-user-select: none;
         }
 
         /* Dark Mode Default */
