@@ -2,37 +2,32 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
     <title>esbhandari.github.io</title>
     <style>
-        /* ---------------------------------------------------- */
-        /* Base Styling: The foundational presence */
-        /* ---------------------------------------------------- */
         body {
-            /* Using 'vh' (viewport height) for vertical padding 
-               creates a responsive space that scales with the screen. */
-            padding-top: 20vh; 
             text-align: center;
             font-family: monospace;
-            /* Using 'rem' for better, scalable font sizing */
-            font-size: 1.5rem; 
-            /* A subtle transition allows the colors to shift smoothly */
+            font-size: 1.125rem;
             transition: background-color 0.5s ease, color 0.5s ease;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
-        /* ---------------------------------------------------- */
-        /* Dark Mode: The primary, intentional default */
-        /* ---------------------------------------------------- */
+        h1, p {
+            margin: 0;
+        }
+
         body {
             background-color: #000000;
             color: #ffffff;
         }
 
-        /* ---------------------------------------------------- */
-        /* 2. The Auto-Switch: Honoring the preferred scheme */
-        /* This media query overrides the colors when the device's default 
-           is set to 'light', providing immediate harmony. */
-        /* ---------------------------------------------------- */
         @media (prefers-color-scheme: light) {
             body {
                 background-color: #ffffff;
@@ -40,15 +35,9 @@
             }
         }
 
-        /* ---------------------------------------------------- */
-        /* 3. Responsiveness: Adjusting the canvas for the compact form */
-        /* This query refines the layout for smaller viewports (e.g., mobile), 
-           preventing excessive whitespace and maintaining visual balance. */
-        /* ---------------------------------------------------- */
         @media (max-width: 600px) {
             body {
-                padding-top: 10vh;
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -58,3 +47,4 @@
     <p>🐞</p>
 </body>
 </html>
+
