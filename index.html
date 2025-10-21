@@ -34,21 +34,21 @@
             padding: 0;
         }
         
-        /* --- 1. INITIAL TILT AND DRAG STYLES --- */
+        /* 1. INITIAL TILT STATE */
         .h-interactive {
             display: inline-block;
-            cursor: grab; /* Indicates the element can be clicked/grabbed */
-            transition: transform 0.1s linear; /* Smoothness for the drag action */
-            
-            /* Apply the initial tilt when the page loads */
-            transform: rotate(-15deg); 
-            
-            /* Emphasize the 'H' and its tilted state */
             font-weight: 900; 
+            /* Starts tilted -15 degrees */
+            transform: rotate(-15deg); 
+            /* Ensures a smooth visual transition */
+            transition: transform 0.5s ease; 
         }
         
-        .h-interactive.dragging {
-            cursor: grabbing; /* Feedback when the user is holding the click */
+        /* 2. INTERACTIVE STRAIGHTENING STATE */
+        .h-interactive:hover {
+            cursor: pointer; /* Provides a visual cue for interaction */
+            /* Corrects the tilt to 0 degrees (straight) on hover */
+            transform: rotate(0deg); 
         }
 
         p {
@@ -58,7 +58,7 @@
             line-height: 1; 
         }
 
-        /* Dark Mode Default and Media Queries (unchanged) */
+        /* Dark Mode Default */
         body {
             background-color: #000000;
             color: #ffffff;
@@ -93,63 +93,7 @@
         <h1>
             Hi t<span class="h-interactive">h</span>ere!
         </h1>
-        <p>🐞</p>
+        <p>D</p>
     </div>
-
-    <script>
-        const hElement = document.querySelector('.h-interactive');
-        let isDragging = false;
-        let startY = 0;
-        const initialTilt = -15; // Must match the CSS initial rotation
-        const sensitivity = 0.5; // Controls how much mouse movement affects the rotation
-
-        // 1. MOUSE DOWN: Start Dragging
-        hElement.addEventListener('mousedown', (event) => {
-            // Prevent text selection during drag
-            event.preventDefault(); 
-            isDragging = true;
-            // Record the vertical position of the mouse at the start of the drag
-            startY = event.clientY;
-            hElement.classList.add('dragging');
-        });
-
-        // 2. MOUSE MOVE: Calculate and Apply Straightening
-        document.addEventListener('mousemove', (event) => {
-            if (!isDragging) return;
-
-            // Calculate the vertical distance moved since the click started
-            const deltaY = startY - event.clientY; 
-            
-            // Calculate the new tilt angle
-            // deltaY * sensitivity gives the rotational change based on vertical movement
-            // We subtract this from the initial tilt to bring it toward 0 (straight)
-            let newTilt = initialTilt + (deltaY * sensitivity); 
-            
-            // Clamp the rotation: Do not let it go past 0 degrees (straight) or beyond a limit
-            if (newTilt > 0) {
-                newTilt = 0; // The character is straightened
-            } else if (newTilt < initialTilt) {
-                newTilt = initialTilt; // Prevents pushing it further down
-            }
-
-            // Apply the new rotation
-            hElement.style.transform = rotate(${newTilt}deg);
-            
-            // If the 'h' is straightened, you might want to stop the drag to complete the task
-            if (newTilt === 0) {
-                 isDragging = false;
-                 hElement.classList.remove('dragging');
-                 hElement.style.cursor = 'default';
-            }
-        });
-
-        // 3. MOUSE UP: Stop Dragging (If released before fully straight)
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                hElement.classList.remove('dragging');
-            }
-        });
-    </script>
 </body>
 </html>
