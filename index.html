@@ -19,11 +19,14 @@
             padding: 0;
             overflow: hidden; 
 
-            /* --- CRITICAL ADDITION: PREVENT SELECTION/COPY --- */
+            /* Global fix: Prevents selection/blue highlight */
             user-select: none;
-            -webkit-user-select: none; /* Safari/Chrome/Opera */
-            -moz-user-select: none;    /* Firefox */
-            -ms-user-select: none;     /* IE/Edge */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            
+            /* CRITICAL FIX: Disables the native mobile tap highlight overlay */
+            -webkit-tap-highlight-color: transparent;
         }
         
         .content-anchor {
@@ -40,18 +43,19 @@
             padding: 0;
         }
         
-        /* The 'h' must also specifically inherit or re-state the rule for reliability */
+        /* The interactive and non-selectable 'h' */
         .h-interactive {
             display: inline-block;
             font-weight: 900; 
             transform: rotate(-15deg); 
             transition: transform 0.5s ease; 
             
-            /* Ensures no text selection conflict for the interactive part */
+            /* Ensures no text selection conflict specifically on the interactive part */
             user-select: none; 
             -webkit-user-select: none; 
         }
         
+        /* Straightens on hover (desktop) or first tap (mobile) */
         .h-interactive:hover {
             cursor: pointer; 
             transform: rotate(0deg); 
@@ -62,7 +66,7 @@
             padding: 0;
             font-size: 2.5em; 
             line-height: 1; 
-            /* The icon container is also set to prevent selection */
+            /* Ensures the icon is also non-selectable */
             user-select: none; 
             -webkit-user-select: none;
         }
@@ -78,6 +82,35 @@
                 background-color: #ffffff;
                 color: #000000;
             }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            body {
+                font-size: 1rem;
+            }
+            .content-anchor {
+                transform: translateY(-10vh); 
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 0.4em; 
+            }
+            p {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content-anchor">
+        <h1>
+            Hi t<span class="h-interactive">h</span>ere!
+        </h1>
+        <p>🐞</p>
+    </div>
+</body>
+</html>
         }
 
         /* Responsive Adjustments */
