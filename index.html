@@ -11,9 +11,9 @@
             transition: background-color 0.5s ease, color 0.5s ease;
 
             display: flex;
-            flex-direction: column; /* Stack children vertically */
-            justify-content: center; /* Center content vertically */
-            align-items: center; /* Center content horizontally */
+            flex-direction: column;
+            justify-content: center; /* Centers the whole block vertically */
+            align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 0;
@@ -21,21 +21,22 @@
         }
 
         h1 {
-            /* Keep text relatively sized, ensure no default top/bottom margin */
             font-size: 2em; 
             line-height: 1.2;
-            margin-bottom: 0.5em; /* Space between text and icon */
-            margin-top: 0; /* No extra margin pushing it down */
+            /* Negative margin-top shifts the entire centered block up. 
+               Margin-bottom ensures text is just above the icon. */
+            margin: 0 0 -0.5em 0; 
+            padding: 0;
         }
         
         p {
-            /* Style for the icon container */
-            margin: 0; /* Remove default paragraph margins */
+            /* This is the visual anchor. Its position defines the center. */
+            margin: 0; 
             padding: 0;
-            font-size: 1.5em; /* Make the icon slightly larger than the base text */
-            line-height: 1; /* Ensure tight spacing around the icon */
+            font-size: 2.5em; /* Increase size for the central anchor */
+            line-height: 1; 
         }
-
+        
         /* Dark Mode Default */
         body {
             background-color: #000000;
@@ -57,10 +58,11 @@
             }
             h1 {
                 font-size: 1.8em;
-                margin-bottom: 0.4em; /* Adjust spacing for smaller screens */
+                /* Adjust negative margin for smaller font size */
+                margin-bottom: -0.3em; 
             }
             p {
-                font-size: 1.3em; /* Smaller icon on mobile */
+                font-size: 2em;
             }
         }
     </style>
