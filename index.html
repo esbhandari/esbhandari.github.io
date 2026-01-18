@@ -3,239 +3,397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESBHANDARI.SYS</title>
+    <title>ESBHANDARI.SYS - root@darkstar</title>
     <style>
-        /* --- Global & Retro-Cyber Styles --- */
         :root {
-            --desktop-bg: #006666; /* Classic retro teal */
-            --win-gray: #c0c0c0;
-            --win-blue: #000080;
-            --cyber-green: #0f0;
-            --font-stack: 'Courier New', Courier, monospace; /* Monospace for technical feel */
+            --bg-color: #555555; /* Dark gray base */
+            --win-gray: #c0c0c0;  /* Classic Motif gray */
+            --win-border-light: #ffffff;
+            --win-border-dark: #606060;
+            --win-border-black: #000000;
+            --term-bg: #000000;
+            --term-text: #00ff00; /* Classic green phosphor */
+            --font-ui: 'Courier New', monospace; /* Monospace for that raw X11 feel */
         }
 
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
-            background-color: var(--desktop-bg);
-            /* Subtle scanline effect for a terminal vibe */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.1) 50%, transparent 50%);
-            background-size: 100% 4px;
-            font-family: var(--font-stack);
+            width: 100vw;
             overflow: hidden;
-            user-select: none; /* Prevents text highlighting */
+            font-family: var(--font-ui);
+            user-select: none;
+            -webkit-user-select: none;
+            
+            /* --- THE CLASSIC "ROOT WEAVE" BACKGROUND --- */
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(45deg, #444 25%, transparent 25%, transparent 75%, #444 75%, #444),
+                linear-gradient(45deg, #444 25%, transparent 25%, transparent 75%, #444 75%, #444);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
         }
 
-        /* --- Desktop Icon Styles --- */
-        .desktop-icon {
+        /* --- DESKTOP ICONS --- */
+        .icon-container {
             position: absolute;
             top: 20px;
-            left: 20px;
-            width: 80px;
-            text-align: center;
-            color: white;
-            cursor: pointer;
+            right: 20px; /* Unix systems often stacked icons on the right or freely */
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 20px;
         }
 
-        .desktop-icon img {
+        .desktop-icon {
+            width: 64px;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .desktop-icon svg {
             width: 48px;
             height: 48px;
-            /* Pixelated rendering for retro look */
-            image-rendering: pixelated; 
-            margin-bottom: 5px;
+            fill: var(--win-gray);
+            border: 1px solid transparent;
+        }
+        
+        .desktop-icon:hover svg {
+            fill: #ffffff;
         }
 
         .desktop-icon span {
-            background-color: transparent;
-            padding: 2px 5px;
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #000080; /* Label background */
+            padding: 2px;
         }
 
-        /* Selection effect */
-        .desktop-icon:active span {
-            background-color: var(--win-blue);
-        }
-
-        /* --- Retro Window Styles --- */
+        /* --- MOTIF WINDOW STYLE --- */
         .window {
-            display: none; /* Hidden by default */
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 350px;
             background-color: var(--win-gray);
-            /* The classic 3D beveled border effect */
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #808080;
-            border-bottom: 2px solid #808080;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            z-index: 100;
+            /* The Thick "3D" Motif Border */
+            border-top: 2px solid var(--win-border-light);
+            border-left: 2px solid var(--win-border-light);
+            border-right: 2px solid var(--win-border-black);
+            border-bottom: 2px solid var(--win-border-black);
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+            min-height: 100px;
         }
 
         .title-bar {
-            background: linear-gradient(to right, var(--win-blue), #1084d0);
-            padding: 4px 8px;
+            background-color: var(--win-gray);
+            height: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
-            font-weight: bold;
-            letter-spacing: 1px;
+            padding: 2px 4px;
+            border-bottom: 2px solid var(--win-border-dark);
+            cursor: move; /* Indicates drag capability */
         }
 
         .title-bar-text {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Small icon in the title bar */
-        .title-bar-icon {
-            width: 16px;
-            height: 16px;
-            margin-right: 5px;
-        }
-
-        .close-btn {
-            width: 20px;
-            height: 20px;
-            background-color: var(--win-gray);
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #808080;
-            border-bottom: 2px solid #808080;
-            font-family: sans-serif;
             font-weight: bold;
-            line-height: 16px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        /* "Pressed" effect for the button */
-        .close-btn:active {
-            border-top: 2px solid #808080;
-            border-left: 2px solid #808080;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
-            padding-top: 2px;
-            padding-left: 2px;
-        }
-
-        .window-content {
-            margin: 4px;
-            padding: 20px;
-            background-color: #ffffff;
-            /* Inset border for the content area */
-            border-top: 2px solid #808080;
-            border-left: 2px solid #808080;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            justify-items: center;
-        }
-
-        /* --- Social Link Icon Styles --- */
-        .social-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: black;
             font-size: 14px;
+            color: black;
+            flex-grow: 1;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .win-btn {
+            width: 18px;
+            height: 18px;
+            background-color: var(--win-gray);
+            border-top: 1px solid var(--win-border-light);
+            border-left: 1px solid var(--win-border-light);
+            border-right: 1px solid var(--win-border-black);
+            border-bottom: 1px solid var(--win-border-black);
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
         }
-
-        .social-link img {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 5px;
-            transition: transform 0.1s;
+        
+        .win-btn:active {
+            border: 1px solid var(--win-border-black);
         }
 
-        .social-link:hover img {
-            transform: scale(1.1); /* A little modern hover effect */
+        /* --- XTERM SPECIFIC STYLES --- */
+        #xterm-window {
+            top: 10%;
+            left: 10%;
+            width: 600px;
+            height: 400px;
         }
 
-        .social-link span {
-            margin-top: 5px;
+        .terminal-content {
+            background-color: var(--term-bg);
+            color: var(--term-text);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 5px;
+            flex-grow: 1;
+            overflow-y: auto;
+            border-top: 2px solid var(--win-border-black);
+            border-left: 2px solid var(--win-border-black);
+            border-right: 2px solid var(--win-border-light);
+            border-bottom: 2px solid var(--win-border-light);
+            margin: 4px;
+            cursor: text;
+        }
+
+        .command-line {
+            display: flex;
+        }
+
+        .prompt {
+            color: #00ff00;
+            margin-right: 8px;
+        }
+
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: var(--term-text);
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+            outline: none;
+            caret-color: var(--term-text); /* Green cursor */
+        }
+
+        /* --- TASKBAR (BOTTOM) --- */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 32px;
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-border-light);
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+            z-index: 1000;
+        }
+
+        .start-btn {
+            width: 32px;
+            height: 24px;
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-border-light);
+            border-left: 2px solid var(--win-border-light);
+            border-right: 2px solid var(--win-border-black);
+            border-bottom: 2px solid var(--win-border-black);
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        /* The "X" logo */
+        .start-btn span {
+            color: red; /* X11 logo style red X */
+        }
+
+        .taskbar-item {
+            padding: 2px 8px;
+            margin-right: 4px;
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-border-black); /* Pressed in look for active */
+            border-left: 2px solid var(--win-border-black);
+            border-right: 2px solid var(--win-border-light);
+            border-bottom: 2px solid var(--win-border-light);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .clock {
+            margin-left: auto; /* Push to right */
+            padding: 4px 10px;
+            border-top: 2px solid var(--win-border-black);
+            border-left: 2px solid var(--win-border-black);
+            border-right: 2px solid var(--win-border-light);
+            border-bottom: 2px solid var(--win-border-light);
+            font-size: 12px;
+            background: #e0e0e0;
         }
     </style>
 </head>
 <body>
 
-    <div class="desktop-icon" id="socials-folder" ondblclick="openWindow()">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 12H20L24 16H44V40H4V12Z" fill="#FFD700" stroke="black" stroke-width="2" shape-rendering="crispEdges"/>
-            <path d="M4 16H44V40H4V16Z" fill="#FFE87C" shape-rendering="crispEdges"/>
-            <rect x="8" y="22" width="32" height="2" fill="black" shape-rendering="crispEdges"/>
-        </svg>
-        <span>Social_Uplinks</span>
+    <div class="icon-container">
+        <div class="desktop-icon">
+            <svg viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg>
+            <span>Trash</span>
+        </div>
+        <div class="desktop-icon" onclick="resetTerminal()">
+            <svg viewBox="0 0 24 24"><path d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L6.04,7.5L12,10.85L17.96,7.5L12,4.15M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V9.21L13,12.58V19.29L19,15.91Z" /></svg>
+            <span>Network</span>
+        </div>
     </div>
 
-    <div class="window" id="socials-window">
-        <div class="title-bar">
-            <div class="title-bar-text">
-                <svg class="title-bar-icon" viewBox="0 0 24 24" fill="white">
-                    <path d="M12 2C9.79 2 8 3.79 8 6V8H7C5.9 8 5 8.9 5 10V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V10C19 8.9 18.1 8 17 8H16V6C16 3.79 14.21 2 12 2ZM12 4C13.1 4 14 4.9 14 6V8H10V6C10 4.9 10.9 4 12 4ZM9 12H15V18H9V12Z"/>
-                </svg>
-                C:\NET\SOCIALS.EXE
+    <div id="xterm-window" class="window">
+        <div class="title-bar" id="xterm-header">
+            <div class="win-btn">-</div>
+            <div class="title-bar-text">xterm</div>
+            <div class="win-btn">x</div>
+        </div>
+        <div class="terminal-content" id="terminal-body" onclick="document.getElementById('cmd-input').focus()">
+            <div id="output-area">
+                <div>Welcome to ESBHANDARI.SYS (Linux 2.0.36)</div>
+                <div>Type 'help' for a list of commands.</div>
+                <br>
             </div>
-            <div class="close-btn" onclick="closeWindow()">X</div>
+            <div class="command-line">
+                <span class="prompt">guest@darkstar:~$</span>
+                <input type="text" id="cmd-input" autocomplete="off" spellcheck="false">
+            </div>
         </div>
-        <div class="window-content">
-            <a href="https://github.com/esbhandari" target="_blank" class="social-link">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="black">
-                    <path d="M20,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4M20,18H4V6H20V18M5,16H19V14H5V16M5,12H19V10H5V12M5,8H12V9H5V8Z"/>
-                </svg>
-                <span>GitHub</span>
-            </a>
-            
-            <a href="https://linkedin/in/esbhandari" target="_blank" class="social-link">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="#0077B5">
-                    <path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z"/>
-                </svg>
-                <span>LinkedIn</span>
-            </a>
+    </div>
 
-            <a href="https://x.com/esbhandari" target="_blank" class="social-link">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="black">
-                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
-                </svg>
-                <span>𝕏</span>
-            </a>
-        </div>
+    <div class="taskbar">
+        <div class="start-btn"><span>X</span></div>
+        <div class="taskbar-item">xterm</div>
+        <div class="taskbar-item">Network Tools</div>
+        <div class="taskbar-item">System Tools</div>
+        <div class="clock" id="sys-clock">00:00:00</div>
     </div>
 
     <script>
-        // Get references to the elements
-        const windowEl = document.getElementById('socials-window');
-
-        // Function to open the window
-        function openWindow() {
-            windowEl.style.display = 'block';
+        /* --- 1. CLOCK SYSTEM --- */
+        function updateClock() {
+            const now = new Date();
+            // Format to Unix style: Tue Apr 24 15:25:45 1994
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+            // Simplified for taskbar space
+            document.getElementById('sys-clock').innerText = timeString;
         }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        // Function to close the window
-        function closeWindow() {
-            windowEl.style.display = 'none';
-        }
+        /* --- 2. DRAGGABLE WINDOW LOGIC --- */
+        const windowEl = document.getElementById("xterm-window");
+        const headerEl = document.getElementById("xterm-header");
+        
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
 
-        // Optional: Add a single-click handler for mobile devices
-        // since double-click can be tricky on touch screens.
-        const folderIcon = document.getElementById('socials-folder');
-        folderIcon.addEventListener('click', function() {
-            // A simple check to see if it's likely a mobile device
-            if (/Mobi|Android/i.test(navigator.userAgent)) {
-                openWindow();
+        headerEl.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            offsetX = e.clientX - windowEl.offsetLeft;
+            offsetY = e.clientY - windowEl.offsetTop;
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (isDragging) {
+                windowEl.style.left = (e.clientX - offsetX) + "px";
+                windowEl.style.top = (e.clientY - offsetY) + "px";
             }
         });
-    </script>
 
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+        });
+
+        /* --- 3. TERMINAL EMULATOR LOGIC --- */
+        const inputEl = document.getElementById("cmd-input");
+        const outputEl = document.getElementById("output-area");
+        const terminalBody = document.getElementById("terminal-body");
+
+        // The "File System" for the simulation
+        const fileSystem = {
+            "about.txt": "I am a cybersecurity enthusiast and system builder.",
+            "projects.txt": "1. ESBHANDARI.SYS\n2. Network Sniffer\n3. Portfolio Deck",
+            "socials.txt": "GitHub: github.com/esbhandari\nLinkedIn: linkedin.com/in/esbhandari"
+        };
+
+        inputEl.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                const commandLine = inputEl.value.trim();
+                
+                // 1. Echo the command to the screen
+                addToOutput("guest@darkstar:~$ " + commandLine);
+                
+                // 2. Process Command
+                processCommand(commandLine);
+                
+                // 3. Clear input and scroll
+                inputEl.value = "";
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+        });
+
+        function addToOutput(text, isHTML = false) {
+            const div = document.createElement("div");
+            if (isHTML) div.innerHTML = text;
+            else div.innerText = text;
+            outputEl.appendChild(div);
+        }
+
+        function processCommand(cmd) {
+            const parts = cmd.split(" ");
+            const primary = parts[0].toLowerCase();
+            const arg = parts[1];
+
+            switch(primary) {
+                case "":
+                    break;
+                case "help":
+                    addToOutput("Available commands:\n  ls       - List directory contents\n  cat [file] - Display file content\n  whoami   - Print effective user name\n  date     - Print system date\n  clear    - Clear the terminal screen\n  reboot   - Reload the system");
+                    break;
+                case "ls":
+                    addToOutput("about.txt  projects.txt  socials.txt");
+                    break;
+                case "cat":
+                    if (!arg) {
+                        addToOutput("cat: missing file operand");
+                    } else if (fileSystem[arg]) {
+                        addToOutput(fileSystem[arg]);
+                    } else {
+                        addToOutput(`cat: ${arg}: No such file or directory`);
+                    }
+                    break;
+                case "whoami":
+                    addToOutput("guest");
+                    break;
+                case "date":
+                    addToOutput(new Date().toString());
+                    break;
+                case "clear":
+                    outputEl.innerHTML = "";
+                    break;
+                case "reboot":
+                    location.reload();
+                    break;
+                default:
+                    addToOutput(`bash: ${primary}: command not found`);
+            }
+        }
+        
+        // Auto-focus input on load
+        window.onload = () => inputEl.focus();
+
+        function resetTerminal() {
+            outputEl.innerHTML = "<div>Connection reset by peer...</div><br>";
+            setTimeout(() => {
+                outputEl.innerHTML += "<div>Reconnecting...</div><br>";
+            }, 500);
+        }
+    </script>
 </body>
 </html>
