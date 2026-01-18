@@ -6,18 +6,17 @@
     <title>ESBHANDARI.SYS - root@darkstar</title>
     <style>
         :root {
-            --bg-color: #3d4c53;
-            --win-gray: #c0c0c0;
-            --btn-highlight: #ffffff;
-            --btn-shadow: #555555;
-            --btn-dark-shadow: #000000;
+            --bg-color: #73767b; /* Overall background color */
+            --win-bg: #c0c0c0;    /* Window background color */
+            --win-border-light: #ffffff;
+            --win-border-dark: #000000;
             --term-bg: #000000;
-            --term-text: #33ff33;
-            --term-glow: 0 0 4px rgba(51, 255, 51, 0.6);
-            --font-ui: 'Courier New', monospace;
+            --term-text: #ffffff; /* Terminal text is now white */
+            --term-cursor: #33ff33; /* Cursor remains green */
+            --font-ui: 'Courier New', monospace; /* Monospace font for everything */
         }
 
-        /* --- GLOBAL & TEXTURE --- */
+        /* --- GLOBAL & BACKGROUND --- */
         body {
             margin: 0;
             padding: 0;
@@ -28,13 +27,16 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            background-color: var(--bg-color); 
+            background-color: var(--bg-color);
+            /* Canvas/Fabric Texture Pattern */
             background-image: 
-                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
+                linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1)),
+                linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1));
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
         }
 
+        /* Scanline Overlay */
         .scanlines {
             position: fixed;
             top: 0;
@@ -51,15 +53,6 @@
             background-size: 100% 4px;
             pointer-events: none;
             z-index: 99999;
-        }
-
-        .stippled {
-            background-color: var(--win-gray);
-            background-image: 
-                radial-gradient(#a0a0a0 15%, transparent 16%),
-                radial-gradient(#a0a0a0 15%, transparent 16%);
-            background-size: 4px 4px;
-            background-position: 0 0, 2px 2px;
         }
 
         /* --- DESKTOP ICONS --- */
@@ -89,7 +82,7 @@
         .desktop-icon svg {
             width: 48px;
             height: 48px;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); 
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3));
         }
 
         .desktop-icon span {
@@ -98,9 +91,10 @@
             font-size: 13px;
             font-weight: bold;
             letter-spacing: 0.5px;
-            background-color: rgba(0,0,0,0.4); 
+            background-color: rgba(0,0,0,0.4);
             padding: 4px 6px;
             border-radius: 4px;
+            text-transform: lowercase; /* Lowercase labels */
         }
 
         /* --- WINDOW SYSTEM --- */
@@ -108,13 +102,13 @@
             position: absolute;
             display: none;
             flex-direction: column;
-            background-color: var(--win-gray);
-            border-top: 2px solid var(--btn-highlight);
-            border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-dark-shadow);
-            border-bottom: 2px solid var(--btn-dark-shadow);
-            outline: 1px solid var(--btn-shadow);
-            box-shadow: 10px 10px 20px rgba(0,0,0,0.5);
+            background-color: var(--win-bg);
+            /* Simple, high-contrast borders */
+            border-top: 2px solid var(--win-border-light);
+            border-left: 2px solid var(--win-border-light);
+            border-right: 2px solid var(--win-border-dark);
+            border-bottom: 2px solid var(--win-border-dark);
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
             z-index: 100;
         }
 
@@ -122,20 +116,22 @@
             padding: 4px;
             display: flex;
             flex-direction: column;
-            height: 100%; 
+            height: 100%;
             box-sizing: border-box;
+            border: 1px solid var(--win-border-dark); /* Inner border */
         }
 
-        /* UPDATED TITLE BAR LAYOUT */
+        /* TITLE BAR LAYOUT */
         .title-bar {
-            height: 28px;
+            height: 24px;
             display: flex;
-            justify-content: space-between; /* Pushes content to edges */
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 4px;
             cursor: move;
-            background: var(--win-gray);
-            padding: 0 2px;
+            background: var(--win-bg);
+            padding: 0 4px;
+            border-bottom: 1px solid var(--win-border-dark);
             touch-action: none;
         }
 
@@ -144,35 +140,38 @@
             font-size: 14px;
             color: black;
             letter-spacing: 1px;
-            padding-left: 4px; /* Slight padding from edge */
+            text-transform: lowercase; /* Lowercase title */
         }
 
         .win-controls {
             display: flex;
-            gap: 2px; /* Space between buttons */
+            gap: 4px;
         }
 
         .win-btn {
-            width: 24px;
-            height: 24px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            border-top: 2px solid var(--btn-highlight);
-            border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-dark-shadow);
-            border-bottom: 2px solid var(--btn-dark-shadow);
-            background-color: var(--win-gray);
+            border-top: 1px solid var(--win-border-light);
+            border-left: 1px solid var(--win-border-light);
+            border-right: 1px solid var(--win-border-dark);
+            border-bottom: 1px solid var(--win-border-dark);
+            background-color: var(--win-bg);
+            color: black;
+            font-family: var(--font-ui);
+            text-transform: lowercase;
         }
-        
+
         .win-btn:active {
-            border-top: 2px solid var(--btn-dark-shadow);
-            border-left: 2px solid var(--btn-dark-shadow);
-            border-right: 2px solid var(--btn-highlight);
-            border-bottom: 2px solid var(--btn-highlight);
+            border-top: 1px solid var(--win-border-dark);
+            border-left: 1px solid var(--win-border-dark);
+            border-right: 1px solid var(--win-border-light);
+            border-bottom: 1px solid var(--win-border-light);
             transform: translate(1px, 1px);
         }
 
@@ -180,15 +179,15 @@
         #xterm-window {
             top: 15%;
             left: 20%;
-            width: 680px;
-            height: 480px; 
+            width: 600px;
+            height: 400px;
         }
 
         #trash-window {
             top: 30%;
             left: 35%;
-            width: 500px;
-            height: 350px;
+            width: 400px;
+            height: 250px;
         }
 
         /* --- MOBILE RESPONSIVENESS --- */
@@ -200,67 +199,84 @@
                 top: 10vh;
             }
             #trash-window {
-                width: 90vw;
-                height: 50vh;
-                left: 5vw;
-                top: 15vh;
+                width: 80vw;
+                height: 40vh;
+                left: 10vw;
+                top: 20vh;
             }
             .icon-container {
                 top: 10px;
                 left: 10px;
                 gap: 15px;
             }
-            .desktop-icon span {
-                font-size: 11px;
-            }
         }
 
         /* --- CONTENT STYLES --- */
         .terminal-screen {
             background-color: var(--term-bg);
-            color: var(--term-text);
-            text-shadow: var(--term-glow); 
-            flex-grow: 1; 
-            overflow-y: auto; 
+            color: var(--term-text); /* White text */
+            flex-grow: 1;
+            overflow-y: auto;
             padding: 10px;
             font-family: var(--font-ui);
-            font-size: 15px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.3;
             text-align: left;
-            border-top: 2px solid var(--btn-shadow);
-            border-left: 2px solid var(--btn-shadow);
-            border-right: 2px solid var(--btn-highlight);
-            border-bottom: 2px solid var(--btn-highlight);
-            white-space: pre-wrap; 
+            white-space: pre-wrap;
             word-wrap: break-word;
             cursor: text;
         }
+        
+        #cmd-in {
+            flex-grow: 1; background: transparent; border: none; color: inherit;
+            outline: none; font-family: inherit; font-size: inherit; padding: 0; margin: 0;
+            caret-color: var(--term-cursor); /* Green cursor */
+        }
 
         .trash-content {
-            background-color: #ffffff;
+            background-color: var(--win-bg); /* Matches window bg */
             color: #000000;
             flex-grow: 1;
             overflow-y: auto;
             padding: 8px;
-            border-top: 2px solid var(--btn-shadow);
-            border-left: 2px solid var(--btn-shadow);
-            border-right: 2px solid var(--btn-highlight);
-            border-bottom: 2px solid var(--btn-highlight);
             font-size: 13px;
-            margin-bottom: 5px;
             text-align: left;
+            border: 1px solid var(--win-border-dark); /* Inset look */
+            background-color: #d0d0d0; /* Slightly darker content area */
         }
-        
+
         .trash-entry {
-            border-bottom: 1px dotted #555;
-            padding: 8px 0;
+            padding: 4px 0;
             font-family: var(--font-ui);
         }
 
-        #cmd-in {
-            flex-grow: 1; background: transparent; border: none; color: inherit; 
-            outline: none; font-family: inherit; font-size: inherit; padding: 0; margin: 0;
-            text-shadow: inherit; caret-color: var(--term-text);
+        /* Empty Trash Button positioned bottom-right */
+        .trash-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 4px;
+        }
+
+        .empty-trash-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            font-family: var(--font-ui);
+            cursor: pointer;
+            border-top: 1px solid var(--win-border-light);
+            border-left: 1px solid var(--win-border-light);
+            border-right: 1px solid var(--win-border-dark);
+            border-bottom: 1px solid var(--win-border-dark);
+            background-color: var(--win-bg);
+            color: black;
+            text-transform: lowercase;
+        }
+
+        .empty-trash-btn:active {
+            border-top: 1px solid var(--win-border-dark);
+            border-left: 1px solid var(--win-border-dark);
+            border-right: 1px solid var(--win-border-light);
+            border-bottom: 1px solid var(--win-border-light);
+            transform: translate(1px, 1px);
         }
     </style>
 </head>
@@ -272,9 +288,9 @@
         <div class="desktop-icon" onclick="toggleXterm()">
             <svg viewBox="0 0 24 24" fill="#333">
                 <rect x="2" y="4" width="20" height="16" rx="2" fill="black" stroke="silver" stroke-width="2"/>
-                <text x="4" y="16" fill="#33ff33" font-family="monospace" font-size="12" font-weight="bold">>_</text>
+                <text x="4" y="16" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">>_</text>
             </svg>
-            <span>xterm</span>
+            <span>terminal</span>
         </div>
 
         <div class="desktop-icon" onclick="openTrashWindow()">
@@ -287,7 +303,7 @@
         </div>
     </div>
 
-    <div id="xterm-window" class="window stippled">
+    <div id="xterm-window" class="window">
         <div class="window-frame">
             <div class="title-bar" id="xterm-header">
                 <div class="title-bar-text">xterm</div>
@@ -310,7 +326,7 @@ Type 'help' to see available commands.
         </div>
     </div>
 
-    <div id="trash-window" class="window stippled">
+    <div id="trash-window" class="window">
         <div class="window-frame">
             <div class="title-bar" id="trash-header">
                 <div class="title-bar-text">trash</div>
@@ -321,6 +337,9 @@ Type 'help' to see available commands.
             </div>
             <div class="trash-content" id="trash-list">
                 <div style="color:#666; text-align:center; margin-top:20px;">trash is empty</div>
+            </div>
+            <div class="trash-footer">
+                <div class="empty-trash-btn" onclick="emptyTrash()">empty trash</div>
             </div>
         </div>
     </div>
@@ -343,9 +362,7 @@ Type 'help' to see available commands.
             
             // Mouse
             handle.addEventListener('mousedown', (e) => {
-                // Prevent drag if clicking buttons
                 if(e.target.classList.contains('win-btn')) return;
-                
                 isDragging = true;
                 bringToFront(el.id);
                 startX = e.clientX;
@@ -367,7 +384,6 @@ Type 'help' to see available commands.
             // Touch
             handle.addEventListener('touchstart', (e) => {
                 if(e.target.classList.contains('win-btn')) return;
-
                 isDragging = true;
                 bringToFront(el.id);
                 const touch = e.touches[0];
@@ -393,7 +409,6 @@ Type 'help' to see available commands.
             makeDraggable(document.getElementById('xterm-window'), document.getElementById('xterm-header'));
             makeDraggable(document.getElementById('trash-window'), document.getElementById('trash-header'));
 
-            // Click-to-focus
             const xtermWin = document.getElementById('xterm-window');
             if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
             if(xtermWin) xtermWin.addEventListener('touchstart', () => bringToFront('xterm-window'), {passive: true});
@@ -430,17 +445,15 @@ Type 'help' to see available commands.
                 const logEntry = `<strong>session closed at ${timestamp}</strong><br>${sessionContent}`;
                 
                 trashStorage.push(logEntry);
-                // Update trash if open
                 if (trashWin && window.getComputedStyle(trashWin).display !== 'none') window.renderTrashList();
 
-                // RESET TERMINAL
                 termText.innerHTML = "Welcome to ESBHANDARI.SYS\nType 'help' to see available commands.\n\n";
                 commandHistory = []; 
                 historyIndex = -1;
                 xtermWin.style.display = 'none';
             };
 
-            // NEW: Close Trash Window (Empty + Hide)
+            // Close Trash Window (Empty + Hide)
             window.closeTrashWindow = function() {
                 window.emptyTrash();
                 trashWin.style.display = 'none';
@@ -471,6 +484,7 @@ Type 'help' to see available commands.
                 }
             };
 
+            // Only empty the trash, don't close the window
             window.emptyTrash = function() {
                 trashStorage = [];
                 window.renderTrashList();
