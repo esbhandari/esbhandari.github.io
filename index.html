@@ -6,16 +6,23 @@
     <title>ESBHANDARI.SYS - root@darkstar</title>
     <style>
         :root {
-            --bg-color: #73767b;
-            --win-bg: #c0c0c0;
-            --win-border-light: #ffffff;
-            --win-border-dark: #555555;
-            --term-bg: #000000;
-            --term-text: #ffffff;
+            /* --- INDUSTRIAL MATERIAL PALETTE --- */
+            --bg-mesh-dark: #3a3a3a;   
+            --bg-mesh-light: #444444;  
+            
+            --board-solid: #c0c0c0;    /* Solid Silver Slab */
+            
+            --cut-dark: #1a1a1a;       /* The Chisel Line */
+            --cut-light: #ffffff;      /* The Chisel Highlight */
+            
+            --term-bg: #111111;
+            --term-text: #e0e0e0;
             --term-cursor: #33ff33;
+            
             --font-ui: 'Courier New', monospace;
         }
 
+        /* --- GLOBAL & TEXTURE --- */
         body {
             margin: 0;
             padding: 0;
@@ -25,27 +32,17 @@
             font-family: var(--font-ui);
             user-select: none;
             -webkit-user-select: none;
-            background-color: var(--bg-color);
+            
+            /* DARK ACOUSTIC MESH */
+            background-color: var(--bg-mesh-dark);
             background-image: 
-                linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1)),
-                linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1));
+                linear-gradient(45deg, var(--bg-mesh-light) 25%, transparent 25%, transparent 75%, var(--bg-mesh-light) 75%, var(--bg-mesh-light)),
+                linear-gradient(45deg, var(--bg-mesh-light) 25%, transparent 25%, transparent 75%, var(--bg-mesh-light) 75%, var(--bg-mesh-light));
             background-size: 4px 4px;
             background-position: 0 0, 2px 2px;
         }
 
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 99999;
-        }
-
-        /* --- DESKTOP ICONS --- */
+        /* --- DESKTOP ICONS (WIREFRAME STYLE) --- */
         .icon-container {
             position: absolute;
             top: 20px;
@@ -60,42 +57,50 @@
             width: 70px;
             text-align: center;
             cursor: pointer;
-            color: white;
-            text-shadow: 1px 1px 2px black;
-            transition: transform 0.1s;
+            transition: transform 0.05s;
         }
 
-        .desktop-icon:active { transform: scale(0.95); }
+        .desktop-icon:active { transform: translateY(2px); }
 
         .desktop-icon svg {
             width: 48px;
             height: 48px;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3));
+            /* Sharp, offset shadow for depth against cloth */
+            filter: drop-shadow(1px 1px 0px rgba(0,0,0,1));
         }
 
         .desktop-icon span {
             display: inline-block;
-            margin-top: 6px;
+            margin-top: 8px;
             font-size: 13px;
             font-weight: bold;
-            letter-spacing: 0.5px;
-            background-color: rgba(0,0,0,0.4);
-            padding: 4px 6px;
-            border-radius: 4px;
+            letter-spacing: 0.05em;
+            
+            /* TEXT ONLY LABELS */
+            background: transparent;
+            color: #e0e0e0;
+            text-shadow: 1px 1px 0px #000000; /* Etched look */
+            
+            padding: 0;
+            border: none;
             text-transform: lowercase;
-            color: white;
         }
 
-        /* --- WINDOW SYSTEM --- */
+        /* --- THE CHISELED WINDOW SYSTEM --- */
         .window {
             position: absolute;
             display: none;
             flex-direction: column;
-            background-color: var(--win-bg);
+            
+            /* SOLID SLAB SURFACE */
+            background-color: var(--board-solid);
+            
+            /* THE CHISELED BORDER LOGIC */
+            border: 1px solid var(--cut-dark);
             box-shadow: 
-                inset 1px 1px 0px var(--win-border-light),
-                inset -1px -1px 0px var(--win-border-dark),
-                2px 2px 5px rgba(0,0,0,0.3);
+                inset 1px 1px 0px var(--cut-light),
+                5px 5px 0px rgba(0,0,0,0.5); 
+            
             z-index: 100;
             width: 600px;
             height: 400px;
@@ -104,7 +109,7 @@
         }
 
         .window-frame {
-            padding: 4px;
+            padding: 6px;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -113,29 +118,32 @@
         }
 
         .title-bar {
-            height: 24px;
+            height: 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             cursor: move;
-            background: var(--win-bg);
-            padding: 0 4px;
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-light),
-                inset -1px -1px 0px var(--win-border-dark);
+            background: var(--board-solid);
+            
+            /* DIVIDER GROOVE */
+            border-bottom: 1px solid var(--cut-dark);
+            box-shadow: 0px 1px 0px var(--cut-light);
+            
             touch-action: none;
+            padding: 0 4px;
         }
 
         .title-bar-text {
             font-weight: bold;
             font-size: 14px;
-            color: black;
-            letter-spacing: 1px;
+            color: var(--cut-dark);
+            letter-spacing: 0.05em;
             text-transform: lowercase;
+            text-shadow: 1px 1px 0px var(--cut-light);
         }
 
-        .win-controls { display: flex; gap: 4px; }
+        .win-controls { display: flex; gap: 6px; }
 
         .win-btn {
             width: 18px;
@@ -146,19 +154,18 @@
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-light),
-                inset -1px -1px 0px var(--win-border-dark);
-            background-color: var(--win-bg);
-            color: black;
-            font-family: var(--font-ui);
-            text-transform: lowercase;
+            background-color: var(--board-solid);
+            color: var(--cut-dark);
+            
+            /* Chiseled Button */
+            border: 1px solid var(--cut-dark);
+            box-shadow: inset 1px 1px 0px var(--cut-light);
         }
 
         .win-btn:active {
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-dark),
-                inset -1px -1px 0px var(--win-border-light);
+            box-shadow: inset 1px 1px 0px #555;
+            background-color: #b0b0b0;
+            transform: translateY(1px);
         }
 
         /* --- RESIZE HANDLES --- */
@@ -171,21 +178,6 @@
         .resizer.nw { top: 0; left: 0; width: 10px; height: 10px; cursor: nw-resize; }
         .resizer.se { bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize; }
         .resizer.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
-
-        /* --- WINDOW POSITIONS (UPDATED) --- */
-        #xterm-window {
-            /* Moved to center-right to avoid covering icons */
-            top: 15%;
-            left: 25%;
-        }
-
-        #trash-window {
-            /* Offset slightly lower and right */
-            top: 25%;
-            left: 35%;
-            width: 400px;
-            height: 250px;
-        }
 
         /* --- CONTENT STYLES --- */
         .terminal-screen {
@@ -201,9 +193,11 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             cursor: text;
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-dark),
-                inset -1px -1px 0px var(--win-border-light);
+            
+            /* Deep Inset Screen */
+            border: 1px solid #000; 
+            border-bottom: 1px solid var(--cut-light); 
+            border-right: 1px solid var(--cut-light);
         }
         
         #cmd-in {
@@ -213,63 +207,90 @@
         }
 
         .trash-content {
-            background-color: #d0d0d0;
-            color: #000000;
+            background-color: #fdfdfd; 
+            color: #111;
             flex-grow: 1;
             overflow-y: auto;
-            padding: 8px;
+            padding: 10px;
             font-size: 13px;
             text-align: left;
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-dark),
-                inset -1px -1px 0px var(--win-border-light);
+            
+            /* Inset Paper Tray */
+            border: 1px solid var(--cut-dark);
+            border-bottom: 1px solid var(--cut-light); 
+            border-right: 1px solid var(--cut-light);
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .trash-entry { padding: 4px 0; font-family: var(--font-ui); }
+        .trash-entry { 
+            padding: 4px 0; 
+            font-family: var(--font-ui); 
+            border-bottom: 1px dashed #bbb;
+        }
 
-        .trash-footer { display: flex; justify-content: flex-end; padding-top: 4px; }
+        .trash-footer { 
+            display: flex; 
+            justify-content: flex-end; 
+            padding-top: 10px; 
+        }
 
+        /* --- THE RECESSED "EMPTY TRASH" BUTTON --- */
         .empty-trash-btn {
-            padding: 4px 8px;
-            font-size: 12px;
+            padding: 6px 12px;
+            font-size: 13px;
             font-family: var(--font-ui);
+            font-weight: bold;
             cursor: pointer;
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-light),
-                inset -1px -1px 0px var(--win-border-dark);
-            background-color: var(--win-bg);
-            color: black;
+            
             text-transform: lowercase;
-        }
-        .empty-trash-btn:active {
-            box-shadow: inset 1px 1px 0px var(--win-border-dark), inset -1px -1px 0px var(--win-border-light);
+            letter-spacing: 0.05em;
+            color: #444;
+            background-color: var(--board-solid);
+            
+            /* NO OUTER BORDER */
+            border: none;
+            
+            /* RECESSED TRAY SHADOWS */
+            box-shadow: 
+                inset 2px 2px 4px rgba(0,0,0,0.3), 
+                inset -1px -1px 0px rgba(255,255,255,0.8);
+            
+            transition: all 0.05s;
         }
 
-        /* Mobile adjustments */
+        .empty-trash-btn:active {
+            /* DEEPEN THE RECESS ON CLICK */
+            box-shadow: 
+                inset 3px 3px 6px rgba(0,0,0,0.5), 
+                inset -1px -1px 0px rgba(255,255,255,0.4);
+            color: #000;
+            transform: translateY(1px);
+        }
+
+        /* --- WINDOW POSITIONS & MOBILE FIXES --- */
+        #xterm-window { top: 15%; left: 25%; }
+        #trash-window { top: 25%; left: 35%; width: 400px; height: 250px; }
+
         @media (max-width: 768px) {
-            #xterm-window { width: 90vw; height: 60vh; left: 5vw; top: 10vh; }
-            #trash-window { width: 80vw; height: 40vh; left: 10vw; top: 20vh; }
+            /* Pushed windows down to clear top-left icons */
+            #xterm-window { width: 90vw; height: 60vh; left: 5vw; top: 140px; }
+            #trash-window { width: 80vw; height: 40vh; left: 10vw; top: 160px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="scanlines"></div>
-
     <div class="icon-container">
         <div class="desktop-icon" onclick="toggleXterm()">
-            <svg viewBox="0 0 24 24" fill="#333">
-                <rect x="2" y="4" width="20" height="16" rx="2" fill="black" stroke="silver" stroke-width="2"/>
-                <text x="4" y="16" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">>_</text>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="1" />
+                <path d="M6 16 L10 16" stroke-linecap="square" /> <path d="M6 8 L10 12 L6 16" fill="none" /> </svg>
             <span>terminal</span>
         </div>
 
         <div class="desktop-icon" onclick="toggleTrashWindow()">
-            <svg viewBox="0 0 24 24" fill="#e0e0e0">
-                <path stroke="black" stroke-width="1" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                <pattern id="trash-pattern" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="black" opacity="0.3"/></pattern>
-                <rect x="7" y="8" width="10" height="10" fill="url(#trash-pattern)" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
             </svg>
             <span>trash</span>
         </div>
@@ -317,7 +338,7 @@ Type 'help' to see available commands.
                 <div style="color:#666; text-align:center; margin-top:20px;">trash is empty</div>
             </div>
             <div class="trash-footer">
-                <div class="empty-trash-btn" onclick="emptyTrash()">empty trash</div>
+                <button class="empty-trash-btn" onclick="emptyTrash()">empty trash</button>
             </div>
         </div>
     </div>
@@ -457,7 +478,11 @@ Type 'help' to see available commands.
                 if (displayState === 'none') {
                     xtermWin.style.display = 'flex';
                     bringToFront('xterm-window');
-                    if (cmdIn) cmdIn.focus();
+                    
+                    // KEYBOARD FIX: Only auto-focus on desktop (>768px)
+                    if (window.innerWidth > 768 && cmdIn) {
+                        cmdIn.focus();
+                    }
                 } else {
                     xtermWin.style.display = 'none';
                 }
