@@ -106,7 +106,7 @@
         /* --- WINDOW SYSTEM --- */
         .window {
             position: absolute;
-            display: none; /* Hidden by default */
+            display: none;
             flex-direction: column;
             background-color: var(--win-gray);
             border-top: 2px solid var(--btn-highlight);
@@ -126,25 +126,30 @@
             box-sizing: border-box;
         }
 
+        /* UPDATED TITLE BAR LAYOUT */
         .title-bar {
             height: 28px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Pushes content to edges */
             align-items: center;
             margin-bottom: 4px;
             cursor: move;
             background: var(--win-gray);
-            touch-action: none; /* Critical for mobile drag */
+            padding: 0 2px;
+            touch-action: none;
         }
 
         .title-bar-text {
-            flex-grow: 1;
-            text-align: center;
             font-weight: bold;
             font-size: 14px;
             color: black;
-            text-transform: uppercase;
             letter-spacing: 1px;
+            padding-left: 4px; /* Slight padding from edge */
+        }
+
+        .win-controls {
+            display: flex;
+            gap: 2px; /* Space between buttons */
         }
 
         .win-btn {
@@ -171,7 +176,7 @@
             transform: translate(1px, 1px);
         }
 
-        /* --- SPECIFIC WINDOWS (Desktop Default) --- */
+        /* --- WINDOW POSITIONS --- */
         #xterm-window {
             top: 15%;
             left: 20%;
@@ -269,7 +274,7 @@
                 <rect x="2" y="4" width="20" height="16" rx="2" fill="black" stroke="silver" stroke-width="2"/>
                 <text x="4" y="16" fill="#33ff33" font-family="monospace" font-size="12" font-weight="bold">>_</text>
             </svg>
-            <span>Terminal</span>
+            <span>xterm</span>
         </div>
 
         <div class="desktop-icon" onclick="openTrashWindow()">
@@ -278,16 +283,18 @@
                 <pattern id="trash-pattern" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="black" opacity="0.3"/></pattern>
                 <rect x="7" y="8" width="10" height="10" fill="url(#trash-pattern)" />
             </svg>
-            <span>Trash</span>
+            <span>trash</span>
         </div>
     </div>
 
     <div id="xterm-window" class="window stippled">
         <div class="window-frame">
             <div class="title-bar" id="xterm-header">
-                <div class="win-btn" onclick="toggleXterm()">-</div>
                 <div class="title-bar-text">xterm</div>
-                <div class="win-btn" onclick="closeXterm()">x</div>
+                <div class="win-controls">
+                    <div class="win-btn" onclick="toggleXterm()">-</div>
+                    <div class="win-btn" onclick="closeXterm()">x</div>
+                </div>
             </div>
             <div class="terminal-screen" id="term-out" onclick="document.getElementById('cmd-in').focus()">
                 <div id="term-text">
@@ -306,15 +313,14 @@ Type 'help' to see available commands.
     <div id="trash-window" class="window stippled">
         <div class="window-frame">
             <div class="title-bar" id="trash-header">
-                <div class="win-btn" onclick="document.getElementById('trash-window').style.display='none'">-</div>
-                <div class="title-bar-text">Trash</div>
-                <div class="win-btn" onclick="document.getElementById('trash-window').style.display='none'">x</div>
+                <div class="title-bar-text">trash</div>
+                <div class="win-controls">
+                    <div class="win-btn" onclick="document.getElementById('trash-window').style.display='none'">-</div>
+                    <div class="win-btn" onclick="closeTrashWindow()">x</div>
+                </div>
             </div>
             <div class="trash-content" id="trash-list">
-                <div style="color:#666; text-align:center; margin-top:20px;">Trash is empty</div>
-            </div>
-            <div class="trash-controls" style="display:flex; justify-content: flex-end; margin-top:5px;">
-                <div class="win-btn" style="width:auto; padding:0 10px;" onclick="emptyTrash()">Empty Trash</div>
+                <div style="color:#666; text-align:center; margin-top:20px;">trash is empty</div>
             </div>
         </div>
     </div>
@@ -330,13 +336,16 @@ Type 'help' to see available commands.
             }
         }
 
-        // --- DRAGGING LOGIC (MOUSE + TOUCH) ---
+        // --- DRAGGING LOGIC ---
         function makeDraggable(el, handle) {
             if (!el || !handle) return;
             let isDragging = false, startX, startY, initialLeft, initialTop;
             
-            // Mouse Events
+            // Mouse
             handle.addEventListener('mousedown', (e) => {
+                // Prevent drag if clicking buttons
+                if(e.target.classList.contains('win-btn')) return;
+                
                 isDragging = true;
                 bringToFront(el.id);
                 startX = e.clientX;
@@ -355,8 +364,10 @@ Type 'help' to see available commands.
 
             document.addEventListener('mouseup', () => isDragging = false);
 
-            // Touch Events (Mobile)
+            // Touch
             handle.addEventListener('touchstart', (e) => {
+                if(e.target.classList.contains('win-btn')) return;
+
                 isDragging = true;
                 bringToFront(el.id);
                 const touch = e.touches[0];
@@ -369,7 +380,7 @@ Type 'help' to see available commands.
             document.addEventListener('touchmove', (e) => {
                 if(isDragging) {
                     const touch = e.touches[0];
-                    e.preventDefault(); // Stop scrolling while dragging window
+                    e.preventDefault();
                     el.style.left = (initialLeft + (touch.clientX - startX)) + 'px';
                     el.style.top = (initialTop + (touch.clientY - startY)) + 'px';
                 }
@@ -402,10 +413,7 @@ Type 'help' to see available commands.
             // --- CONTROLS ---
             window.toggleXterm = function() {
                 if (!xtermWin) return;
-                
-                // ROBUST CHECK: Check computed style to fix "double click" bug
                 const displayState = window.getComputedStyle(xtermWin).display;
-
                 if (displayState === 'none') {
                     xtermWin.style.display = 'flex';
                     bringToFront('xterm-window');
@@ -419,9 +427,10 @@ Type 'help' to see available commands.
                 if (!termText) return;
                 const sessionContent = termText.innerHTML;
                 const timestamp = new Date().toLocaleTimeString();
-                const logEntry = `<strong>Session closed at ${timestamp}</strong><br>${sessionContent}`;
+                const logEntry = `<strong>session closed at ${timestamp}</strong><br>${sessionContent}`;
                 
                 trashStorage.push(logEntry);
+                // Update trash if open
                 if (trashWin && window.getComputedStyle(trashWin).display !== 'none') window.renderTrashList();
 
                 // RESET TERMINAL
@@ -431,11 +440,17 @@ Type 'help' to see available commands.
                 xtermWin.style.display = 'none';
             };
 
+            // NEW: Close Trash Window (Empty + Hide)
+            window.closeTrashWindow = function() {
+                window.emptyTrash();
+                trashWin.style.display = 'none';
+            };
+
             window.renderTrashList = function() {
                 const trashList = document.getElementById('trash-list');
                 if (!trashList) return;
                 if (trashStorage.length === 0) {
-                    trashList.innerHTML = '<div style="color:#666; text-align:center; margin-top:20px;">Trash is empty</div>';
+                    trashList.innerHTML = '<div style="color:#666; text-align:center; margin-top:20px;">trash is empty</div>';
                 } else {
                     trashList.innerHTML = '';
                     trashStorage.forEach((entry) => {
@@ -500,24 +515,24 @@ Type 'help' to see available commands.
 
                         switch(cmd) {
                             case 'help':
-                                termText.innerHTML += "Available commands:\n  ls, cat [file], fetch-metadata, history, clear, exit\n";
+                                termText.innerHTML += "available commands:\n  ls, cat [file], fetch-metadata, history, clear, exit\n";
                                 break;
                             case 'ls':
                                 termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n";
                                 break;
                             case 'cat':
                                 if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n";
-                                else termText.innerHTML += `cat: ${arg || ''}: No such file\n`;
+                                else termText.innerHTML += `cat: ${arg || ''}: no such file\n`;
                                 break;
                             case 'fetch-metadata':
-                                termText.innerHTML += `<span style="color:yellow;">[RECONNAISSANCE INITIATED]</span>\n`;
+                                termText.innerHTML += `<span style="color:yellow;">[reconnaissance initiated]</span>\n`;
                                 fetch('https://api.ipify.org?format=json')
                                     .then(res => res.json())
                                     .then(data => {
-                                        termText.innerHTML += `PUBLIC_IP: ${data.ip}\nOS_PLATFORM: ${navigator.platform}\nUSER_AGENT: ${navigator.userAgent.substring(0, 40)}...\nRESOLUTION: ${window.screen.width}x${window.screen.height}\n<span style="color:yellow;">[DATA CAPTURE COMPLETE]</span>\n`;
+                                        termText.innerHTML += `public_ip: ${data.ip}\nos_platform: ${navigator.platform}\nuser_agent: ${navigator.userAgent.substring(0, 40)}...\nresolution: ${window.screen.width}x${window.screen.height}\n<span style="color:yellow;">[data capture complete]</span>\n`;
                                         termOut.scrollTop = termOut.scrollHeight;
                                     })
-                                    .catch(err => termText.innerHTML += `<span style="color:red;">[CONNECTION FAILED]</span>\n`);
+                                    .catch(err => termText.innerHTML += `<span style="color:red;">[connection failed]</span>\n`);
                                 break;
                             case 'history':
                                 commandHistory.forEach((h, i) => termText.innerHTML += `  ${i + 1}  ${h}\n`);
