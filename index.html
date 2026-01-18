@@ -1,722 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ESBHANDARI.SYS - root@darkstar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>esbhandari.github.io</title>
     <style>
-        :root {
-            /* --- INDUSTRIAL MATERIAL PALETTE --- */
-            --bg-mesh-dark: #3a3a3a;
-            --bg-mesh-light: #444444;
-
-            --board-solid: #c0c0c0;
-            /* Solid Silver Slab */
-
-            --cut-dark: #1a1a1a;
-            /* The Chisel Line */
-            --cut-light: #ffffff;
-            /* The Chisel Highlight */
-
-            --term-bg: #111111;
-            --term-text: #e0e0e0;
-            --term-cursor: #33ff33;
-
-            --font-ui: 'Courier New', monospace;
-        }
-
-        /* --- GLOBAL & TEXTURE --- */
         body {
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.125rem;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
             padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            font-family: var(--font-ui);
+            overflow: hidden; 
+
+            /* Global fix: Prevents selection/blue highlight on all content */
             user-select: none;
             -webkit-user-select: none;
-
-            /* DARK ACOUSTIC MESH */
-            background-color: var(--bg-mesh-dark);
-            background-image:
-                linear-gradient(45deg, var(--bg-mesh-light) 25%, transparent 25%, transparent 75%, var(--bg-mesh-light) 75%, var(--bg-mesh-light)),
-                linear-gradient(45deg, var(--bg-mesh-light) 25%, transparent 25%, transparent 75%, var(--bg-mesh-light) 75%, var(--bg-mesh-light));
-            background-size: 4px 4px;
-            background-position: 0 0, 2px 2px;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            
+            /* Disables the native mobile tap highlight overlay */
+            -webkit-tap-highlight-color: transparent;
         }
-
-        /* --- DESKTOP ICONS (WIREFRAME STYLE) --- */
-        .icon-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+        
+        .content-anchor {
+            transform: translateY(-10vh);
             display: flex;
             flex-direction: column;
-            gap: 25px;
-            z-index: 10;
+            align-items: center;
         }
 
-        .desktop-icon {
-            width: 70px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.05s;
+        h1 {
+            font-size: 2em; 
+            line-height: 1.2;
+            margin: 0 0 0.5em 0; 
+            padding: 0;
         }
-
-        .desktop-icon:active {
-            transform: translateY(2px);
-        }
-
-        .desktop-icon svg {
-            width: 48px;
-            height: 48px;
-            /* Sharp, offset shadow for depth against cloth */
-            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 1));
-        }
-
-        .desktop-icon span {
+        
+        /* The interactive and non-selectable 'h' */
+        .h-interactive {
             display: inline-block;
-            margin-top: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 0.05em;
+            font-weight: 900; 
+            transform: rotate(-15deg); 
+            transition: transform 0.5s ease; 
+        }
+        
+        /* Straightens on hover (desktop) or first tap (mobile) */
+        .h-interactive:hover {
+            cursor: pointer; 
+            transform: rotate(0deg); 
+        }
 
-            /* TEXT ONLY LABELS */
-            background: transparent;
-            color: #e0e0e0;
-            text-shadow: 1px 1px 0px #000000;
-            /* Etched look */
-
+        p {
+            margin: 0; 
             padding: 0;
-            border: none;
-            text-transform: lowercase;
+            font-size: 2.5em; 
+            line-height: 1; 
         }
 
-        /* --- THE CHISELED WINDOW SYSTEM --- */
-        .window {
-            position: absolute;
-            display: none;
-            flex-direction: column;
-
-            /* SOLID SLAB SURFACE */
-            background-color: var(--board-solid);
-
-            /* THE CHISELED BORDER LOGIC */
-            border: 1px solid var(--cut-dark);
-            box-shadow:
-                inset 1px 1px 0px var(--cut-light),
-                5px 5px 0px rgba(0, 0, 0, 0.5);
-
-            z-index: 100;
-            width: 600px;
-            height: 400px;
-            min-width: 200px;
-            min-height: 150px;
+        /* Dark Mode Default */
+        body {
+            background-color: #000000;
+            color: #ffffff;
         }
 
-        .window-frame {
-            padding: 6px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        .title-bar {
-            height: 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-            cursor: move;
-            background: var(--board-solid);
-
-            /* DIVIDER GROOVE */
-            border-bottom: 1px solid var(--cut-dark);
-            box-shadow: 0px 1px 0px var(--cut-light);
-
-            touch-action: none;
-            padding: 0 4px;
-        }
-
-        .title-bar-text {
-            font-weight: bold;
-            font-size: 14px;
-            color: var(--cut-dark);
-            letter-spacing: 0.05em;
-            text-transform: lowercase;
-            text-shadow: 1px 1px 0px var(--cut-light);
-        }
-
-        .win-controls {
-            display: flex;
-            gap: 6px;
-        }
-
-        .win-btn {
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            background-color: var(--board-solid);
-            color: var(--cut-dark);
-
-            /* Chiseled Button */
-            border: 1px solid var(--cut-dark);
-            box-shadow: inset 1px 1px 0px var(--cut-light);
-        }
-
-        .win-btn:active {
-            box-shadow: inset 1px 1px 0px #555;
-            background-color: #b0b0b0;
-            transform: translateY(1px);
-        }
-
-        /* --- RESIZE HANDLES --- */
-        .resizer {
-            position: absolute;
-            z-index: 101;
-        }
-
-        .resizer.n {
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            cursor: n-resize;
-        }
-
-        .resizer.s {
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            cursor: s-resize;
-        }
-
-        .resizer.e {
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 5px;
-            cursor: e-resize;
-        }
-
-        .resizer.w {
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 5px;
-            cursor: w-resize;
-        }
-
-        .resizer.ne {
-            top: 0;
-            right: 0;
-            width: 10px;
-            height: 10px;
-            cursor: ne-resize;
-        }
-
-        .resizer.nw {
-            top: 0;
-            left: 0;
-            width: 10px;
-            height: 10px;
-            cursor: nw-resize;
-        }
-
-        .resizer.se {
-            bottom: 0;
-            right: 0;
-            width: 10px;
-            height: 10px;
-            cursor: se-resize;
-        }
-
-        .resizer.sw {
-            bottom: 0;
-            left: 0;
-            width: 10px;
-            height: 10px;
-            cursor: sw-resize;
-        }
-
-        /* --- CONTENT STYLES --- */
-        .terminal-screen {
-            background-color: var(--term-bg);
-            color: var(--term-text);
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px;
-            font-family: var(--font-ui);
-            font-size: 14px;
-            line-height: 1.3;
-            text-align: left;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            cursor: text;
-
-            /* Deep Inset Screen */
-            border: 1px solid #000;
-            border-bottom: 1px solid var(--cut-light);
-            border-right: 1px solid var(--cut-light);
-        }
-
-        #cmd-in {
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            color: inherit;
-            outline: none;
-            font-family: inherit;
-            font-size: inherit;
-            padding: 0;
-            margin: 0;
-            caret-color: var(--term-cursor);
-        }
-
-        .trash-content {
-            background-color: #fdfdfd;
-            color: #111;
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px;
-            font-size: 13px;
-            text-align: left;
-
-            /* Inset Paper Tray */
-            border: 1px solid var(--cut-dark);
-            border-bottom: 1px solid var(--cut-light);
-            border-right: 1px solid var(--cut-light);
-            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .trash-entry {
-            padding: 4px 0;
-            font-family: var(--font-ui);
-            border-bottom: 1px dashed #bbb;
-        }
-
-        .trash-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding-top: 10px;
-        }
-
-        /* --- THE RECESSED "EMPTY TRASH" BUTTON --- */
-        .empty-trash-btn {
-            padding: 6px 12px;
-            font-size: 13px;
-            font-family: var(--font-ui);
-            font-weight: bold;
-            cursor: pointer;
-
-            text-transform: lowercase;
-            letter-spacing: 0.05em;
-            color: #444;
-            background-color: var(--board-solid);
-
-            /* NO OUTER BORDER */
-            border: none;
-
-            /* RECESSED TRAY SHADOWS */
-            box-shadow:
-                inset 2px 2px 4px rgba(0, 0, 0, 0.3),
-                inset -1px -1px 0px rgba(255, 255, 255, 0.8);
-
-            transition: all 0.05s;
-        }
-
-        .empty-trash-btn:active {
-            /* DEEPEN THE RECESS ON CLICK */
-            box-shadow:
-                inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-                inset -1px -1px 0px rgba(255, 255, 255, 0.4);
-            color: #000;
-            transform: translateY(1px);
-        }
-
-        /* --- WINDOW POSITIONS & MOBILE FIXES --- */
-        #xterm-window {
-            top: 15%;
-            left: 25%;
-        }
-
-        #trash-window {
-            top: 25%;
-            left: 35%;
-            width: 400px;
-            height: 250px;
-        }
-
-        @media (max-width: 768px) {
-
-            /* Pushed windows down to clear top-left icons */
-            #xterm-window {
-                width: 90vw;
-                height: 50vh;
-                left: 5vw;
-                top: 140px;
+        @media (prefers-color-scheme: light) {
+            body {
+                background-color: #ffffff;
+                color: #000000;
             }
+        }
 
-            #trash-window {
-                width: 85vw;
-                height: 40vh;
-                left: 7.5vw;
-                top: 160px;
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            body {
+                font-size: 1rem;
+            }
+            .content-anchor {
+                transform: translateY(-10vh); 
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 0.4em; 
+            }
+            p {
+                font-size: 2em;
             }
         }
     </style>
 </head>
-
 <body>
-
-    <div class="icon-container">
-        <div class="desktop-icon" onclick="toggleXterm()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
-                <rect x="2" y="4" width="20" height="16" rx="1" />
-                <path d="M6 16 L10 16" stroke-linecap="square" />
-                <path d="M6 8 L10 12 L6 16" fill="none" />
-            </svg>
-            <span>terminal</span>
-        </div>
-
-        <div class="desktop-icon" onclick="toggleTrashWindow()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path
-                    d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
-            </svg>
-            <span>trash</span>
-        </div>
+    <div class="content-anchor">
+        <h1>
+            Hi t<span class="h-interactive">h</span>ere!
+        </h1>
+        <p>🐞</p>
     </div>
-
-    <div id="xterm-window" class="window">
-        <div class="resizer n"></div>
-        <div class="resizer s"></div>
-        <div class="resizer e"></div>
-        <div class="resizer w"></div>
-        <div class="resizer ne"></div>
-        <div class="resizer nw"></div>
-        <div class="resizer se"></div>
-        <div class="resizer sw"></div>
-
-        <div class="window-frame">
-            <div class="title-bar" id="xterm-header">
-                <div class="title-bar-text">xterm</div>
-                <div class="win-controls">
-                    <div class="win-btn" onclick="toggleXterm()">-</div>
-                    <div class="win-btn" onclick="closeXterm()">x</div>
-                </div>
-            </div>
-            <div class="terminal-screen" id="term-out" onclick="document.getElementById('cmd-in').focus()">
-                <div id="term-text">
-                    Welcome to ESBHANDARI.SYS
-                    Type 'help' to see available commands.
-
-                </div>
-                <div style="display: flex;">
-                    <span id="prompt">guest@darkstar:~$ </span>
-                    <input type="text" id="cmd-in" autocomplete="off" spellcheck="false">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="trash-window" class="window">
-        <div class="resizer n"></div>
-        <div class="resizer s"></div>
-        <div class="resizer e"></div>
-        <div class="resizer w"></div>
-        <div class="resizer ne"></div>
-        <div class="resizer nw"></div>
-        <div class="resizer se"></div>
-        <div class="resizer sw"></div>
-
-        <div class="window-frame">
-            <div class="title-bar" id="trash-header">
-                <div class="title-bar-text">trash</div>
-                <div class="win-controls">
-                    <div class="win-btn" onclick="toggleTrashWindow()">-</div>
-                    <div class="win-btn" onclick="closeTrashWindow()">x</div>
-                </div>
-            </div>
-            <div class="trash-content" id="trash-list">
-                <div style="color:#666; text-align:center; margin-top:20px;">trash is empty</div>
-            </div>
-            <div class="trash-footer">
-                <button class="empty-trash-btn" onclick="emptyTrash()">empty trash</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let globalZIndex = 100;
-        function bringToFront(windowId) {
-            const el = document.getElementById(windowId);
-            if (el) {
-                globalZIndex++;
-                el.style.zIndex = globalZIndex;
-            }
-        }
-
-        // --- DRAGGING LOGIC ---
-        function makeDraggable(el, handle) {
-            if (!el || !handle) return;
-            let isDragging = false, startX, startY, initialLeft, initialTop;
-
-            handle.addEventListener('mousedown', (e) => {
-                if (e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
-                isDragging = true;
-                bringToFront(el.id);
-                startX = e.clientX;
-                startY = e.clientY;
-                initialLeft = el.offsetLeft;
-                initialTop = el.offsetTop;
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (isDragging) {
-                    e.preventDefault();
-                    el.style.left = (initialLeft + (e.clientX - startX)) + 'px';
-                    el.style.top = (initialTop + (e.clientY - startY)) + 'px';
-                }
-            });
-
-            document.addEventListener('mouseup', () => isDragging = false);
-
-            handle.addEventListener('touchstart', (e) => {
-                if (e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
-                isDragging = true;
-                bringToFront(el.id);
-                const touch = e.touches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                initialLeft = el.offsetLeft;
-                initialTop = el.offsetTop;
-            }, { passive: false });
-
-            document.addEventListener('touchmove', (e) => {
-                if (isDragging) {
-                    const touch = e.touches[0];
-                    e.preventDefault();
-                    el.style.left = (initialLeft + (touch.clientX - startX)) + 'px';
-                    el.style.top = (initialTop + (touch.clientY - startY)) + 'px';
-                }
-            }, { passive: false });
-
-            document.addEventListener('touchend', () => isDragging = false);
-        }
-
-        // --- 8-WAY RESIZING LOGIC ---
-        function makeResizable(el) {
-            const resizers = el.querySelectorAll('.resizer');
-            let startX, startY, startWidth, startHeight, startLeft, startTop;
-
-            resizers.forEach(resizer => {
-                resizer.addEventListener('mousedown', (e) => {
-                    e.preventDefault();
-                    bringToFront(el.id);
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    startWidth = parseInt(document.defaultView.getComputedStyle(el).width, 10);
-                    startHeight = parseInt(document.defaultView.getComputedStyle(el).height, 10);
-                    startLeft = el.offsetLeft;
-                    startTop = el.offsetTop;
-
-                    const onMouseMove = (e) => {
-                        const dx = e.clientX - startX;
-                        const dy = e.clientY - startY;
-
-                        if (resizer.classList.contains('e') || resizer.classList.contains('se') || resizer.classList.contains('ne')) {
-                            if (startWidth + dx > 200) el.style.width = startWidth + dx + 'px';
-                        }
-                        if (resizer.classList.contains('s') || resizer.classList.contains('se') || resizer.classList.contains('sw')) {
-                            if (startHeight + dy > 150) el.style.height = startHeight + dy + 'px';
-                        }
-                        if (resizer.classList.contains('w') || resizer.classList.contains('sw') || resizer.classList.contains('nw')) {
-                            if (startWidth - dx > 200) {
-                                el.style.width = startWidth - dx + 'px';
-                                el.style.left = startLeft + dx + 'px';
-                            }
-                        }
-                        if (resizer.classList.contains('n') || resizer.classList.contains('ne') || resizer.classList.contains('nw')) {
-                            if (startHeight - dy > 150) {
-                                el.style.height = startHeight - dy + 'px';
-                                el.style.top = startTop + dy + 'px';
-                            }
-                        }
-                    };
-
-                    const onMouseUp = () => {
-                        document.removeEventListener('mousemove', onMouseMove);
-                        document.removeEventListener('mouseup', onMouseUp);
-                    };
-
-                    document.addEventListener('mousemove', onMouseMove);
-                    document.addEventListener('mouseup', onMouseUp);
-                });
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const xtermWin = document.getElementById('xterm-window');
-            const trashWin = document.getElementById('trash-window');
-
-            makeDraggable(xtermWin, document.getElementById('xterm-header'));
-            makeDraggable(trashWin, document.getElementById('trash-header'));
-            makeResizable(xtermWin);
-            makeResizable(trashWin);
-
-            if (xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
-            if (trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
-
-            const termText = document.getElementById('term-text');
-            const termOut = document.getElementById('term-out');
-            const cmdIn = document.getElementById('cmd-in');
-            let trashStorage = [];
-            let commandHistory = [];
-            let historyIndex = -1;
-
-            // --- CONTROLS ---
-            window.toggleXterm = function () {
-                if (!xtermWin) return;
-                const displayState = window.getComputedStyle(xtermWin).display;
-                if (displayState === 'none') {
-                    xtermWin.style.display = 'flex';
-                    bringToFront('xterm-window');
-
-                } else {
-                    xtermWin.style.display = 'none';
-                }
-            };
-
-            window.closeXterm = function () {
-                if (!termText) return;
-                const sessionContent = termText.innerHTML;
-                const timestamp = new Date().toLocaleTimeString();
-                const logEntry = `<strong>session closed at ${timestamp}</strong><br>${sessionContent}`;
-
-                trashStorage.push(logEntry);
-                if (trashWin && window.getComputedStyle(trashWin).display !== 'none') window.renderTrashList();
-
-                termText.innerHTML = "Welcome to ESBHANDARI.SYS\nType 'help' to see available commands.\n\n";
-                commandHistory = [];
-                historyIndex = -1;
-                xtermWin.style.display = 'none';
-            };
-
-            window.toggleTrashWindow = function () {
-                if (!trashWin) return;
-                const displayState = window.getComputedStyle(trashWin).display;
-                if (displayState === 'none') {
-                    trashWin.style.display = 'flex';
-                    bringToFront('trash-window');
-                    window.renderTrashList();
-                } else {
-                    trashWin.style.display = 'none';
-                }
-            };
-
-            window.closeTrashWindow = function () {
-                window.emptyTrash();
-                trashWin.style.display = 'none';
-            };
-
-            window.renderTrashList = function () {
-                const trashList = document.getElementById('trash-list');
-                if (!trashList) return;
-                if (trashStorage.length === 0) {
-                    trashList.innerHTML = '<div style="color:#666; text-align:center; margin-top:20px;">trash is empty</div>';
-                } else {
-                    trashList.innerHTML = '';
-                    trashStorage.forEach((entry) => {
-                        const div = document.createElement('div');
-                        div.className = 'trash-entry';
-                        div.innerHTML = entry;
-                        trashList.appendChild(div);
-                    });
-                    trashList.scrollTop = trashList.scrollHeight;
-                }
-            };
-
-            window.openTrashWindow = function () {
-                if (trashWin) {
-                    trashWin.style.display = 'flex';
-                    bringToFront('trash-window');
-                    window.renderTrashList();
-                }
-            };
-
-            window.emptyTrash = function () {
-                trashStorage = [];
-                window.renderTrashList();
-            };
-
-            // --- SHELL ---
-            const fileSystem = {
-                "about.txt": "I am a cybersecurity enthusiast focused on system hardening and network defense.",
-                "contact.json": "{ \"github\": \"esbhandari\", \"email\": \"contact@example.com\" }"
-            };
-            const validCommands = ['ls', 'cat', 'fetch-metadata', 'history', 'clear', 'exit', 'help'];
-
-            if (cmdIn) {
-                cmdIn.addEventListener('keydown', (e) => {
-                    if (e.key === 'Tab') {
-                        e.preventDefault();
-                        const input = cmdIn.value.trim();
-                        if (!input) return;
-                        const parts = input.split(' ');
-                        if (parts.length === 1) {
-                            const matches = validCommands.filter(c => c.startsWith(parts[0]));
-                            if (matches.length === 1) cmdIn.value = matches[0] + " ";
-                        } else if (parts[0] === 'cat' && parts[1]) {
-                            const matches = Object.keys(fileSystem).filter(f => f.startsWith(parts[1]));
-                            if (matches.length === 1) cmdIn.value = `cat ${matches[0]}`;
-                        }
-                    } else if (e.key === 'Enter') {
-                        const input = cmdIn.value.trim();
-                        if (input !== "") { commandHistory.push(input); historyIndex = commandHistory.length; }
-                        const parts = input.split(' ');
-                        const cmd = parts[0].toLowerCase();
-                        const arg = parts[1];
-                        termText.innerHTML += `guest@darkstar:~$ ${input}\n`;
-
-                        switch (cmd) {
-                            case 'help': termText.innerHTML += "available commands:\n  ls, cat [file], fetch-metadata, history, clear, exit\n"; break;
-                            case 'ls': termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n"; break;
-                            case 'cat': if (arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n"; else termText.innerHTML += `cat: ${arg || ''}: no such file\n`; break;
-                            case 'fetch-metadata':
-                                termText.innerHTML += `<span style="color:yellow;">[reconnaissance initiated]</span>\n`;
-                                fetch('https://api.ipify.org?format=json').then(res => res.json()).then(data => {
-                                    termText.innerHTML += `public_ip: ${data.ip}\nos_platform: ${navigator.platform}\nuser_agent: ${navigator.userAgent.substring(0, 40)}...\nresolution: ${window.screen.width}x${window.screen.height}\n<span style="color:yellow;">[data capture complete]</span>\n`;
-                                    termOut.scrollTop = termOut.scrollHeight;
-                                }).catch(err => termText.innerHTML += `<span style="color:red;">[connection failed]</span>\n`);
-                                break;
-                            case 'history': commandHistory.forEach((h, i) => termText.innerHTML += `  ${i + 1}  ${h}\n`); break;
-                            case 'clear': termText.innerHTML = ""; break;
-                            case 'exit': window.closeXterm(); break;
-                            case '': break;
-                            default: termText.innerHTML += `bash: ${cmd}: command not found\n`;
-                        }
-                        cmdIn.value = "";
-                        termOut.scrollTop = termOut.scrollHeight;
-                    } else if (e.key === 'ArrowUp') {
-                        if (commandHistory.length > 0 && historyIndex > 0) { historyIndex--; cmdIn.value = commandHistory[historyIndex]; setTimeout(() => { cmdIn.selectionStart = cmdIn.selectionEnd = cmdIn.value.length; }, 0); } e.preventDefault();
-                    } else if (e.key === 'ArrowDown') {
-                        if (historyIndex < commandHistory.length - 1) { historyIndex++; cmdIn.value = commandHistory[historyIndex]; } else { historyIndex = commandHistory.length; cmdIn.value = ""; } e.preventDefault();
-                    }
-                });
-            }
-        });
-    </script>
 </body>
-
 </html>
