@@ -88,6 +88,7 @@
             border-bottom: 2px solid var(--btn-shadow);
             outline: 1px solid var(--btn-mid-shadow); 
             box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
+            /* Initial Z-Index */
             z-index: 100;
         }
 
@@ -95,7 +96,7 @@
             padding: 5px;
             display: flex;
             flex-direction: column;
-            height: 100%; /* Critical for layout */
+            height: 100%; 
             box-sizing: border-box;
         }
 
@@ -146,24 +147,25 @@
             top: 10%;
             left: 10%;
             width: 600px;
-            height: 400px; /* Fixed height is important for scrolling */
+            height: 400px; 
         }
 
         .terminal-screen {
             background-color: var(--term-bg);
             color: var(--term-text);
-            flex-grow: 1; /* Fills remaining space */
-            overflow-y: auto; /* Enables Scrolling */
+            flex-grow: 1; 
+            overflow-y: auto; 
             padding: 8px;
             font-family: 'Courier New', monospace;
             font-size: 14px;
             line-height: 1.4;
+            /* ALIGNMENT FIX: Ensure left align */
+            text-align: left; 
             border-top: 2px solid var(--btn-shadow);
             border-left: 2px solid var(--btn-shadow);
             border-right: 2px solid var(--btn-highlight);
             border-bottom: 2px solid var(--btn-highlight);
             
-            /* Ensures text doesn't flow out horizontally */
             white-space: pre-wrap; 
             word-wrap: break-word;
         }
@@ -189,6 +191,7 @@
             border-bottom: 2px solid var(--btn-highlight);
             font-size: 12px;
             margin-bottom: 5px;
+            text-align: left;
         }
 
         .trash-entry {
@@ -213,7 +216,7 @@
             display: flex;
             align-items: center;
             padding: 4px 6px;
-            z-index: 1000;
+            z-index: 10000; /* Taskbar always on top */
             gap: 8px;
             background-color: var(--win-gray);
         }
@@ -285,7 +288,7 @@
         </div>
     </div>
 
-    <div id="xterm-window" class="window stippled">
+    <div id="xterm-window" class="window stippled" onmousedown="bringToFront('xterm-window')">
         <div class="window-frame">
             <div class="title-bar" id="xterm-header">
                 <div class="win-btn" onclick="minimizeXterm()">-</div>
@@ -294,9 +297,10 @@
             </div>
             <div class="terminal-screen" id="term-out" onclick="document.getElementById('cmd-in').focus()">
                 <div id="term-text">
-                    Welcome to ESBHANDARI.SYS<br>
-                    Type 'help' to see available commands.<br><br>
-                </div>
+Welcome to ESBHANDARI.SYS
+Type 'help' to see available commands.
+
+</div>
                 <div style="display: flex;">
                     <span id="prompt">guest@darkstar:~$ </span>
                     <input type="text" id="cmd-in" style="flex-grow:1; background:transparent; border:none; color:inherit; outline:none; font-family:inherit; font-size:inherit;" autocomplete="off" spellcheck="false">
@@ -305,7 +309,7 @@
         </div>
     </div>
 
-    <div id="trash-window" class="window stippled">
+    <div id="trash-window" class="window stippled" onmousedown="bringToFront('trash-window')">
         <div class="window-frame">
             <div class="title-bar" id="trash-header">
                 <div class="win-btn" onclick="document.getElementById('trash-window').style.display='none'">-</div>
@@ -341,11 +345,22 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // --- 2. WINDOW DRAGGING LOGIC (Universal) ---
+        // --- 2. Z-INDEX MANAGER (Overlap Fix) ---
+        let globalZIndex = 100;
+        
+        function bringToFront(windowId) {
+            globalZIndex++;
+            document.getElementById(windowId).style.zIndex = globalZIndex;
+        }
+
+        // --- 3. WINDOW DRAGGING LOGIC ---
         function makeDraggable(el, handle) {
             let isDragging = false, startX, startY, initialLeft, initialTop;
             handle.addEventListener('mousedown', (e) => {
                 isDragging = true;
+                // Bring to front immediately on drag start
+                bringToFront(el.id);
+                
                 startX = e.clientX;
                 startY = e.clientY;
                 initialLeft = el.offsetLeft;
@@ -364,87 +379,91 @@
         makeDraggable(document.getElementById('trash-window'), document.getElementById('trash-header'));
 
 
-        // --- 3. TERMINAL STATE MANAGEMENT ---
+        // --- 4. TERMINAL STATE MANAGEMENT ---
         const xtermWin = document.getElementById('xterm-window');
         const xtermBtn = document.getElementById('btn-xterm');
         const termText = document.getElementById('term-text');
         const termOut = document.getElementById('term-out');
         const cmdIn = document.getElementById('cmd-in');
         
-        // Storage for closed sessions
         let trashStorage = []; 
         let commandHistory = [];
         let historyIndex = -1;
 
-        // MINIMIZE (-)
         function minimizeXterm() {
-            // Just hide visually, preserve content
             xtermWin.style.display = 'none';
             xtermBtn.classList.remove('active');
         }
 
-        // TOGGLE (Taskbar)
         function toggleXterm() {
             if (xtermWin.style.display === 'none') {
                 xtermWin.style.display = 'flex';
                 xtermBtn.classList.add('active');
+                bringToFront('xterm-window'); // Bring to front on taskbar open
                 cmdIn.focus();
             } else {
                 minimizeXterm();
             }
         }
 
-        // CLOSE (x) - The Destructive Action
         function closeXterm() {
-            // 1. Capture content for Trash (exclude the prompt line input)
             const sessionContent = termText.innerHTML;
-            
-            // 2. Add timestamp header
             const timestamp = new Date().toLocaleTimeString();
             const logEntry = `<strong>Session closed at ${timestamp}</strong><br>${sessionContent}`;
             
-            // 3. Push to Trash array
             trashStorage.push(logEntry);
 
-            // 4. RESET Terminal
-            termText.innerHTML = "Welcome to ESBHANDARI.SYS<br>Type 'help' to see available commands.<br><br>";
-            commandHistory = []; // Reset history
+            // LIVE UPDATE: If trash is open, refresh it immediately
+            const trashWin = document.getElementById('trash-window');
+            if (trashWin.style.display !== 'none') {
+                renderTrashList();
+            }
+
+            // Reset Terminal
+            termText.innerHTML = "Welcome to ESBHANDARI.SYS\nType 'help' to see available commands.\n\n";
+            commandHistory = []; 
             historyIndex = -1;
 
-            // 5. Hide Window
             xtermWin.style.display = 'none';
             xtermBtn.classList.remove('active');
         }
 
 
-        // --- 4. TRASH LOGIC ---
-        function openTrashWindow() {
-            const trashWin = document.getElementById('trash-window');
+        // --- 5. TRASH LOGIC (Live Update) ---
+        function renderTrashList() {
             const trashList = document.getElementById('trash-list');
             
-            trashWin.style.display = 'flex';
-            
-            // Render trash contents
             if (trashStorage.length === 0) {
                 trashList.innerHTML = '<div style="color:#666; text-align:center; margin-top:20px;">Trash is empty</div>';
             } else {
                 trashList.innerHTML = '';
-                trashStorage.forEach((entry, index) => {
+                // Show newest items at the top? Or bottom?
+                // Standard logs usually append bottom, but for easy reading let's append.
+                trashStorage.forEach((entry) => {
                     const div = document.createElement('div');
                     div.className = 'trash-entry';
                     div.innerHTML = entry;
                     trashList.appendChild(div);
                 });
+                // Auto scroll trash to bottom
+                trashList.scrollTop = trashList.scrollHeight;
             }
+        }
+
+        function openTrashWindow() {
+            const trashWin = document.getElementById('trash-window');
+            trashWin.style.display = 'flex';
+            bringToFront('trash-window');
+            renderTrashList();
         }
 
         function emptyTrash() {
             trashStorage = [];
-            document.getElementById('trash-list').innerHTML = '<div style="color:#666; text-align:center; margin-top:20px;">Trash is empty</div>';
+            renderTrashList();
         }
 
 
-        // --- 5. SHELL LOGIC ---
+        // --- 6. SHELL LOGIC ---
         const fileSystem = {
             "about.txt": "I am a cybersecurity enthusiast.",
             "projects.md": "1. Web Desktop\n2. Python Tools",
@@ -464,36 +483,34 @@
                 const cmd = parts[0].toLowerCase();
                 const arg = parts[1];
 
-                termText.innerHTML += `guest@darkstar:~$ ${input}<br>`;
+                termText.innerHTML += `guest@darkstar:~$ ${input}\n`;
 
                 switch(cmd) {
                     case 'help':
-                        termText.innerHTML += "Available commands:<br>&nbsp;ls, cat [file], whoami, clear, date<br>";
+                        termText.innerHTML += "Available commands:\n  ls, cat [file], whoami, clear, date\n";
                         break;
                     case 'ls':
-                        termText.innerHTML += Object.keys(fileSystem).join('&nbsp;&nbsp;') + "<br>";
+                        termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n";
                         break;
                     case 'cat':
-                        if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "<br>";
-                        else termText.innerHTML += `cat: ${arg || ''}: No such file<br>`;
+                        if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n";
+                        else termText.innerHTML += `cat: ${arg || ''}: No such file\n`;
                         break;
                     case 'clear':
                         termText.innerHTML = "";
                         break;
                     case 'date':
-                        termText.innerHTML += new Date().toString() + "<br>";
+                        termText.innerHTML += new Date().toString() + "\n";
                         break;
                     case '': break;
                     default:
-                        termText.innerHTML += `bash: ${cmd}: command not found<br>`;
+                        termText.innerHTML += `bash: ${cmd}: command not found\n`;
                 }
 
                 cmdIn.value = "";
-                // SCROLL FIX: Scroll the CONTAINER, not the text
                 termOut.scrollTop = termOut.scrollHeight;
             }
             
-            // History Navigation
             else if (e.key === 'ArrowUp') {
                 if (commandHistory.length > 0 && historyIndex > 0) {
                     historyIndex--;
