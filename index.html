@@ -45,7 +45,7 @@
             z-index: 99999;
         }
 
-        /* --- RESTORED ICONS (Previous Aesthetic) --- */
+        /* --- DESKTOP ICONS --- */
         .icon-container {
             position: absolute;
             top: 20px;
@@ -61,18 +61,16 @@
             text-align: center;
             cursor: pointer;
             color: white;
-            text-shadow: 1px 1px 2px black; /* Restored Shadow */
+            text-shadow: 1px 1px 2px black;
             transition: transform 0.1s;
         }
 
-        .desktop-icon:active {
-            transform: scale(0.95);
-        }
+        .desktop-icon:active { transform: scale(0.95); }
 
         .desktop-icon svg {
             width: 48px;
             height: 48px;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); /* Restored Drop Shadow */
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3));
         }
 
         .desktop-icon span {
@@ -81,11 +79,11 @@
             font-size: 13px;
             font-weight: bold;
             letter-spacing: 0.5px;
-            background-color: rgba(0,0,0,0.4); /* Restored Legibility Backing */
+            background-color: rgba(0,0,0,0.4);
             padding: 4px 6px;
             border-radius: 4px;
             text-transform: lowercase;
-            color: white; /* Restored White Text */
+            color: white;
         }
 
         /* --- WINDOW SYSTEM --- */
@@ -111,7 +109,6 @@
             flex-direction: column;
             height: 100%;
             box-sizing: border-box;
-            /* Padding for resize handles */
             position: relative; 
         }
 
@@ -164,7 +161,7 @@
                 inset -1px -1px 0px var(--win-border-light);
         }
 
-        /* --- RESIZE HANDLES (Invisible but Functional) --- */
+        /* --- RESIZE HANDLES --- */
         .resizer { position: absolute; z-index: 101; }
         .resizer.n  { top: 0; left: 0; right: 0; height: 5px; cursor: n-resize; }
         .resizer.s  { bottom: 0; left: 0; right: 0; height: 5px; cursor: s-resize; }
@@ -174,6 +171,21 @@
         .resizer.nw { top: 0; left: 0; width: 10px; height: 10px; cursor: nw-resize; }
         .resizer.se { bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize; }
         .resizer.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
+
+        /* --- WINDOW POSITIONS (UPDATED) --- */
+        #xterm-window {
+            /* Moved to center-right to avoid covering icons */
+            top: 15%;
+            left: 25%;
+        }
+
+        #trash-window {
+            /* Offset slightly lower and right */
+            top: 25%;
+            left: 35%;
+            width: 400px;
+            height: 250px;
+        }
 
         /* --- CONTENT STYLES --- */
         .terminal-screen {
@@ -344,6 +356,28 @@ Type 'help' to see available commands.
             });
 
             document.addEventListener('mouseup', () => isDragging = false);
+
+            handle.addEventListener('touchstart', (e) => {
+                if(e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
+                isDragging = true;
+                bringToFront(el.id);
+                const touch = e.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                initialLeft = el.offsetLeft;
+                initialTop = el.offsetTop;
+            }, {passive: false});
+
+            document.addEventListener('touchmove', (e) => {
+                if(isDragging) {
+                    const touch = e.touches[0];
+                    e.preventDefault();
+                    el.style.left = (initialLeft + (touch.clientX - startX)) + 'px';
+                    el.style.top = (initialTop + (touch.clientY - startY)) + 'px';
+                }
+            }, {passive: false});
+
+            document.addEventListener('touchend', () => isDragging = false);
         }
 
         // --- 8-WAY RESIZING LOGIC ---
@@ -355,7 +389,6 @@ Type 'help' to see available commands.
                 resizer.addEventListener('mousedown', (e) => {
                     e.preventDefault();
                     bringToFront(el.id);
-                    
                     startX = e.clientX;
                     startY = e.clientY;
                     startWidth = parseInt(document.defaultView.getComputedStyle(el).width, 10);
@@ -402,19 +435,14 @@ Type 'help' to see available commands.
             const xtermWin = document.getElementById('xterm-window');
             const trashWin = document.getElementById('trash-window');
 
-            // Initialize Drag
             makeDraggable(xtermWin, document.getElementById('xterm-header'));
             makeDraggable(trashWin, document.getElementById('trash-header'));
-
-            // Initialize Resize (8-way)
             makeResizable(xtermWin);
             makeResizable(trashWin);
 
-            // Focus Listeners
             if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
             if(trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
 
-            // Core Elements
             const termText = document.getElementById('term-text');
             const termOut = document.getElementById('term-out');
             const cmdIn = document.getElementById('cmd-in');
