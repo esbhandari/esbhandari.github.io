@@ -7,16 +7,15 @@
     <style>
         :root {
             --bg-color: #73767b;
-            --win-bg: #c0c0c0; /* Solid gray for windows */
+            --win-bg: #c0c0c0;
             --win-border-light: #ffffff;
-            --win-border-dark: #555555; /* Darker gray for bevel */
+            --win-border-dark: #555555;
             --term-bg: #000000;
             --term-text: #ffffff;
             --term-cursor: #33ff33;
             --font-ui: 'Courier New', monospace;
         }
 
-        /* --- GLOBAL & BACKGROUND --- */
         body {
             margin: 0;
             padding: 0;
@@ -26,7 +25,6 @@
             font-family: var(--font-ui);
             user-select: none;
             -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
             background-color: var(--bg-color);
             background-image: 
                 linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1)),
@@ -41,19 +39,13 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.1) 50%,
-                rgba(0,0,0,0.1)
-            );
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
             background-size: 100% 4px;
             pointer-events: none;
             z-index: 99999;
         }
 
-        /* --- DESKTOP ICONS --- */
+        /* --- RESTORED ICONS (Previous Aesthetic) --- */
         .icon-container {
             position: absolute;
             top: 20px;
@@ -69,29 +61,18 @@
             text-align: center;
             cursor: pointer;
             color: white;
-            text-shadow: 1px 1px 2px black;
+            text-shadow: 1px 1px 2px black; /* Restored Shadow */
             transition: transform 0.1s;
-            /* Added solid background and border to icons to match windows */
-            background-color: var(--win-bg);
-            padding: 5px;
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-light),
-                inset -1px -1px 0px var(--win-border-dark),
-                2px 2px 5px rgba(0,0,0,0.3);
         }
 
         .desktop-icon:active {
             transform: scale(0.95);
-            /* Invert bevel on click */
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-dark),
-                inset -1px -1px 0px var(--win-border-light);
         }
 
         .desktop-icon svg {
             width: 48px;
             height: 48px;
-            /* Removed drop-shadow from SVG as the container now has it */
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); /* Restored Drop Shadow */
         }
 
         .desktop-icon span {
@@ -100,25 +81,24 @@
             font-size: 13px;
             font-weight: bold;
             letter-spacing: 0.5px;
-            /* Removed background-color from span */
-            color: black; /* Text color for better contrast on gray */
-            text-shadow: none; /* Removed text shadow */
+            background-color: rgba(0,0,0,0.4); /* Restored Legibility Backing */
+            padding: 4px 6px;
+            border-radius: 4px;
             text-transform: lowercase;
+            color: white; /* Restored White Text */
         }
 
-        /* --- WINDOW SYSTEM (New Solid Aesthetic) --- */
+        /* --- WINDOW SYSTEM --- */
         .window {
             position: absolute;
             display: none;
             flex-direction: column;
             background-color: var(--win-bg);
-            /* Simple bevel effect using box-shadow */
             box-shadow: 
                 inset 1px 1px 0px var(--win-border-light),
                 inset -1px -1px 0px var(--win-border-dark),
                 2px 2px 5px rgba(0,0,0,0.3);
             z-index: 100;
-            /* Initial dimensions */
             width: 600px;
             height: 400px;
             min-width: 200px;
@@ -131,6 +111,8 @@
             flex-direction: column;
             height: 100%;
             box-sizing: border-box;
+            /* Padding for resize handles */
+            position: relative; 
         }
 
         .title-bar {
@@ -142,7 +124,6 @@
             cursor: move;
             background: var(--win-bg);
             padding: 0 4px;
-            /* Bevel for title bar */
             box-shadow: 
                 inset 1px 1px 0px var(--win-border-light),
                 inset -1px -1px 0px var(--win-border-dark);
@@ -157,10 +138,7 @@
             text-transform: lowercase;
         }
 
-        .win-controls {
-            display: flex;
-            gap: 4px;
-        }
+        .win-controls { display: flex; gap: 4px; }
 
         .win-btn {
             width: 18px;
@@ -171,7 +149,6 @@
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            /* Bevel for buttons */
             box-shadow: 
                 inset 1px 1px 0px var(--win-border-light),
                 inset -1px -1px 0px var(--win-border-dark);
@@ -182,51 +159,21 @@
         }
 
         .win-btn:active {
-            /* Inverted bevel on click */
             box-shadow: 
                 inset 1px 1px 0px var(--win-border-dark),
                 inset -1px -1px 0px var(--win-border-light);
         }
 
-        /* RESIZE HANDLE (Invisible but functional) */
-        .resize-handle {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 15px;
-            height: 15px;
-            cursor: se-resize;
-            z-index: 101;
-        }
-
-        /* --- WINDOW POSITIONS --- */
-        #xterm-window {
-            top: 15%;
-            left: 20%;
-        }
-
-        #trash-window {
-            top: 30%;
-            left: 35%;
-            width: 400px;
-            height: 250px;
-        }
-
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 768px) {
-            #xterm-window {
-                width: 90vw;
-                height: 60vh;
-                left: 5vw;
-                top: 10vh;
-            }
-            #trash-window {
-                width: 80vw;
-                height: 40vh;
-                left: 10vw;
-                top: 20vh;
-            }
-        }
+        /* --- RESIZE HANDLES (Invisible but Functional) --- */
+        .resizer { position: absolute; z-index: 101; }
+        .resizer.n  { top: 0; left: 0; right: 0; height: 5px; cursor: n-resize; }
+        .resizer.s  { bottom: 0; left: 0; right: 0; height: 5px; cursor: s-resize; }
+        .resizer.e  { top: 0; right: 0; bottom: 0; width: 5px; cursor: e-resize; }
+        .resizer.w  { top: 0; left: 0; bottom: 0; width: 5px; cursor: w-resize; }
+        .resizer.ne { top: 0; right: 0; width: 10px; height: 10px; cursor: ne-resize; }
+        .resizer.nw { top: 0; left: 0; width: 10px; height: 10px; cursor: nw-resize; }
+        .resizer.se { bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize; }
+        .resizer.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
 
         /* --- CONTENT STYLES --- */
         .terminal-screen {
@@ -242,7 +189,6 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             cursor: text;
-            /* Bevel for content area */
             box-shadow: 
                 inset 1px 1px 0px var(--win-border-dark),
                 inset -1px -1px 0px var(--win-border-light);
@@ -255,36 +201,27 @@
         }
 
         .trash-content {
-            background-color: #d0d0d0; /* Lighter gray for trash content */
+            background-color: #d0d0d0;
             color: #000000;
             flex-grow: 1;
             overflow-y: auto;
             padding: 8px;
             font-size: 13px;
             text-align: left;
-            /* Bevel for content area */
             box-shadow: 
                 inset 1px 1px 0px var(--win-border-dark),
                 inset -1px -1px 0px var(--win-border-light);
         }
 
-        .trash-entry {
-            padding: 4px 0;
-            font-family: var(--font-ui);
-        }
+        .trash-entry { padding: 4px 0; font-family: var(--font-ui); }
 
-        .trash-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding-top: 4px;
-        }
+        .trash-footer { display: flex; justify-content: flex-end; padding-top: 4px; }
 
         .empty-trash-btn {
             padding: 4px 8px;
             font-size: 12px;
             font-family: var(--font-ui);
             cursor: pointer;
-            /* Bevel for button */
             box-shadow: 
                 inset 1px 1px 0px var(--win-border-light),
                 inset -1px -1px 0px var(--win-border-dark);
@@ -292,11 +229,14 @@
             color: black;
             text-transform: lowercase;
         }
-
         .empty-trash-btn:active {
-            box-shadow: 
-                inset 1px 1px 0px var(--win-border-dark),
-                inset -1px -1px 0px var(--win-border-light);
+            box-shadow: inset 1px 1px 0px var(--win-border-dark), inset -1px -1px 0px var(--win-border-light);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            #xterm-window { width: 90vw; height: 60vh; left: 5vw; top: 10vh; }
+            #trash-window { width: 80vw; height: 40vh; left: 10vw; top: 20vh; }
         }
     </style>
 </head>
@@ -324,6 +264,9 @@
     </div>
 
     <div id="xterm-window" class="window">
+        <div class="resizer n"></div><div class="resizer s"></div><div class="resizer e"></div><div class="resizer w"></div>
+        <div class="resizer ne"></div><div class="resizer nw"></div><div class="resizer se"></div><div class="resizer sw"></div>
+        
         <div class="window-frame">
             <div class="title-bar" id="xterm-header">
                 <div class="title-bar-text">xterm</div>
@@ -344,10 +287,12 @@ Type 'help' to see available commands.
                 </div>
             </div>
         </div>
-        <div class="resize-handle"></div>
     </div>
 
     <div id="trash-window" class="window">
+        <div class="resizer n"></div><div class="resizer s"></div><div class="resizer e"></div><div class="resizer w"></div>
+        <div class="resizer ne"></div><div class="resizer nw"></div><div class="resizer se"></div><div class="resizer sw"></div>
+
         <div class="window-frame">
             <div class="title-bar" id="trash-header">
                 <div class="title-bar-text">trash</div>
@@ -363,11 +308,9 @@ Type 'help' to see available commands.
                 <div class="empty-trash-btn" onclick="emptyTrash()">empty trash</div>
             </div>
         </div>
-        <div class="resize-handle"></div>
     </div>
 
     <script>
-        // --- WINDOW MANAGER ---
         let globalZIndex = 100;
         function bringToFront(windowId) {
             const el = document.getElementById(windowId);
@@ -383,7 +326,7 @@ Type 'help' to see available commands.
             let isDragging = false, startX, startY, initialLeft, initialTop;
             
             handle.addEventListener('mousedown', (e) => {
-                if(e.target.classList.contains('win-btn') || e.target.classList.contains('resize-handle')) return;
+                if(e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
                 isDragging = true;
                 bringToFront(el.id);
                 startX = e.clientX;
@@ -401,80 +344,80 @@ Type 'help' to see available commands.
             });
 
             document.addEventListener('mouseup', () => isDragging = false);
-
-            handle.addEventListener('touchstart', (e) => {
-                if(e.target.classList.contains('win-btn') || e.target.classList.contains('resize-handle')) return;
-                isDragging = true;
-                bringToFront(el.id);
-                const touch = e.touches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                initialLeft = el.offsetLeft;
-                initialTop = el.offsetTop;
-            }, {passive: false});
-
-            document.addEventListener('touchmove', (e) => {
-                if(isDragging) {
-                    const touch = e.touches[0];
-                    e.preventDefault();
-                    el.style.left = (initialLeft + (touch.clientX - startX)) + 'px';
-                    el.style.top = (initialTop + (touch.clientY - startY)) + 'px';
-                }
-            }, {passive: false});
-
-            document.addEventListener('touchend', () => isDragging = false);
         }
 
-        // --- RESIZING LOGIC ---
+        // --- 8-WAY RESIZING LOGIC ---
         function makeResizable(el) {
-            const handle = el.querySelector('.resize-handle');
-            if (!handle) return;
+            const resizers = el.querySelectorAll('.resizer');
+            let startX, startY, startWidth, startHeight, startLeft, startTop;
 
-            let isResizing = false, startX, startY, startWidth, startHeight;
+            resizers.forEach(resizer => {
+                resizer.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    bringToFront(el.id);
+                    
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    startWidth = parseInt(document.defaultView.getComputedStyle(el).width, 10);
+                    startHeight = parseInt(document.defaultView.getComputedStyle(el).height, 10);
+                    startLeft = el.offsetLeft;
+                    startTop = el.offsetTop;
 
-            handle.addEventListener('mousedown', (e) => {
-                isResizing = true;
-                bringToFront(el.id);
-                startX = e.clientX;
-                startY = e.clientY;
-                startWidth = parseInt(document.defaultView.getComputedStyle(el).width, 10);
-                startHeight = parseInt(document.defaultView.getComputedStyle(el).height, 10);
-                e.stopPropagation(); 
-            });
+                    const onMouseMove = (e) => {
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
 
-            document.addEventListener('mousemove', (e) => {
-                if (!isResizing) return;
-                const newWidth = startWidth + (e.clientX - startX);
-                const newHeight = startHeight + (e.clientY - startY);
-                
-                if (newWidth > 200) el.style.width = newWidth + 'px';
-                if (newHeight > 150) el.style.height = newHeight + 'px';
-            });
+                        if (resizer.classList.contains('e') || resizer.classList.contains('se') || resizer.classList.contains('ne')) {
+                            if (startWidth + dx > 200) el.style.width = startWidth + dx + 'px';
+                        }
+                        if (resizer.classList.contains('s') || resizer.classList.contains('se') || resizer.classList.contains('sw')) {
+                            if (startHeight + dy > 150) el.style.height = startHeight + dy + 'px';
+                        }
+                        if (resizer.classList.contains('w') || resizer.classList.contains('sw') || resizer.classList.contains('nw')) {
+                            if (startWidth - dx > 200) {
+                                el.style.width = startWidth - dx + 'px';
+                                el.style.left = startLeft + dx + 'px';
+                            }
+                        }
+                        if (resizer.classList.contains('n') || resizer.classList.contains('ne') || resizer.classList.contains('nw')) {
+                            if (startHeight - dy > 150) {
+                                el.style.height = startHeight - dy + 'px';
+                                el.style.top = startTop + dy + 'px';
+                            }
+                        }
+                    };
 
-            document.addEventListener('mouseup', () => {
-                isResizing = false;
+                    const onMouseUp = () => {
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
             });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            makeDraggable(document.getElementById('xterm-window'), document.getElementById('xterm-header'));
-            makeDraggable(document.getElementById('trash-window'), document.getElementById('trash-header'));
-            
-            makeResizable(document.getElementById('xterm-window'));
-            makeResizable(document.getElementById('trash-window'));
-
             const xtermWin = document.getElementById('xterm-window');
-            if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
-            if(xtermWin) xtermWin.addEventListener('touchstart', () => bringToFront('xterm-window'), {passive: true});
-
             const trashWin = document.getElementById('trash-window');
-            if(trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
-            if(trashWin) trashWin.addEventListener('touchstart', () => bringToFront('trash-window'), {passive: true});
 
+            // Initialize Drag
+            makeDraggable(xtermWin, document.getElementById('xterm-header'));
+            makeDraggable(trashWin, document.getElementById('trash-header'));
+
+            // Initialize Resize (8-way)
+            makeResizable(xtermWin);
+            makeResizable(trashWin);
+
+            // Focus Listeners
+            if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
+            if(trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
+
+            // Core Elements
             const termText = document.getElementById('term-text');
             const termOut = document.getElementById('term-out');
             const cmdIn = document.getElementById('cmd-in');
-
             let trashStorage = []; 
             let commandHistory = [];
             let historyIndex = -1;
@@ -507,7 +450,6 @@ Type 'help' to see available commands.
                 xtermWin.style.display = 'none';
             };
 
-            // New function to toggle trash window
             window.toggleTrashWindow = function() {
                 if (!trashWin) return;
                 const displayState = window.getComputedStyle(trashWin).display;
@@ -555,14 +497,13 @@ Type 'help' to see available commands.
                 window.renderTrashList();
             };
 
-            // --- FILE SYSTEM ---
+            // --- SHELL ---
             const fileSystem = {
                 "about.txt": "I am a cybersecurity enthusiast focused on system hardening and network defense.",
                 "contact.json": "{ \"github\": \"esbhandari\", \"email\": \"contact@example.com\" }"
             };
             const validCommands = ['ls', 'cat', 'fetch-metadata', 'history', 'clear', 'exit', 'help'];
 
-            // --- SHELL ---
             if (cmdIn) {
                 cmdIn.addEventListener('keydown', (e) => {
                     if (e.key === 'Tab') {
@@ -570,82 +511,44 @@ Type 'help' to see available commands.
                         const input = cmdIn.value.trim();
                         if (!input) return;
                         const parts = input.split(' ');
-                        
                         if (parts.length === 1) {
                             const matches = validCommands.filter(c => c.startsWith(parts[0]));
                             if (matches.length === 1) cmdIn.value = matches[0] + " ";
-                        } 
-                        else if (parts[0] === 'cat' && parts[1]) {
+                        } else if (parts[0] === 'cat' && parts[1]) {
                             const matches = Object.keys(fileSystem).filter(f => f.startsWith(parts[1]));
                             if (matches.length === 1) cmdIn.value = `cat ${matches[0]}`;
                         }
-                    }
-                    else if (e.key === 'Enter') {
+                    } else if (e.key === 'Enter') {
                         const input = cmdIn.value.trim();
-                        if (input !== "") {
-                            commandHistory.push(input);
-                            historyIndex = commandHistory.length;
-                        }
+                        if (input !== "") { commandHistory.push(input); historyIndex = commandHistory.length; }
                         const parts = input.split(' ');
                         const cmd = parts[0].toLowerCase();
                         const arg = parts[1];
-
                         termText.innerHTML += `guest@darkstar:~$ ${input}\n`;
 
                         switch(cmd) {
-                            case 'help':
-                                termText.innerHTML += "available commands:\n  ls, cat [file], fetch-metadata, history, clear, exit\n";
-                                break;
-                            case 'ls':
-                                termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n";
-                                break;
-                            case 'cat':
-                                if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n";
-                                else termText.innerHTML += `cat: ${arg || ''}: no such file\n`;
-                                break;
+                            case 'help': termText.innerHTML += "available commands:\n  ls, cat [file], fetch-metadata, history, clear, exit\n"; break;
+                            case 'ls': termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n"; break;
+                            case 'cat': if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n"; else termText.innerHTML += `cat: ${arg || ''}: no such file\n`; break;
                             case 'fetch-metadata':
                                 termText.innerHTML += `<span style="color:yellow;">[reconnaissance initiated]</span>\n`;
-                                fetch('https://api.ipify.org?format=json')
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        termText.innerHTML += `public_ip: ${data.ip}\nos_platform: ${navigator.platform}\nuser_agent: ${navigator.userAgent.substring(0, 40)}...\nresolution: ${window.screen.width}x${window.screen.height}\n<span style="color:yellow;">[data capture complete]</span>\n`;
-                                        termOut.scrollTop = termOut.scrollHeight;
-                                    })
-                                    .catch(err => termText.innerHTML += `<span style="color:red;">[connection failed]</span>\n`);
+                                fetch('https://api.ipify.org?format=json').then(res => res.json()).then(data => {
+                                    termText.innerHTML += `public_ip: ${data.ip}\nos_platform: ${navigator.platform}\nuser_agent: ${navigator.userAgent.substring(0, 40)}...\nresolution: ${window.screen.width}x${window.screen.height}\n<span style="color:yellow;">[data capture complete]</span>\n`;
+                                    termOut.scrollTop = termOut.scrollHeight;
+                                }).catch(err => termText.innerHTML += `<span style="color:red;">[connection failed]</span>\n`);
                                 break;
-                            case 'history':
-                                commandHistory.forEach((h, i) => termText.innerHTML += `  ${i + 1}  ${h}\n`);
-                                break;
-                            case 'clear':
-                                termText.innerHTML = "";
-                                break;
-                            case 'exit':
-                                window.closeXterm();
-                                break;
+                            case 'history': commandHistory.forEach((h, i) => termText.innerHTML += `  ${i + 1}  ${h}\n`); break;
+                            case 'clear': termText.innerHTML = ""; break;
+                            case 'exit': window.closeXterm(); break;
                             case '': break;
-                            default:
-                                termText.innerHTML += `bash: ${cmd}: command not found\n`;
+                            default: termText.innerHTML += `bash: ${cmd}: command not found\n`;
                         }
                         cmdIn.value = "";
                         termOut.scrollTop = termOut.scrollHeight;
-                    }
-                    else if (e.key === 'ArrowUp') {
-                        if (commandHistory.length > 0 && historyIndex > 0) {
-                            historyIndex--;
-                            cmdIn.value = commandHistory[historyIndex];
-                            setTimeout(() => { cmdIn.selectionStart = cmdIn.selectionEnd = cmdIn.value.length; }, 0);
-                        }
-                        e.preventDefault();
-                    }
-                    else if (e.key === 'ArrowDown') {
-                        if (historyIndex < commandHistory.length - 1) {
-                            historyIndex++;
-                            cmdIn.value = commandHistory[historyIndex];
-                        } else {
-                            historyIndex = commandHistory.length;
-                            cmdIn.value = "";
-                        }
-                        e.preventDefault();
+                    } else if (e.key === 'ArrowUp') {
+                        if (commandHistory.length > 0 && historyIndex > 0) { historyIndex--; cmdIn.value = commandHistory[historyIndex]; setTimeout(() => { cmdIn.selectionStart = cmdIn.selectionEnd = cmdIn.value.length; }, 0); } e.preventDefault();
+                    } else if (e.key === 'ArrowDown') {
+                        if (historyIndex < commandHistory.length - 1) { historyIndex++; cmdIn.value = commandHistory[historyIndex]; } else { historyIndex = commandHistory.length; cmdIn.value = ""; } e.preventDefault();
                     }
                 });
             }
