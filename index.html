@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,18 +8,21 @@
     <style>
         :root {
             /* --- INDUSTRIAL MATERIAL PALETTE --- */
-            --bg-mesh-dark: #3a3a3a;   
-            --bg-mesh-light: #444444;  
-            
-            --board-solid: #c0c0c0;    /* Solid Silver Slab */
-            
-            --cut-dark: #1a1a1a;       /* The Chisel Line */
-            --cut-light: #ffffff;      /* The Chisel Highlight */
-            
+            --bg-mesh-dark: #3a3a3a;
+            --bg-mesh-light: #444444;
+
+            --board-solid: #c0c0c0;
+            /* Solid Silver Slab */
+
+            --cut-dark: #1a1a1a;
+            /* The Chisel Line */
+            --cut-light: #ffffff;
+            /* The Chisel Highlight */
+
             --term-bg: #111111;
             --term-text: #e0e0e0;
             --term-cursor: #33ff33;
-            
+
             --font-ui: 'Courier New', monospace;
         }
 
@@ -32,10 +36,10 @@
             font-family: var(--font-ui);
             user-select: none;
             -webkit-user-select: none;
-            
+
             /* DARK ACOUSTIC MESH */
             background-color: var(--bg-mesh-dark);
-            background-image: 
+            background-image:
                 linear-gradient(45deg, var(--bg-mesh-light) 25%, transparent 25%, transparent 75%, var(--bg-mesh-light) 75%, var(--bg-mesh-light)),
                 linear-gradient(45deg, var(--bg-mesh-light) 25%, transparent 25%, transparent 75%, var(--bg-mesh-light) 75%, var(--bg-mesh-light));
             background-size: 4px 4px;
@@ -60,13 +64,15 @@
             transition: transform 0.05s;
         }
 
-        .desktop-icon:active { transform: translateY(2px); }
+        .desktop-icon:active {
+            transform: translateY(2px);
+        }
 
         .desktop-icon svg {
             width: 48px;
             height: 48px;
             /* Sharp, offset shadow for depth against cloth */
-            filter: drop-shadow(1px 1px 0px rgba(0,0,0,1));
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 1));
         }
 
         .desktop-icon span {
@@ -75,12 +81,13 @@
             font-size: 13px;
             font-weight: bold;
             letter-spacing: 0.05em;
-            
+
             /* TEXT ONLY LABELS */
             background: transparent;
             color: #e0e0e0;
-            text-shadow: 1px 1px 0px #000000; /* Etched look */
-            
+            text-shadow: 1px 1px 0px #000000;
+            /* Etched look */
+
             padding: 0;
             border: none;
             text-transform: lowercase;
@@ -91,16 +98,16 @@
             position: absolute;
             display: none;
             flex-direction: column;
-            
+
             /* SOLID SLAB SURFACE */
             background-color: var(--board-solid);
-            
+
             /* THE CHISELED BORDER LOGIC */
             border: 1px solid var(--cut-dark);
-            box-shadow: 
+            box-shadow:
                 inset 1px 1px 0px var(--cut-light),
-                5px 5px 0px rgba(0,0,0,0.5); 
-            
+                5px 5px 0px rgba(0, 0, 0, 0.5);
+
             z-index: 100;
             width: 600px;
             height: 400px;
@@ -114,7 +121,7 @@
             flex-direction: column;
             height: 100%;
             box-sizing: border-box;
-            position: relative; 
+            position: relative;
         }
 
         .title-bar {
@@ -125,11 +132,11 @@
             margin-bottom: 6px;
             cursor: move;
             background: var(--board-solid);
-            
+
             /* DIVIDER GROOVE */
             border-bottom: 1px solid var(--cut-dark);
             box-shadow: 0px 1px 0px var(--cut-light);
-            
+
             touch-action: none;
             padding: 0 4px;
         }
@@ -143,7 +150,10 @@
             text-shadow: 1px 1px 0px var(--cut-light);
         }
 
-        .win-controls { display: flex; gap: 6px; }
+        .win-controls {
+            display: flex;
+            gap: 6px;
+        }
 
         .win-btn {
             width: 18px;
@@ -156,7 +166,7 @@
             cursor: pointer;
             background-color: var(--board-solid);
             color: var(--cut-dark);
-            
+
             /* Chiseled Button */
             border: 1px solid var(--cut-dark);
             box-shadow: inset 1px 1px 0px var(--cut-light);
@@ -169,15 +179,74 @@
         }
 
         /* --- RESIZE HANDLES --- */
-        .resizer { position: absolute; z-index: 101; }
-        .resizer.n  { top: 0; left: 0; right: 0; height: 5px; cursor: n-resize; }
-        .resizer.s  { bottom: 0; left: 0; right: 0; height: 5px; cursor: s-resize; }
-        .resizer.e  { top: 0; right: 0; bottom: 0; width: 5px; cursor: e-resize; }
-        .resizer.w  { top: 0; left: 0; bottom: 0; width: 5px; cursor: w-resize; }
-        .resizer.ne { top: 0; right: 0; width: 10px; height: 10px; cursor: ne-resize; }
-        .resizer.nw { top: 0; left: 0; width: 10px; height: 10px; cursor: nw-resize; }
-        .resizer.se { bottom: 0; right: 0; width: 10px; height: 10px; cursor: se-resize; }
-        .resizer.sw { bottom: 0; left: 0; width: 10px; height: 10px; cursor: sw-resize; }
+        .resizer {
+            position: absolute;
+            z-index: 101;
+        }
+
+        .resizer.n {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            cursor: n-resize;
+        }
+
+        .resizer.s {
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            cursor: s-resize;
+        }
+
+        .resizer.e {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 5px;
+            cursor: e-resize;
+        }
+
+        .resizer.w {
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 5px;
+            cursor: w-resize;
+        }
+
+        .resizer.ne {
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            cursor: ne-resize;
+        }
+
+        .resizer.nw {
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            cursor: nw-resize;
+        }
+
+        .resizer.se {
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            cursor: se-resize;
+        }
+
+        .resizer.sw {
+            bottom: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            cursor: sw-resize;
+        }
 
         /* --- CONTENT STYLES --- */
         .terminal-screen {
@@ -193,45 +262,52 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             cursor: text;
-            
+
             /* Deep Inset Screen */
-            border: 1px solid #000; 
-            border-bottom: 1px solid var(--cut-light); 
+            border: 1px solid #000;
+            border-bottom: 1px solid var(--cut-light);
             border-right: 1px solid var(--cut-light);
         }
-        
+
         #cmd-in {
-            flex-grow: 1; background: transparent; border: none; color: inherit;
-            outline: none; font-family: inherit; font-size: inherit; padding: 0; margin: 0;
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: inherit;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            padding: 0;
+            margin: 0;
             caret-color: var(--term-cursor);
         }
 
         .trash-content {
-            background-color: #fdfdfd; 
+            background-color: #fdfdfd;
             color: #111;
             flex-grow: 1;
             overflow-y: auto;
             padding: 10px;
             font-size: 13px;
             text-align: left;
-            
+
             /* Inset Paper Tray */
             border: 1px solid var(--cut-dark);
-            border-bottom: 1px solid var(--cut-light); 
+            border-bottom: 1px solid var(--cut-light);
             border-right: 1px solid var(--cut-light);
-            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .trash-entry { 
-            padding: 4px 0; 
-            font-family: var(--font-ui); 
+        .trash-entry {
+            padding: 4px 0;
+            font-family: var(--font-ui);
             border-bottom: 1px dashed #bbb;
         }
 
-        .trash-footer { 
-            display: flex; 
-            justify-content: flex-end; 
-            padding-top: 10px; 
+        .trash-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 10px;
         }
 
         /* --- THE RECESSED "EMPTY TRASH" BUTTON --- */
@@ -241,65 +317,97 @@
             font-family: var(--font-ui);
             font-weight: bold;
             cursor: pointer;
-            
+
             text-transform: lowercase;
             letter-spacing: 0.05em;
             color: #444;
             background-color: var(--board-solid);
-            
+
             /* NO OUTER BORDER */
             border: none;
-            
+
             /* RECESSED TRAY SHADOWS */
-            box-shadow: 
-                inset 2px 2px 4px rgba(0,0,0,0.3), 
-                inset -1px -1px 0px rgba(255,255,255,0.8);
-            
+            box-shadow:
+                inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+                inset -1px -1px 0px rgba(255, 255, 255, 0.8);
+
             transition: all 0.05s;
         }
 
         .empty-trash-btn:active {
             /* DEEPEN THE RECESS ON CLICK */
-            box-shadow: 
-                inset 3px 3px 6px rgba(0,0,0,0.5), 
-                inset -1px -1px 0px rgba(255,255,255,0.4);
+            box-shadow:
+                inset 3px 3px 6px rgba(0, 0, 0, 0.5),
+                inset -1px -1px 0px rgba(255, 255, 255, 0.4);
             color: #000;
             transform: translateY(1px);
         }
 
         /* --- WINDOW POSITIONS & MOBILE FIXES --- */
-        #xterm-window { top: 15%; left: 25%; }
-        #trash-window { top: 25%; left: 35%; width: 400px; height: 250px; }
+        #xterm-window {
+            top: 15%;
+            left: 25%;
+        }
+
+        #trash-window {
+            top: 25%;
+            left: 35%;
+            width: 400px;
+            height: 250px;
+        }
 
         @media (max-width: 768px) {
+
             /* Pushed windows down to clear top-left icons */
-            #xterm-window { width: 90vw; height: 60vh; left: 5vw; top: 140px; }
-            #trash-window { width: 80vw; height: 40vh; left: 10vw; top: 160px; }
+            #xterm-window {
+                width: 90vw;
+                height: 50vh;
+                left: 5vw;
+                top: 140px;
+            }
+
+            #trash-window {
+                width: 85vw;
+                height: 40vh;
+                left: 7.5vw;
+                top: 160px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="icon-container">
         <div class="desktop-icon" onclick="toggleXterm()">
             <svg viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
                 <rect x="2" y="4" width="20" height="16" rx="1" />
-                <path d="M6 16 L10 16" stroke-linecap="square" /> <path d="M6 8 L10 12 L6 16" fill="none" /> </svg>
+                <path d="M6 16 L10 16" stroke-linecap="square" />
+                <path d="M6 8 L10 12 L6 16" fill="none" />
+            </svg>
             <span>terminal</span>
         </div>
 
         <div class="desktop-icon" onclick="toggleTrashWindow()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path
+                    d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
             </svg>
             <span>trash</span>
         </div>
     </div>
 
     <div id="xterm-window" class="window">
-        <div class="resizer n"></div><div class="resizer s"></div><div class="resizer e"></div><div class="resizer w"></div>
-        <div class="resizer ne"></div><div class="resizer nw"></div><div class="resizer se"></div><div class="resizer sw"></div>
-        
+        <div class="resizer n"></div>
+        <div class="resizer s"></div>
+        <div class="resizer e"></div>
+        <div class="resizer w"></div>
+        <div class="resizer ne"></div>
+        <div class="resizer nw"></div>
+        <div class="resizer se"></div>
+        <div class="resizer sw"></div>
+
         <div class="window-frame">
             <div class="title-bar" id="xterm-header">
                 <div class="title-bar-text">xterm</div>
@@ -310,10 +418,10 @@
             </div>
             <div class="terminal-screen" id="term-out" onclick="document.getElementById('cmd-in').focus()">
                 <div id="term-text">
-Welcome to ESBHANDARI.SYS
-Type 'help' to see available commands.
+                    Welcome to ESBHANDARI.SYS
+                    Type 'help' to see available commands.
 
-</div>
+                </div>
                 <div style="display: flex;">
                     <span id="prompt">guest@darkstar:~$ </span>
                     <input type="text" id="cmd-in" autocomplete="off" spellcheck="false">
@@ -323,8 +431,14 @@ Type 'help' to see available commands.
     </div>
 
     <div id="trash-window" class="window">
-        <div class="resizer n"></div><div class="resizer s"></div><div class="resizer e"></div><div class="resizer w"></div>
-        <div class="resizer ne"></div><div class="resizer nw"></div><div class="resizer se"></div><div class="resizer sw"></div>
+        <div class="resizer n"></div>
+        <div class="resizer s"></div>
+        <div class="resizer e"></div>
+        <div class="resizer w"></div>
+        <div class="resizer ne"></div>
+        <div class="resizer nw"></div>
+        <div class="resizer se"></div>
+        <div class="resizer sw"></div>
 
         <div class="window-frame">
             <div class="title-bar" id="trash-header">
@@ -357,9 +471,9 @@ Type 'help' to see available commands.
         function makeDraggable(el, handle) {
             if (!el || !handle) return;
             let isDragging = false, startX, startY, initialLeft, initialTop;
-            
+
             handle.addEventListener('mousedown', (e) => {
-                if(e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
+                if (e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
                 isDragging = true;
                 bringToFront(el.id);
                 startX = e.clientX;
@@ -369,7 +483,7 @@ Type 'help' to see available commands.
             });
 
             document.addEventListener('mousemove', (e) => {
-                if(isDragging) {
+                if (isDragging) {
                     e.preventDefault();
                     el.style.left = (initialLeft + (e.clientX - startX)) + 'px';
                     el.style.top = (initialTop + (e.clientY - startY)) + 'px';
@@ -379,7 +493,7 @@ Type 'help' to see available commands.
             document.addEventListener('mouseup', () => isDragging = false);
 
             handle.addEventListener('touchstart', (e) => {
-                if(e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
+                if (e.target.classList.contains('win-btn') || e.target.classList.contains('resizer')) return;
                 isDragging = true;
                 bringToFront(el.id);
                 const touch = e.touches[0];
@@ -387,16 +501,16 @@ Type 'help' to see available commands.
                 startY = touch.clientY;
                 initialLeft = el.offsetLeft;
                 initialTop = el.offsetTop;
-            }, {passive: false});
+            }, { passive: false });
 
             document.addEventListener('touchmove', (e) => {
-                if(isDragging) {
+                if (isDragging) {
                     const touch = e.touches[0];
                     e.preventDefault();
                     el.style.left = (initialLeft + (touch.clientX - startX)) + 'px';
                     el.style.top = (initialTop + (touch.clientY - startY)) + 'px';
                 }
-            }, {passive: false});
+            }, { passive: false });
 
             document.addEventListener('touchend', () => isDragging = false);
         }
@@ -461,49 +575,45 @@ Type 'help' to see available commands.
             makeResizable(xtermWin);
             makeResizable(trashWin);
 
-            if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
-            if(trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
+            if (xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
+            if (trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
 
             const termText = document.getElementById('term-text');
             const termOut = document.getElementById('term-out');
             const cmdIn = document.getElementById('cmd-in');
-            let trashStorage = []; 
+            let trashStorage = [];
             let commandHistory = [];
             let historyIndex = -1;
 
             // --- CONTROLS ---
-            window.toggleXterm = function() {
+            window.toggleXterm = function () {
                 if (!xtermWin) return;
                 const displayState = window.getComputedStyle(xtermWin).display;
                 if (displayState === 'none') {
                     xtermWin.style.display = 'flex';
                     bringToFront('xterm-window');
-                    
-                    // KEYBOARD FIX: Only auto-focus on desktop (>768px)
-                    if (window.innerWidth > 768 && cmdIn) {
-                        cmdIn.focus();
-                    }
+
                 } else {
                     xtermWin.style.display = 'none';
                 }
             };
 
-            window.closeXterm = function() {
+            window.closeXterm = function () {
                 if (!termText) return;
                 const sessionContent = termText.innerHTML;
                 const timestamp = new Date().toLocaleTimeString();
                 const logEntry = `<strong>session closed at ${timestamp}</strong><br>${sessionContent}`;
-                
+
                 trashStorage.push(logEntry);
                 if (trashWin && window.getComputedStyle(trashWin).display !== 'none') window.renderTrashList();
 
                 termText.innerHTML = "Welcome to ESBHANDARI.SYS\nType 'help' to see available commands.\n\n";
-                commandHistory = []; 
+                commandHistory = [];
                 historyIndex = -1;
                 xtermWin.style.display = 'none';
             };
 
-            window.toggleTrashWindow = function() {
+            window.toggleTrashWindow = function () {
                 if (!trashWin) return;
                 const displayState = window.getComputedStyle(trashWin).display;
                 if (displayState === 'none') {
@@ -515,12 +625,12 @@ Type 'help' to see available commands.
                 }
             };
 
-            window.closeTrashWindow = function() {
+            window.closeTrashWindow = function () {
                 window.emptyTrash();
                 trashWin.style.display = 'none';
             };
 
-            window.renderTrashList = function() {
+            window.renderTrashList = function () {
                 const trashList = document.getElementById('trash-list');
                 if (!trashList) return;
                 if (trashStorage.length === 0) {
@@ -537,7 +647,7 @@ Type 'help' to see available commands.
                 }
             };
 
-            window.openTrashWindow = function() {
+            window.openTrashWindow = function () {
                 if (trashWin) {
                     trashWin.style.display = 'flex';
                     bringToFront('trash-window');
@@ -545,7 +655,7 @@ Type 'help' to see available commands.
                 }
             };
 
-            window.emptyTrash = function() {
+            window.emptyTrash = function () {
                 trashStorage = [];
                 window.renderTrashList();
             };
@@ -579,10 +689,10 @@ Type 'help' to see available commands.
                         const arg = parts[1];
                         termText.innerHTML += `guest@darkstar:~$ ${input}\n`;
 
-                        switch(cmd) {
+                        switch (cmd) {
                             case 'help': termText.innerHTML += "available commands:\n  ls, cat [file], fetch-metadata, history, clear, exit\n"; break;
                             case 'ls': termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n"; break;
-                            case 'cat': if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n"; else termText.innerHTML += `cat: ${arg || ''}: no such file\n`; break;
+                            case 'cat': if (arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n"; else termText.innerHTML += `cat: ${arg || ''}: no such file\n`; break;
                             case 'fetch-metadata':
                                 termText.innerHTML += `<span style="color:yellow;">[reconnaissance initiated]</span>\n`;
                                 fetch('https://api.ipify.org?format=json').then(res => res.json()).then(data => {
@@ -608,4 +718,5 @@ Type 'help' to see available commands.
         });
     </script>
 </body>
+
 </html>
