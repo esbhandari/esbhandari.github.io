@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESBHANDARI.SYS - CDE Environment</title>
+    <title>ESBHANDARI.SYS - root@darkstar</title>
     <style>
         :root {
-            --bg-color: #607d8b; /* Muted slate background */
-            --win-gray: #bdbdbd;  /* Base gray */
+            --bg-color: #555555;
+            --win-gray: #c0c0c0;
             --btn-highlight: #ffffff;
             --btn-shadow: #000000;
-            --btn-mid-shadow: #757575;
+            --btn-mid-shadow: #808080;
             --term-bg: #000000;
             --term-text: #00ff00;
             --font-ui: 'Courier New', monospace;
         }
 
-        /* --- THE STIPPLE TEXTURE --- */
-        /* This simulates the pixel-dithered pattern of 90s Unix UIs */
+        /* --- TEXTURES --- */
+        /* The "Stipple" pattern for UI elements */
         .stippled {
             background-color: var(--win-gray);
             background-image: 
@@ -36,21 +36,21 @@
             font-family: var(--font-ui);
             user-select: none;
             -webkit-user-select: none;
-            background-color: #5f7470; /* Distinctive CDE Backdrop Color */
-            /* "Root Weave" Background Pattern */
+            background-color: #3d4c53; /* Darker, serious slate */
+            /* "Root Weave" Background */
             background-image: 
-                radial-gradient(#4a5b58 1px, transparent 1px);
+                radial-gradient(#2d3c43 1px, transparent 1px);
             background-size: 4px 4px;
         }
 
         /* --- ICONS --- */
         .icon-container {
             position: absolute;
-            top: 20px;
+            bottom: 60px; /* Moved to bottom right like classic CDE */
             right: 20px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
             z-index: 10;
         }
 
@@ -65,7 +65,6 @@
         .desktop-icon svg {
             width: 48px;
             height: 48px;
-            /* Drop shadow for icon to pop against background */
             filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5)); 
         }
 
@@ -74,45 +73,42 @@
             margin-top: 4px;
             font-size: 13px;
             font-weight: bold;
-            background-color: transparent; 
-            padding: 2px 4px;
         }
-        
-        /* CDE Style: Text background becomes dark when selected */
+
         .desktop-icon:active span {
             background-color: #000080;
         }
 
-        /* --- MOTIF WINDOW STYLES --- */
+        /* --- WINDOW SYSTEM --- */
         .window {
             position: absolute;
-            display: flex; /* Hidden by default toggled via JS */
+            display: flex;
             flex-direction: column;
-            /* The classic thick Motif 3D border */
+            /* Outset Border (Motif Style) */
             border-top: 2px solid var(--btn-highlight);
             border-left: 2px solid var(--btn-highlight);
             border-right: 2px solid var(--btn-shadow);
             border-bottom: 2px solid var(--btn-shadow);
-            /* Inner border for extra depth */
             outline: 1px solid var(--btn-mid-shadow); 
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
             z-index: 100;
-            min-width: 300px;
         }
 
-        /* Ensure texture applies to the window frame */
         .window-frame {
-            padding: 4px;
+            padding: 5px;
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .title-bar {
-            height: 28px;
+            height: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             cursor: move;
+            background: var(--win-gray);
         }
 
         .title-bar-text {
@@ -121,20 +117,17 @@
             font-weight: bold;
             font-size: 14px;
             color: black;
-            text-shadow: 0px 1px 0px rgba(255,255,255,0.5);
         }
 
-        /* The Window Controls (Minimize/Maximize/Close) */
         .win-btn {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            /* Outset look */
             border-top: 2px solid var(--btn-highlight);
             border-left: 2px solid var(--btn-highlight);
             border-right: 2px solid var(--btn-shadow);
@@ -149,130 +142,23 @@
             border-bottom: 2px solid var(--btn-highlight);
         }
 
-        /* --- WINDOW CONTENT --- */
-        .window-body {
-            background-color: var(--win-gray);
-            /* Inset look for the content area */
-            border-top: 2px solid var(--btn-shadow);
-            border-left: 2px solid var(--btn-shadow);
-            border-right: 2px solid var(--btn-highlight);
-            border-bottom: 2px solid var(--btn-highlight);
-            padding: 10px;
-        }
-
-        /* Grid for Tools Icons */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            justify-items: center;
-        }
-
-        .tool-icon {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            width: 60px;
-        }
-
-        .tool-icon img, .tool-icon svg {
-            width: 32px;
-            height: 32px;
-            margin-bottom: 4px;
-        }
-
-        .tool-icon span {
-            font-size: 11px;
-            text-align: center;
-        }
-
-        /* --- XTERM SPECIFIC --- */
+        /* --- XTERM --- */
         #xterm-window {
-            top: 15%;
-            left: 15%;
-            width: 500px;
+            top: 10%;
+            left: 10%;
+            width: 600px;
+            height: 400px;
         }
 
         .terminal-screen {
             background-color: var(--term-bg);
             color: var(--term-text);
-            height: 300px;
+            flex-grow: 1;
             overflow-y: auto;
-            padding: 5px;
-            font-family: inherit;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
             font-size: 14px;
-            /* Deep inset border */
-            border-top: 2px solid var(--btn-shadow);
-            border-left: 2px solid var(--btn-shadow);
-            border-right: 2px solid var(--btn-highlight);
-            border-bottom: 2px solid var(--btn-highlight);
-        }
-
-        /* --- THE FRONT PANEL (TASKBAR) --- */
-        .front-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 48px;
-            border-top: 2px solid var(--btn-highlight);
-            display: flex;
-            align-items: center;
-            padding: 4px 6px;
-            z-index: 1000;
-            gap: 6px;
-        }
-
-        /* The "X" Button (Master Control) */
-        .master-control {
-            width: 40px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 900;
-            cursor: pointer;
-            color: #d32f2f; /* The X11 Red */
-            /* Outset Border */
-            border-top: 2px solid var(--btn-highlight);
-            border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-shadow);
-            border-bottom: 2px solid var(--btn-shadow);
-        }
-
-        .master-control:active {
-            border-top: 2px solid var(--btn-shadow);
-            border-left: 2px solid var(--btn-shadow);
-            border-right: 2px solid var(--btn-highlight);
-            border-bottom: 2px solid var(--btn-highlight);
-            padding-top: 2px; /* Physical press effect */
-            padding-left: 2px;
-        }
-
-        /* Taskbar Items (Window Buttons) */
-        .panel-btn {
-            flex-grow: 1; /* Stretch to fill like CDE */
-            max-width: 200px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            padding: 0 8px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            
-            /* Default: Popped OUT (Outset) */
-            border-top: 2px solid var(--btn-highlight);
-            border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-shadow);
-            border-bottom: 2px solid var(--btn-shadow);
-        }
-
-        /* The "Pressed" State (Inset) */
-        .panel-btn.active {
-            background-color: #a0a0a0; /* Slightly darker */
+            line-height: 1.4;
             /* Inset Border */
             border-top: 2px solid var(--btn-shadow);
             border-left: 2px solid var(--btn-shadow);
@@ -280,30 +166,68 @@
             border-bottom: 2px solid var(--btn-highlight);
         }
 
-        .panel-btn-icon {
-            width: 16px;
-            height: 16px;
-            margin-right: 8px;
-            /* Placeholder for the little icon on the side */
-            background-color: #333; 
-            border: 1px solid white;
+        /* --- TASKBAR --- */
+        .front-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 42px;
+            border-top: 2px solid var(--btn-highlight);
+            display: flex;
+            align-items: center;
+            padding: 4px 6px;
+            z-index: 1000;
+            gap: 8px;
         }
 
-        /* Specific icon colors */
-        .icon-term { background: #000; border-color: #0f0; }
-        .icon-net { background: #000080; }
-        .icon-sys { background: #800000; }
+        .master-control {
+            width: 36px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: #d32f2f;
+            cursor: pointer;
+            border-top: 2px solid var(--btn-highlight);
+            border-left: 2px solid var(--btn-highlight);
+            border-right: 2px solid var(--btn-shadow);
+            border-bottom: 2px solid var(--btn-shadow);
+        }
+
+        .panel-btn {
+            padding: 0 15px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            border-top: 2px solid var(--btn-highlight);
+            border-left: 2px solid var(--btn-highlight);
+            border-right: 2px solid var(--btn-shadow);
+            border-bottom: 2px solid var(--btn-shadow);
+        }
+
+        .panel-btn.active {
+            background-color: #a0a0a0;
+            border-top: 2px solid var(--btn-shadow);
+            border-left: 2px solid var(--btn-shadow);
+            border-right: 2px solid var(--btn-highlight);
+            border-bottom: 2px solid var(--btn-highlight);
+        }
 
         .clock-display {
             margin-left: auto;
-            width: 160px;
-            height: 36px;
+            padding: 0 15px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            /* Inset text field look */
-            background-color: #e0e0e0;
+            background-color: #dcdcdc;
             border-top: 2px solid var(--btn-shadow);
             border-left: 2px solid var(--btn-shadow);
             border-right: 2px solid var(--btn-highlight);
@@ -327,70 +251,18 @@
     <div id="xterm-window" class="window stippled">
         <div class="window-frame">
             <div class="title-bar" id="xterm-header">
-                <div class="win-btn" onclick="toggleWindow('xterm')">-</div>
+                <div class="win-btn" onclick="toggleWindow()">-</div>
                 <div class="title-bar-text">xterm</div>
-                <div class="win-btn" onclick="toggleWindow('xterm')">x</div>
+                <div class="win-btn" onclick="toggleWindow()">x</div>
             </div>
             <div class="terminal-screen" id="term-out" onclick="document.getElementById('cmd-in').focus()">
                 <div id="term-text">
-                    root@darkstar:~# _<br>
+                    Welcome to ESBHANDARI.SYS<br>
+                    Type 'help' to see available commands.<br><br>
                 </div>
-                <input type="text" id="cmd-in" style="opacity:0; position:absolute;"> 
-            </div>
-        </div>
-    </div>
-
-    <div id="network-window" class="window stippled" style="display:none; top: 20%; left: 40%;">
-        <div class="window-frame">
-            <div class="title-bar" id="net-header">
-                <div class="win-btn" onclick="toggleWindow('network')">-</div>
-                <div class="title-bar-text">Network Tools</div>
-                <div class="win-btn" onclick="toggleWindow('network')">x</div>
-            </div>
-            <div class="window-body">
-                <div class="tools-grid">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="#333"><path d="M4 4h16v16H4z"/></svg>
-                        <span>tcpdump</span>
-                    </div>
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="#000080"><path d="M2 12h20v2H2zM12 2v20"/></svg>
-                        <span>netstat</span>
-                    </div>
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="#006400"><rect x="4" y="4" width="16" height="12"/></svg>
-                        <span>telnet</span>
-                    </div>
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="#555"><path d="M4 4h16v16H4z"/></svg>
-                        <span>arp</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="system-window" class="window stippled" style="display:none; top: 30%; left: 50%;">
-        <div class="window-frame">
-            <div class="title-bar" id="sys-header">
-                <div class="win-btn" onclick="toggleWindow('system')">-</div>
-                <div class="title-bar-text">System Tools</div>
-                <div class="win-btn" onclick="toggleWindow('system')">x</div>
-            </div>
-            <div class="window-body">
-                <div class="tools-grid">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="#000"><path d="M3 3h18v18H3z" fill="#000"/><path d="M4 12h16M12 4v16" stroke="#0f0"/></svg>
-                        <span>top</span>
-                    </div>
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="#ffd700"><path d="M12 2l10 18H2z"/></svg>
-                        <span>vi</span>
-                    </div>
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="#888"><circle cx="10" cy="10" r="8"/><path d="M16 16l6 6"/></svg>
-                        <span>LogView</span>
-                    </div>
+                <div style="display: flex;">
+                    <span id="prompt">guest@darkstar:~$ </span>
+                    <input type="text" id="cmd-in" style="flex-grow:1; background:transparent; border:none; color:inherit; outline:none; font-family:inherit; font-size:inherit;" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
@@ -399,126 +271,137 @@
     <div class="front-panel stippled">
         <div class="master-control">X</div>
         
-        <div class="panel-btn active stippled" id="btn-xterm" onclick="toggleWindow('xterm')">
-            <div class="panel-btn-icon icon-term"></div>
+        <div class="panel-btn active stippled" id="btn-xterm" onclick="toggleWindow()">
             xterm
-        </div>
-
-        <div class="panel-btn stippled" id="btn-network" onclick="toggleWindow('network')">
-            <div class="panel-btn-icon icon-net"></div>
-            Network Tools
-        </div>
-
-        <div class="panel-btn stippled" id="btn-system" onclick="toggleWindow('system')">
-            <div class="panel-btn-icon icon-sys"></div>
-            System Tools
         </div>
 
         <div class="clock-display" id="sys-clock">...</div>
     </div>
 
     <script>
-        // --- 1. CLOCK ---
+        // --- 1. REAL CLOCK ---
         function updateClock() {
-            // Format: Tue Apr 24 15:25:45 1994
-            const d = new Date();
-            const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-            const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-            const str = `${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()} ${d.toTimeString().split(' ')[0]} 1994`; 
+            const now = new Date();
+            // Shows real, current time. e.g. "Sun Jan 18 17:30:00"
+            const str = now.toString().split(' GMT')[0]; 
             document.getElementById('sys-clock').innerText = str;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // --- 2. WINDOW TOGGLE LOGIC ---
-        function toggleWindow(winName) {
-            const win = document.getElementById(winName + '-window');
-            const btn = document.getElementById('btn-' + winName);
+        // --- 2. WINDOW LOGIC ---
+        function toggleWindow() {
+            const win = document.getElementById('xterm-window');
+            const btn = document.getElementById('btn-xterm');
             
             if (win.style.display === 'none') {
-                // Open Window
                 win.style.display = 'flex';
-                // Make button look "pressed" (active/inset)
                 btn.classList.add('active');
-                // Bring to front logic could be added here
             } else {
-                // Close/Minimize Window
                 win.style.display = 'none';
-                // Make button look "popped out" (inactive/outset)
                 btn.classList.remove('active');
             }
         }
 
-        // --- 3. DRAGGABLE WINDOWS ---
-        function makeDraggable(elementId, handleId) {
-            const el = document.getElementById(elementId);
-            const handle = document.getElementById(handleId);
-            let isDragging = false, startX, startY, initialLeft, initialTop;
+        // --- 3. DRAGGABLE WINDOW ---
+        const win = document.getElementById('xterm-window');
+        const handle = document.getElementById('xterm-header');
+        let isDragging = false, startX, startY, initialLeft, initialTop;
 
-            handle.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                initialLeft = el.offsetLeft;
-                initialTop = el.offsetTop;
-            });
+        handle.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            initialLeft = win.offsetLeft;
+            initialTop = win.offsetTop;
+        });
 
-            document.addEventListener('mousemove', (e) => {
-                if(isDragging) {
-                    el.style.left = (initialLeft + (e.clientX - startX)) + 'px';
-                    el.style.top = (initialTop + (e.clientY - startY)) + 'px';
-                }
-            });
-
-            document.addEventListener('mouseup', () => isDragging = false);
-        }
-
-        makeDraggable('xterm-window', 'xterm-header');
-        makeDraggable('network-window', 'net-header');
-        makeDraggable('system-window', 'sys-header');
-
-        // --- 4. TERMINAL LOGIC ---
-        const cmdIn = document.getElementById('cmd-in');
-        const termText = document.getElementById('term-text');
-        
-        cmdIn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const cmd = cmdIn.value;
-                termText.innerHTML += `root@darkstar:~# ${cmd}<br>`;
-                
-                // Simple parser
-                if (cmd === 'help') termText.innerHTML += "Commands: ls, whoami, clear, shred<br>";
-                else if (cmd === 'clear') termText.innerHTML = "";
-                else if (cmd === 'ls') termText.innerHTML += "about.txt secrets.log<br>";
-                else if (cmd !== '') termText.innerHTML += "bash: command not found<br>";
-
-                termText.innerHTML += "root@darkstar:~# "; // New prompt
-                cmdIn.value = "";
-                // Auto scroll
-                document.getElementById('term-out').scrollTop = document.getElementById('term-out').scrollHeight;
+        document.addEventListener('mousemove', (e) => {
+            if(isDragging) {
+                win.style.left = (initialLeft + (e.clientX - startX)) + 'px';
+                win.style.top = (initialTop + (e.clientY - startY)) + 'px';
             }
         });
-        
-        // Initial Focus
+
+        document.addEventListener('mouseup', () => isDragging = false);
+
+        // --- 4. FUNCTIONAL TERMINAL ---
+        const cmdIn = document.getElementById('cmd-in');
+        const termText = document.getElementById('term-text');
+        const termOut = document.getElementById('term-out');
+
+        // The "Virtual File System" - Change this content!
+        const fileSystem = {
+            "about.txt": "I am a cybersecurity enthusiast focused on system hardening and network defense.",
+            "projects.md": "1. ESBHANDARI.SYS (Web Desktop)\n2. Python Malware Analysis Tool\n3. Home Lab Setup",
+            "contact.json": "{ \"github\": \"esbhandari\", \"email\": \"contact@example.com\" }"
+        };
+
+        cmdIn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const input = cmdIn.value.trim();
+                const parts = input.split(' ');
+                const cmd = parts[0].toLowerCase();
+                const arg = parts[1];
+
+                // Echo the command
+                termText.innerHTML += `guest@darkstar:~$ ${input}<br>`;
+
+                // Command Logic
+                switch(cmd) {
+                    case 'help':
+                        termText.innerHTML += "Available commands:<br>&nbsp;&nbsp;ls&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- List files<br>&nbsp;&nbsp;cat [file] - Read file<br>&nbsp;&nbsp;whoami&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Current user<br>&nbsp;&nbsp;clear&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Clear screen<br>&nbsp;&nbsp;date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- System time<br>";
+                        break;
+                    case 'ls':
+                        // Lists the keys in fileSystem
+                        termText.innerHTML += Object.keys(fileSystem).join('&nbsp;&nbsp;') + "<br>";
+                        break;
+                    case 'cat':
+                        if(arg && fileSystem[arg]) {
+                            termText.innerHTML += fileSystem[arg] + "<br>";
+                        } else if (arg) {
+                            termText.innerHTML += `cat: ${arg}: No such file or directory<br>`;
+                        } else {
+                            termText.innerHTML += "usage: cat [filename]<br>";
+                        }
+                        break;
+                    case 'whoami':
+                        termText.innerHTML += "root<br>"; // You are the admin
+                        break;
+                    case 'date':
+                        termText.innerHTML += new Date().toString() + "<br>";
+                        break;
+                    case 'clear':
+                        termText.innerHTML = "";
+                        break;
+                    case '':
+                        break;
+                    default:
+                        termText.innerHTML += `bash: ${cmd}: command not found<br>`;
+                }
+
+                cmdIn.value = "";
+                // Auto-scroll to bottom
+                termOut.scrollTop = termOut.scrollHeight;
+            }
+        });
+
         window.onload = () => cmdIn.focus();
 
-        // --- 5. TRASH / SHREDDER LOGIC ---
+        // --- 5. TRASH LOGIC ---
         function shredSystem() {
-            // "Purge" logs
-            const term = document.getElementById('term-text');
-            term.innerHTML = ""; // Clear screen
-            
-            // Add shredding animation text
+            termText.innerHTML = ""; 
             let count = 0;
             const interval = setInterval(() => {
-                term.innerHTML += `Shredding sector ${Math.floor(Math.random() * 9999)}... OVERWRITTEN<br>`;
-                document.getElementById('term-out').scrollTop = document.getElementById('term-out').scrollHeight;
+                termText.innerHTML += `Shredding sector ${Math.floor(Math.random() * 9999)}... OVERWRITTEN<br>`;
+                termOut.scrollTop = termOut.scrollHeight;
                 count++;
-                if(count > 5) {
+                if(count > 8) {
                     clearInterval(interval);
-                    term.innerHTML += "<br>SYSTEM PURGE COMPLETE.<br>Logs deleted.<br>root@darkstar:~# ";
+                    termText.innerHTML += "<br>SYSTEM PURGE COMPLETE.<br>guest@darkstar:~$ ";
+                    termOut.scrollTop = termOut.scrollHeight;
                 }
-            }, 200);
+            }, 100);
         }
     </script>
 </body>
