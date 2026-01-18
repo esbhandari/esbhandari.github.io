@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ESBHANDARI.SYS - root@darkstar</title>
     <style>
         :root {
@@ -35,7 +35,6 @@
             background-size: 20px 20px;
         }
 
-        /* Scanline Overlay */
         .scanlines {
             position: fixed;
             top: 0;
@@ -54,7 +53,6 @@
             z-index: 99999;
         }
 
-        /* Stippled Texture Class */
         .stippled {
             background-color: var(--win-gray);
             background-image: 
@@ -64,14 +62,14 @@
             background-position: 0 0, 2px 2px;
         }
 
-        /* --- DESKTOP ICONS (TOP-LEFT) --- */
+        /* --- DESKTOP ICONS --- */
         .icon-container {
             position: absolute;
-            top: 20px;       /* Top of screen */
-            left: 20px;      /* Left of screen */
+            top: 20px;
+            left: 20px;
             display: flex;
             flex-direction: column;
-            gap: 30px;       /* Space between icons */
+            gap: 25px;
             z-index: 10;
         }
 
@@ -100,15 +98,15 @@
             font-size: 13px;
             font-weight: bold;
             letter-spacing: 0.5px;
-            background-color: rgba(0,0,0,0.3); /* Legibility backing */
-            padding: 2px 4px;
+            background-color: rgba(0,0,0,0.4); 
+            padding: 4px 6px;
             border-radius: 4px;
         }
 
         /* --- WINDOW SYSTEM --- */
         .window {
             position: absolute;
-            display: flex; /* Flex is set, but display:none overrides inline style */
+            display: none; /* Hidden by default */
             flex-direction: column;
             background-color: var(--win-gray);
             border-top: 2px solid var(--btn-highlight);
@@ -116,7 +114,7 @@
             border-right: 2px solid var(--btn-dark-shadow);
             border-bottom: 2px solid var(--btn-dark-shadow);
             outline: 1px solid var(--btn-shadow);
-            box-shadow: 15px 15px 0px rgba(0,0,0,0.25);
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.5);
             z-index: 100;
         }
 
@@ -129,13 +127,14 @@
         }
 
         .title-bar {
-            height: 26px;
+            height: 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 4px;
             cursor: move;
             background: var(--win-gray);
+            touch-action: none; /* Critical for mobile drag */
         }
 
         .title-bar-text {
@@ -149,8 +148,8 @@
         }
 
         .win-btn {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -172,15 +171,46 @@
             transform: translate(1px, 1px);
         }
 
-        /* --- TERMINAL WINDOW --- */
+        /* --- SPECIFIC WINDOWS (Desktop Default) --- */
         #xterm-window {
             top: 15%;
             left: 20%;
             width: 680px;
             height: 480px; 
-            display: none; /* HIDDEN BY DEFAULT */
         }
 
+        #trash-window {
+            top: 30%;
+            left: 35%;
+            width: 500px;
+            height: 350px;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            #xterm-window {
+                width: 90vw;
+                height: 60vh;
+                left: 5vw;
+                top: 10vh;
+            }
+            #trash-window {
+                width: 90vw;
+                height: 50vh;
+                left: 5vw;
+                top: 15vh;
+            }
+            .icon-container {
+                top: 10px;
+                left: 10px;
+                gap: 15px;
+            }
+            .desktop-icon span {
+                font-size: 11px;
+            }
+        }
+
+        /* --- CONTENT STYLES --- */
         .terminal-screen {
             background-color: var(--term-bg);
             color: var(--term-text);
@@ -201,15 +231,6 @@
             cursor: text;
         }
 
-        /* --- TRASH WINDOW --- */
-        #trash-window {
-            top: 30%;
-            left: 40%;
-            width: 500px;
-            height: 350px;
-            display: none; /* HIDDEN BY DEFAULT */
-        }
-
         .trash-content {
             background-color: #ffffff;
             color: #000000;
@@ -224,26 +245,17 @@
             margin-bottom: 5px;
             text-align: left;
         }
-
+        
         .trash-entry {
             border-bottom: 1px dotted #555;
             padding: 8px 0;
             font-family: var(--font-ui);
         }
-        
-        /* Command Input Styling */
+
         #cmd-in {
-            flex-grow: 1; 
-            background: transparent; 
-            border: none; 
-            color: inherit; 
-            outline: none; 
-            font-family: inherit; 
-            font-size: inherit; 
-            padding: 0; 
-            margin: 0;
-            text-shadow: inherit;
-            caret-color: var(--term-text);
+            flex-grow: 1; background: transparent; border: none; color: inherit; 
+            outline: none; font-family: inherit; font-size: inherit; padding: 0; margin: 0;
+            text-shadow: inherit; caret-color: var(--term-text);
         }
     </style>
 </head>
@@ -252,7 +264,7 @@
     <div class="scanlines"></div>
 
     <div class="icon-container">
-        <div class="desktop-icon" ondblclick="toggleXterm()">
+        <div class="desktop-icon" onclick="toggleXterm()">
             <svg viewBox="0 0 24 24" fill="#333">
                 <rect x="2" y="4" width="20" height="16" rx="2" fill="black" stroke="silver" stroke-width="2"/>
                 <text x="4" y="16" fill="#33ff33" font-family="monospace" font-size="12" font-weight="bold">>_</text>
@@ -260,7 +272,7 @@
             <span>Terminal</span>
         </div>
 
-        <div class="desktop-icon" ondblclick="openTrashWindow()">
+        <div class="desktop-icon" onclick="openTrashWindow()">
             <svg viewBox="0 0 24 24" fill="#e0e0e0">
                 <path stroke="black" stroke-width="1" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                 <pattern id="trash-pattern" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="black" opacity="0.3"/></pattern>
@@ -308,7 +320,7 @@ Type 'help' to see available commands.
     </div>
 
     <script>
-        // --- 1. WINDOW MANAGEMENT ---
+        // --- WINDOW MANAGER ---
         let globalZIndex = 100;
         function bringToFront(windowId) {
             const el = document.getElementById(windowId);
@@ -318,10 +330,12 @@ Type 'help' to see available commands.
             }
         }
 
+        // --- DRAGGING LOGIC (MOUSE + TOUCH) ---
         function makeDraggable(el, handle) {
             if (!el || !handle) return;
             let isDragging = false, startX, startY, initialLeft, initialTop;
             
+            // Mouse Events
             handle.addEventListener('mousedown', (e) => {
                 isDragging = true;
                 bringToFront(el.id);
@@ -330,23 +344,52 @@ Type 'help' to see available commands.
                 initialLeft = el.offsetLeft;
                 initialTop = el.offsetTop;
             });
+
             document.addEventListener('mousemove', (e) => {
                 if(isDragging) {
+                    e.preventDefault();
                     el.style.left = (initialLeft + (e.clientX - startX)) + 'px';
                     el.style.top = (initialTop + (e.clientY - startY)) + 'px';
                 }
             });
+
             document.addEventListener('mouseup', () => isDragging = false);
+
+            // Touch Events (Mobile)
+            handle.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                bringToFront(el.id);
+                const touch = e.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                initialLeft = el.offsetLeft;
+                initialTop = el.offsetTop;
+            }, {passive: false});
+
+            document.addEventListener('touchmove', (e) => {
+                if(isDragging) {
+                    const touch = e.touches[0];
+                    e.preventDefault(); // Stop scrolling while dragging window
+                    el.style.left = (initialLeft + (touch.clientX - startX)) + 'px';
+                    el.style.top = (initialTop + (touch.clientY - startY)) + 'px';
+                }
+            }, {passive: false});
+
+            document.addEventListener('touchend', () => isDragging = false);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             makeDraggable(document.getElementById('xterm-window'), document.getElementById('xterm-header'));
             makeDraggable(document.getElementById('trash-window'), document.getElementById('trash-header'));
 
+            // Click-to-focus
             const xtermWin = document.getElementById('xterm-window');
             if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
+            if(xtermWin) xtermWin.addEventListener('touchstart', () => bringToFront('xterm-window'), {passive: true});
+
             const trashWin = document.getElementById('trash-window');
             if(trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
+            if(trashWin) trashWin.addEventListener('touchstart', () => bringToFront('trash-window'), {passive: true});
 
             const termText = document.getElementById('term-text');
             const termOut = document.getElementById('term-out');
@@ -359,13 +402,15 @@ Type 'help' to see available commands.
             // --- CONTROLS ---
             window.toggleXterm = function() {
                 if (!xtermWin) return;
-                // If it's hidden, show it
-                if (xtermWin.style.display === 'none') {
+                
+                // ROBUST CHECK: Check computed style to fix "double click" bug
+                const displayState = window.getComputedStyle(xtermWin).display;
+
+                if (displayState === 'none') {
                     xtermWin.style.display = 'flex';
                     bringToFront('xterm-window');
                     if (cmdIn) cmdIn.focus();
                 } else {
-                    // If it's open, hide it (Minimize behavior)
                     xtermWin.style.display = 'none';
                 }
             };
@@ -377,7 +422,7 @@ Type 'help' to see available commands.
                 const logEntry = `<strong>Session closed at ${timestamp}</strong><br>${sessionContent}`;
                 
                 trashStorage.push(logEntry);
-                if (trashWin && trashWin.style.display !== 'none') window.renderTrashList();
+                if (trashWin && window.getComputedStyle(trashWin).display !== 'none') window.renderTrashList();
 
                 // RESET TERMINAL
                 termText.innerHTML = "Welcome to ESBHANDARI.SYS\nType 'help' to see available commands.\n\n";
@@ -416,18 +461,16 @@ Type 'help' to see available commands.
                 window.renderTrashList();
             };
 
-            // --- FILES & COMMANDS ---
+            // --- FILE SYSTEM ---
             const fileSystem = {
                 "about.txt": "I am a cybersecurity enthusiast focused on system hardening and network defense.",
                 "contact.json": "{ \"github\": \"esbhandari\", \"email\": \"contact@example.com\" }"
             };
-
             const validCommands = ['ls', 'cat', 'fetch-metadata', 'history', 'clear', 'exit', 'help'];
 
-            // --- SHELL LOGIC ---
+            // --- SHELL ---
             if (cmdIn) {
                 cmdIn.addEventListener('keydown', (e) => {
-                    // TAB COMPLETE
                     if (e.key === 'Tab') {
                         e.preventDefault();
                         const input = cmdIn.value.trim();
@@ -443,8 +486,6 @@ Type 'help' to see available commands.
                             if (matches.length === 1) cmdIn.value = `cat ${matches[0]}`;
                         }
                     }
-
-                    // EXECUTE
                     else if (e.key === 'Enter') {
                         const input = cmdIn.value.trim();
                         if (input !== "") {
@@ -491,12 +532,9 @@ Type 'help' to see available commands.
                             default:
                                 termText.innerHTML += `bash: ${cmd}: command not found\n`;
                         }
-                        
                         cmdIn.value = "";
                         termOut.scrollTop = termOut.scrollHeight;
                     }
-                    
-                    // HISTORY NAV
                     else if (e.key === 'ArrowUp') {
                         if (commandHistory.length > 0 && historyIndex > 0) {
                             historyIndex--;
