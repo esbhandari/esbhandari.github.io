@@ -6,17 +6,18 @@
     <title>ESBHANDARI.SYS - root@darkstar</title>
     <style>
         :root {
-            --bg-color: #555555;
+            --bg-color: #3d4c53;
             --win-gray: #c0c0c0;
             --btn-highlight: #ffffff;
-            --btn-shadow: #000000;
-            --btn-mid-shadow: #808080;
+            --btn-shadow: #555555; /* Softened from pure black for sophistication */
+            --btn-dark-shadow: #000000;
             --term-bg: #000000;
-            --term-text: #00ff00;
+            --term-text: #33ff33; /* Slightly brighter phosphor green */
+            --term-glow: 0 0 4px rgba(51, 255, 51, 0.6); /* Phosphor glow */
             --font-ui: 'Courier New', monospace;
         }
 
-        /* --- GLOBAL STYLES --- */
+        /* --- GLOBAL & TEXTURE --- */
         body {
             margin: 0;
             padding: 0;
@@ -24,24 +25,44 @@
             width: 100vw;
             overflow: hidden;
             font-family: var(--font-ui);
-            user-select: none; /* Prevents text highlighting */
+            user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            
-            /* "Root Weave" Background */
-            background-color: #3d4c53; 
-            background-image: radial-gradient(#2d3c43 1px, transparent 1px);
-            background-size: 4px 4px;
+            background-color: var(--bg-color); 
+            /* Subtle Root Weave Pattern */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        /* --- TEXTURE CLASSES --- */
+        /* Scanline Overlay for Retro Feel */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none; /* Let clicks pass through */
+            z-index: 99999; /* On top of everything */
+        }
+
+        /* Stippled Texture Class */
         .stippled {
             background-color: var(--win-gray);
             background-image: 
-                linear-gradient(45deg, #a0a0a0 25%, transparent 25%, transparent 75%, #a0a0a0 75%, #a0a0a0),
-                linear-gradient(45deg, #a0a0a0 25%, transparent 25%, transparent 75%, #a0a0a0 75%, #a0a0a0);
-            background-size: 2px 2px;
-            background-position: 0 0, 1px 1px;
+                radial-gradient(#a0a0a0 15%, transparent 16%),
+                radial-gradient(#a0a0a0 15%, transparent 16%);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
         }
 
         /* --- DESKTOP ICONS --- */
@@ -51,33 +72,35 @@
             right: 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
             z-index: 10;
         }
 
         .desktop-icon {
-            width: 64px;
+            width: 70px;
             text-align: center;
             cursor: pointer;
             color: white;
-            text-shadow: 1px 1px 1px #000;
+            text-shadow: 1px 1px 2px black;
+            transition: transform 0.1s;
+        }
+
+        .desktop-icon:active {
+            transform: scale(0.95);
         }
 
         .desktop-icon svg {
             width: 48px;
             height: 48px;
-            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5)); 
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); 
         }
 
         .desktop-icon span {
             display: inline-block;
-            margin-top: 4px;
+            margin-top: 6px;
             font-size: 13px;
             font-weight: bold;
-        }
-
-        .desktop-icon:active span {
-            background-color: #000080;
+            letter-spacing: 0.5px;
         }
 
         /* --- WINDOW SYSTEM --- */
@@ -86,18 +109,18 @@
             display: flex;
             flex-direction: column;
             background-color: var(--win-gray);
-            /* Motif 3D Border */
+            /* Sophisticated Double Border (Motif Style) */
             border-top: 2px solid var(--btn-highlight);
             border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-shadow);
-            border-bottom: 2px solid var(--btn-shadow);
-            outline: 1px solid var(--btn-mid-shadow); 
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
+            border-right: 2px solid var(--btn-dark-shadow);
+            border-bottom: 2px solid var(--btn-dark-shadow);
+            outline: 1px solid var(--btn-shadow);
+            box-shadow: 15px 15px 0px rgba(0,0,0,0.25); /* Deeper, softer shadow */
             z-index: 100;
         }
 
         .window-frame {
-            padding: 5px;
+            padding: 4px;
             display: flex;
             flex-direction: column;
             height: 100%; 
@@ -105,12 +128,11 @@
         }
 
         .title-bar {
-            height: 24px;
-            min-height: 24px;
+            height: 26px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             cursor: move;
             background: var(--win-gray);
         }
@@ -121,6 +143,8 @@
             font-weight: bold;
             font-size: 14px;
             color: black;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .win-btn {
@@ -134,38 +158,41 @@
             cursor: pointer;
             border-top: 2px solid var(--btn-highlight);
             border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-shadow);
-            border-bottom: 2px solid var(--btn-shadow);
+            border-right: 2px solid var(--btn-dark-shadow);
+            border-bottom: 2px solid var(--btn-dark-shadow);
             background-color: var(--win-gray);
         }
         
         .win-btn:active {
-            border-top: 2px solid var(--btn-shadow);
-            border-left: 2px solid var(--btn-shadow);
+            border-top: 2px solid var(--btn-dark-shadow);
+            border-left: 2px solid var(--btn-dark-shadow);
             border-right: 2px solid var(--btn-highlight);
             border-bottom: 2px solid var(--btn-highlight);
+            transform: translate(1px, 1px);
         }
 
-        /* --- XTERM WINDOW --- */
+        /* --- TERMINAL AESTHETICS --- */
         #xterm-window {
             top: 10%;
             left: 10%;
-            width: 650px;
-            height: 450px; 
+            width: 680px;
+            height: 480px; 
         }
 
         .terminal-screen {
             background-color: var(--term-bg);
             color: var(--term-text);
+            /* THE GLOW UPGRADE */
+            text-shadow: var(--term-glow); 
             flex-grow: 1; 
             overflow-y: auto; 
-            padding: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.4;
-            text-align: left; /* Strict left align for code */
+            padding: 10px;
+            font-family: var(--font-ui);
+            font-size: 15px; /* Slightly larger for readability */
+            line-height: 1.5;
+            text-align: left;
             
-            /* Inset Border */
+            /* Inset Bevel */
             border-top: 2px solid var(--btn-shadow);
             border-left: 2px solid var(--btn-shadow);
             border-right: 2px solid var(--btn-highlight);
@@ -178,8 +205,8 @@
 
         /* --- TRASH WINDOW --- */
         #trash-window {
-            top: 20%;
-            left: 30%;
+            top: 25%;
+            left: 35%;
             width: 500px;
             height: 350px;
             display: none;
@@ -195,20 +222,15 @@
             border-left: 2px solid var(--btn-shadow);
             border-right: 2px solid var(--btn-highlight);
             border-bottom: 2px solid var(--btn-highlight);
-            font-size: 12px;
+            font-size: 13px;
             margin-bottom: 5px;
             text-align: left;
         }
 
         .trash-entry {
-            border-bottom: 1px dashed #999;
-            padding: 5px 0;
-            font-family: monospace;
-        }
-
-        .trash-controls {
-            display: flex;
-            justify-content: flex-end;
+            border-bottom: 1px dotted #555;
+            padding: 8px 0;
+            font-family: var(--font-ui);
         }
 
         /* --- TASKBAR --- */
@@ -217,71 +239,94 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 42px;
+            height: 44px;
             border-top: 2px solid var(--btn-highlight);
             display: flex;
             align-items: center;
-            padding: 4px 6px;
-            z-index: 9999;
-            gap: 8px;
+            padding: 0 6px;
+            z-index: 10000;
+            gap: 10px;
             background-color: var(--win-gray);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         }
 
         .master-control {
-            width: 36px;
-            height: 32px;
+            width: 40px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 900;
             color: #d32f2f;
             cursor: pointer;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
             border-top: 2px solid var(--btn-highlight);
             border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-shadow);
-            border-bottom: 2px solid var(--btn-shadow);
+            border-right: 2px solid var(--btn-dark-shadow);
+            border-bottom: 2px solid var(--btn-dark-shadow);
         }
 
         .panel-btn {
-            padding: 0 15px;
-            height: 32px;
+            padding: 0 20px;
+            height: 34px;
             display: flex;
             align-items: center;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
+            letter-spacing: 0.5px;
             border-top: 2px solid var(--btn-highlight);
             border-left: 2px solid var(--btn-highlight);
-            border-right: 2px solid var(--btn-shadow);
-            border-bottom: 2px solid var(--btn-shadow);
+            border-right: 2px solid var(--btn-dark-shadow);
+            border-bottom: 2px solid var(--btn-dark-shadow);
         }
 
-        .panel-btn.active {
-            background-color: #a0a0a0;
-            border-top: 2px solid var(--btn-shadow);
-            border-left: 2px solid var(--btn-shadow);
+        .panel-btn:active, .panel-btn.active {
+            background-color: #b0b0b0;
+            border-top: 2px solid var(--btn-dark-shadow);
+            border-left: 2px solid var(--btn-dark-shadow);
             border-right: 2px solid var(--btn-highlight);
             border-bottom: 2px solid var(--btn-highlight);
+            transform: translateY(1px);
         }
 
         .clock-display {
             margin-left: auto;
             padding: 0 15px;
-            height: 32px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
             background-color: #dcdcdc;
             border-top: 2px solid var(--btn-shadow);
             border-left: 2px solid var(--btn-shadow);
             border-right: 2px solid var(--btn-highlight);
             border-bottom: 2px solid var(--btn-highlight);
         }
+        
+        /* Command Input Styling */
+        #cmd-in {
+            flex-grow: 1; 
+            background: transparent; 
+            border: none; 
+            color: inherit; 
+            outline: none; 
+            font-family: inherit; 
+            font-size: inherit; 
+            padding: 0; 
+            margin: 0;
+            text-shadow: inherit; /* Keep the glow */
+            caret-color: var(--term-text);
+        }
     </style>
 </head>
 <body>
+
+    <div class="scanlines"></div>
 
     <div class="icon-container">
         <div class="desktop-icon" onclick="openTrashWindow()">
@@ -309,7 +354,7 @@ Type 'help' to see available commands.
 </div>
                 <div style="display: flex;">
                     <span id="prompt">guest@darkstar:~$ </span>
-                    <input type="text" id="cmd-in" style="flex-grow:1; background:transparent; border:none; color:inherit; outline:none; font-family:inherit; font-size:inherit; padding:0; margin:0;" autocomplete="off" spellcheck="false">
+                    <input type="text" id="cmd-in" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
@@ -325,7 +370,7 @@ Type 'help' to see available commands.
             <div class="trash-content" id="trash-list">
                 <div style="color:#666; text-align:center; margin-top:20px;">Trash is empty</div>
             </div>
-            <div class="trash-controls">
+            <div class="trash-controls" style="display:flex; justify-content: flex-end; margin-top:5px;">
                 <div class="panel-btn" onclick="emptyTrash()">Empty Trash</div>
             </div>
         </div>
@@ -351,7 +396,7 @@ Type 'help' to see available commands.
         }
         setInterval(updateClock, 1000);
 
-        // --- 2. Z-INDEX & FOCUS ---
+        // --- 2. WINDOW MANAGEMENT ---
         let globalZIndex = 100;
         function bringToFront(windowId) {
             const el = document.getElementById(windowId);
@@ -361,10 +406,8 @@ Type 'help' to see available commands.
             }
         }
 
-        // --- 3. DRAGGABLE WINDOWS ---
         function makeDraggable(el, handle) {
             if (!el || !handle) return;
-            
             let isDragging = false, startX, startY, initialLeft, initialTop;
             
             handle.addEventListener('mousedown', (e) => {
@@ -375,33 +418,25 @@ Type 'help' to see available commands.
                 initialLeft = el.offsetLeft;
                 initialTop = el.offsetTop;
             });
-            
             document.addEventListener('mousemove', (e) => {
                 if(isDragging) {
                     el.style.left = (initialLeft + (e.clientX - startX)) + 'px';
                     el.style.top = (initialTop + (e.clientY - startY)) + 'px';
                 }
             });
-            
             document.addEventListener('mouseup', () => isDragging = false);
         }
 
-        // --- MAIN INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             updateClock();
-
-            // Initialize Draggables
             makeDraggable(document.getElementById('xterm-window'), document.getElementById('xterm-header'));
             makeDraggable(document.getElementById('trash-window'), document.getElementById('trash-header'));
 
-            // Focus on terminal click
             const xtermWin = document.getElementById('xterm-window');
             if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
-            
             const trashWin = document.getElementById('trash-window');
             if(trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
 
-            // Elements
             const xtermBtn = document.getElementById('btn-xterm');
             const termText = document.getElementById('term-text');
             const termOut = document.getElementById('term-out');
@@ -413,7 +448,7 @@ Type 'help' to see available commands.
 
             if (cmdIn) cmdIn.focus();
 
-            // --- WINDOW CONTROL FUNCTIONS ---
+            // --- CONTROLS ---
             window.minimizeXterm = function() {
                 if (xtermWin) xtermWin.style.display = 'none';
                 if (xtermBtn) xtermBtn.classList.remove('active');
@@ -438,24 +473,18 @@ Type 'help' to see available commands.
                 const logEntry = `<strong>Session closed at ${timestamp}</strong><br>${sessionContent}`;
                 
                 trashStorage.push(logEntry);
+                if (trashWin && trashWin.style.display !== 'none') window.renderTrashList();
 
-                // Update Trash if open
-                if (trashWin && trashWin.style.display !== 'none') {
-                    window.renderTrashList();
-                }
-
-                // Reset Terminal
+                // RESET TERMINAL
                 termText.innerHTML = "Welcome to ESBHANDARI.SYS\nType 'help' to see available commands.\n\n";
                 commandHistory = []; 
                 historyIndex = -1;
-
                 window.minimizeXterm();
             };
 
             window.renderTrashList = function() {
                 const trashList = document.getElementById('trash-list');
                 if (!trashList) return;
-
                 if (trashStorage.length === 0) {
                     trashList.innerHTML = '<div style="color:#666; text-align:center; margin-top:20px;">Trash is empty</div>';
                 } else {
@@ -483,49 +512,41 @@ Type 'help' to see available commands.
                 window.renderTrashList();
             };
 
-            // --- FILE SYSTEM & COMMANDS ---
+            // --- FILES & COMMANDS ---
             const fileSystem = {
                 "about.txt": "I am a cybersecurity enthusiast focused on system hardening and network defense.",
-                "projects.md": "1. ESBHANDARI.SYS (Web Desktop)\n2. Python Malware Analysis Tool\n3. Home Lab Setup",
                 "contact.json": "{ \"github\": \"esbhandari\", \"email\": \"contact@example.com\" }"
             };
 
-            const validCommands = [
-                'help', 'ls', 'cat', 'whoami', 'clear', 'date', 'history', 
-                'fetch-metadata', 'uname', 'id', 'ifconfig', 'netstat', 'ping', 'pwd', 'touch', 'rm'
-            ];
+            const validCommands = ['ls', 'cat', 'fetch-metadata', 'history', 'clear', 'exit', 'help'];
 
-            // --- TERMINAL EVENT LISTENER ---
+            // --- SHELL LOGIC ---
             if (cmdIn) {
                 cmdIn.addEventListener('keydown', (e) => {
-                    
-                    // [TAB] AUTO-COMPLETION
+                    // TAB COMPLETE
                     if (e.key === 'Tab') {
                         e.preventDefault();
                         const input = cmdIn.value.trim();
                         if (!input) return;
-
                         const parts = input.split(' ');
                         
                         if (parts.length === 1) {
                             const matches = validCommands.filter(c => c.startsWith(parts[0]));
                             if (matches.length === 1) cmdIn.value = matches[0] + " ";
                         } 
-                        else if (['cat', 'rm', 'touch'].includes(parts[0]) && parts[1]) {
+                        else if (parts[0] === 'cat' && parts[1]) {
                             const matches = Object.keys(fileSystem).filter(f => f.startsWith(parts[1]));
-                            if (matches.length === 1) cmdIn.value = `${parts[0]} ${matches[0]}`;
+                            if (matches.length === 1) cmdIn.value = `cat ${matches[0]}`;
                         }
                     }
 
-                    // [ENTER] EXECUTE
+                    // EXECUTE
                     else if (e.key === 'Enter') {
                         const input = cmdIn.value.trim();
-                        
                         if (input !== "") {
                             commandHistory.push(input);
                             historyIndex = commandHistory.length;
                         }
-
                         const parts = input.split(' ');
                         const cmd = parts[0].toLowerCase();
                         const arg = parts[1];
@@ -534,7 +555,7 @@ Type 'help' to see available commands.
 
                         switch(cmd) {
                             case 'help':
-                                termText.innerHTML += "Available commands:\n  ls, cat, whoami, clear, date, history\n  Network: fetch-metadata, ifconfig, netstat, ping\n  System: uname, id, pwd, touch, rm\n";
+                                termText.innerHTML += "Available commands:\n  ls, cat [file], fetch-metadata, history, clear, exit\n";
                                 break;
                             case 'ls':
                                 termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n";
@@ -542,48 +563,6 @@ Type 'help' to see available commands.
                             case 'cat':
                                 if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n";
                                 else termText.innerHTML += `cat: ${arg || ''}: No such file\n`;
-                                break;
-                            case 'clear':
-                                termText.innerHTML = "";
-                                break;
-                            case 'date':
-                                termText.innerHTML += new Date().toString() + "\n";
-                                break;
-                            case 'history':
-                                commandHistory.forEach((h, i) => termText.innerHTML += `  ${i + 1}  ${h}\n`);
-                                break;
-                            case 'whoami':
-                                termText.innerHTML += "root\n";
-                                break;
-                            case 'id':
-                                termText.innerHTML += "uid=0(root) gid=0(root) groups=0(root)\n";
-                                break;
-                            case 'uname':
-                                termText.innerHTML += (arg === '-a') ? "Linux darkstar 2.0.36 #1 Sun Jan 18 18:00:00 2026 i386 GNU/Linux\n" : "Linux\n";
-                                break;
-                            case 'pwd':
-                                termText.innerHTML += "/home/guest\n";
-                                break;
-                            case 'ifconfig':
-                                termText.innerHTML += `eth0      Link encap:Ethernet  HWaddr 00:0C:29:28:FD:45\n          inet addr:192.168.1.105  Bcast:192.168.1.255  Mask:255.255.255.0\n          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1\n`;
-                                break;
-                            case 'netstat':
-                                termText.innerHTML += "Active Internet connections (w/o servers)\nProto Recv-Q Send-Q Local Address           Foreign Address         State\ntcp        0      0 darkstar:43512          140.82.112.4:https      ESTABLISHED\n";
-                                break;
-                            case 'ping':
-                                if (arg) {
-                                    termText.innerHTML += `PING ${arg} (${arg}) 56(84) bytes of data.\n64 bytes from ${arg}: icmp_seq=1 ttl=118 time=24.2 ms\n64 bytes from ${arg}: icmp_seq=2 ttl=118 time=28.5 ms\n--- ${arg} ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss\n`;
-                                } else {
-                                    termText.innerHTML += "usage: ping [destination]\n";
-                                }
-                                break;
-                            case 'touch':
-                                if (arg) fileSystem[arg] = "";
-                                else termText.innerHTML += "touch: missing file operand\n";
-                                break;
-                            case 'rm':
-                                if (arg && fileSystem[arg] !== undefined) delete fileSystem[arg];
-                                else termText.innerHTML += `rm: cannot remove '${arg}': No such file\n`;
                                 break;
                             case 'fetch-metadata':
                                 termText.innerHTML += `<span style="color:yellow;">[RECONNAISSANCE INITIATED]</span>\n`;
@@ -595,8 +574,16 @@ Type 'help' to see available commands.
                                     })
                                     .catch(err => termText.innerHTML += `<span style="color:red;">[CONNECTION FAILED]</span>\n`);
                                 break;
-                            case '': 
+                            case 'history':
+                                commandHistory.forEach((h, i) => termText.innerHTML += `  ${i + 1}  ${h}\n`);
                                 break;
+                            case 'clear':
+                                termText.innerHTML = "";
+                                break;
+                            case 'exit':
+                                window.closeXterm();
+                                break;
+                            case '': break;
                             default:
                                 termText.innerHTML += `bash: ${cmd}: command not found\n`;
                         }
@@ -605,7 +592,7 @@ Type 'help' to see available commands.
                         termOut.scrollTop = termOut.scrollHeight;
                     }
                     
-                    // [ARROWS] HISTORY
+                    // HISTORY NAV
                     else if (e.key === 'ArrowUp') {
                         if (commandHistory.length > 0 && historyIndex > 0) {
                             historyIndex--;
