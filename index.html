@@ -16,6 +16,24 @@
             --font-ui: 'Courier New', monospace;
         }
 
+        /* --- GLOBAL STYLES --- */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            font-family: var(--font-ui);
+            user-select: none; /* Prevents text highlighting */
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            
+            /* "Root Weave" Background */
+            background-color: #3d4c53; 
+            background-image: radial-gradient(#2d3c43 1px, transparent 1px);
+            background-size: 4px 4px;
+        }
+
         /* --- TEXTURE CLASSES --- */
         .stippled {
             background-color: var(--win-gray);
@@ -24,20 +42,6 @@
                 linear-gradient(45deg, #a0a0a0 25%, transparent 25%, transparent 75%, #a0a0a0 75%, #a0a0a0);
             background-size: 2px 2px;
             background-position: 0 0, 1px 1px;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            font-family: var(--font-ui);
-            user-select: none;
-            -webkit-user-select: none;
-            background-color: #3d4c53; 
-            background-image: radial-gradient(#2d3c43 1px, transparent 1px);
-            background-size: 4px 4px;
         }
 
         /* --- DESKTOP ICONS --- */
@@ -82,13 +86,13 @@
             display: flex;
             flex-direction: column;
             background-color: var(--win-gray);
+            /* Motif 3D Border */
             border-top: 2px solid var(--btn-highlight);
             border-left: 2px solid var(--btn-highlight);
             border-right: 2px solid var(--btn-shadow);
             border-bottom: 2px solid var(--btn-shadow);
             outline: 1px solid var(--btn-mid-shadow); 
             box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
-            /* Initial Z-Index */
             z-index: 100;
         }
 
@@ -142,12 +146,12 @@
             border-bottom: 2px solid var(--btn-highlight);
         }
 
-        /* --- XTERM SPECIFIC --- */
+        /* --- XTERM WINDOW --- */
         #xterm-window {
             top: 10%;
             left: 10%;
-            width: 600px;
-            height: 400px; 
+            width: 650px;
+            height: 450px; 
         }
 
         .terminal-screen {
@@ -159,8 +163,9 @@
             font-family: 'Courier New', monospace;
             font-size: 14px;
             line-height: 1.4;
-            /* ALIGNMENT FIX: Ensure left align */
-            text-align: left; 
+            text-align: left; /* Strict left align for code */
+            
+            /* Inset Border */
             border-top: 2px solid var(--btn-shadow);
             border-left: 2px solid var(--btn-shadow);
             border-right: 2px solid var(--btn-highlight);
@@ -168,9 +173,10 @@
             
             white-space: pre-wrap; 
             word-wrap: break-word;
+            cursor: text;
         }
 
-        /* --- TRASH WINDOW SPECIFIC --- */
+        /* --- TRASH WINDOW --- */
         #trash-window {
             top: 20%;
             left: 30%;
@@ -216,7 +222,7 @@
             display: flex;
             align-items: center;
             padding: 4px 6px;
-            z-index: 10000; /* Taskbar always on top */
+            z-index: 9999;
             gap: 8px;
             background-color: var(--win-gray);
         }
@@ -288,7 +294,7 @@
         </div>
     </div>
 
-    <div id="xterm-window" class="window stippled" onmousedown="bringToFront('xterm-window')">
+    <div id="xterm-window" class="window stippled">
         <div class="window-frame">
             <div class="title-bar" id="xterm-header">
                 <div class="win-btn" onclick="minimizeXterm()">-</div>
@@ -303,13 +309,13 @@ Type 'help' to see available commands.
 </div>
                 <div style="display: flex;">
                     <span id="prompt">guest@darkstar:~$ </span>
-                    <input type="text" id="cmd-in" style="flex-grow:1; background:transparent; border:none; color:inherit; outline:none; font-family:inherit; font-size:inherit;" autocomplete="off" spellcheck="false">
+                    <input type="text" id="cmd-in" style="flex-grow:1; background:transparent; border:none; color:inherit; outline:none; font-family:inherit; font-size:inherit; padding:0; margin:0;" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="trash-window" class="window stippled" onmousedown="bringToFront('trash-window')">
+    <div id="trash-window" class="window stippled">
         <div class="window-frame">
             <div class="title-bar" id="trash-header">
                 <div class="win-btn" onclick="document.getElementById('trash-window').style.display='none'">-</div>
@@ -337,218 +343,290 @@ Type 'help' to see available commands.
 
     <script>
         // --- 1. SYSTEM CLOCK ---
-function updateClock() {
-    const now = new Date();
-    // Shows real time minus the timezone clutter
-    const str = now.toString().split(' GMT')[0]; 
-    document.getElementById('sys-clock').innerText = str;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// --- 2. Z-INDEX & WINDOW MANAGEMENT ---
-let globalZIndex = 100;
-function bringToFront(windowId) {
-    globalZIndex++;
-    document.getElementById(windowId).style.zIndex = globalZIndex;
-}
-
-// --- 3. TERMINAL STATE & HISTORY ---
-const termText = document.getElementById('term-text');
-const termOut = document.getElementById('term-out');
-const cmdIn = document.getElementById('cmd-in');
-
-let trashStorage = []; 
-let commandHistory = [];
-let historyIndex = -1;
-
-// The Virtual File System
-const fileSystem = {
-    "about.txt": "I am a cybersecurity enthusiast focused on system hardening and network defense.",
-    "projects.md": "1. ESBHANDARI.SYS (Web Desktop)\n2. Python Malware Analysis Tool\n3. Home Lab Setup",
-    "contact.json": "{ \"github\": \"esbhandari\", \"email\": \"contact@example.com\" }"
-};
-
-// Valid commands for Tab-Completion
-const commands = [
-    'help', 'ls', 'cat', 'whoami', 'clear', 'date', 'history', 
-    'fetch-metadata', 'uname', 'id', 'ifconfig', 'netstat', 'ping', 'pwd', 'touch', 'rm'
-];
-
-// --- 4. THE COMMAND PROCESSOR ---
-cmdIn.addEventListener('keydown', (e) => {
-    
-    // [TAB] AUTO-COMPLETION
-    if (e.key === 'Tab') {
-        e.preventDefault();
-        const input = cmdIn.value.trim();
-        if (!input) return;
-
-        const parts = input.split(' ');
-        
-        // Complete Commands
-        if (parts.length === 1) {
-            const matches = commands.filter(c => c.startsWith(parts[0]));
-            if (matches.length === 1) cmdIn.value = matches[0] + " "; // Add space for convenience
-        } 
-        // Complete Filenames (for cat, rm, touch)
-        else if ((parts[0] === 'cat' || parts[0] === 'rm' || parts[0] === 'touch') && parts[1]) {
-            const matches = Object.keys(fileSystem).filter(f => f.startsWith(parts[1]));
-            if (matches.length === 1) cmdIn.value = `${parts[0]} ${matches[0]}`;
+        function updateClock() {
+            const now = new Date();
+            const str = now.toString().split(' GMT')[0]; 
+            const clockEl = document.getElementById('sys-clock');
+            if (clockEl) clockEl.innerText = str;
         }
-    }
+        setInterval(updateClock, 1000);
 
-    // [ENTER] EXECUTE COMMAND
-    if (e.key === 'Enter') {
-        const input = cmdIn.value.trim();
-        
-        if (input !== "") {
-            commandHistory.push(input);
-            historyIndex = commandHistory.length;
+        // --- 2. Z-INDEX & FOCUS ---
+        let globalZIndex = 100;
+        function bringToFront(windowId) {
+            const el = document.getElementById(windowId);
+            if (el) {
+                globalZIndex++;
+                el.style.zIndex = globalZIndex;
+            }
         }
 
-        const parts = input.split(' ');
-        const cmd = parts[0].toLowerCase();
-        const arg = parts[1];
+        // --- 3. DRAGGABLE WINDOWS ---
+        function makeDraggable(el, handle) {
+            if (!el || !handle) return;
+            
+            let isDragging = false, startX, startY, initialLeft, initialTop;
+            
+            handle.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                bringToFront(el.id);
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = el.offsetLeft;
+                initialTop = el.offsetTop;
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if(isDragging) {
+                    el.style.left = (initialLeft + (e.clientX - startX)) + 'px';
+                    el.style.top = (initialTop + (e.clientY - startY)) + 'px';
+                }
+            });
+            
+            document.addEventListener('mouseup', () => isDragging = false);
+        }
 
-        // Echo the command
-        termText.innerHTML += `guest@darkstar:~$ ${input}\n`;
+        // --- MAIN INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateClock();
 
-        switch(cmd) {
-            // --- CORE COMMANDS ---
-            case 'help':
-                termText.innerHTML += "Available commands:\n  ls, cat, whoami, clear, date, history\n  Network: fetch-metadata, ifconfig, netstat, ping\n  System: uname, id, pwd, touch, rm\n";
-                break;
-            case 'ls':
-                termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n";
-                break;
-            case 'cat':
-                if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n";
-                else termText.innerHTML += `cat: ${arg || ''}: No such file\n`;
-                break;
-            case 'clear':
-                termText.innerHTML = "";
-                break;
-            case 'date':
-                termText.innerHTML += new Date().toString() + "\n";
-                break;
-            case 'history':
-                commandHistory.forEach((h, i) => {
-                    termText.innerHTML += `  ${i + 1}  ${h}\n`;
-                });
-                break;
+            // Initialize Draggables
+            makeDraggable(document.getElementById('xterm-window'), document.getElementById('xterm-header'));
+            makeDraggable(document.getElementById('trash-window'), document.getElementById('trash-header'));
 
-            // --- RECONNAISSANCE COMMANDS ---
-            case 'fetch-metadata':
-                termText.innerHTML += `<span style="color:yellow;">[RECONNAISSANCE INITIATED]</span>\n`;
-                fetch('https://api.ipify.org?format=json')
-                    .then(res => res.json())
-                    .then(data => {
-                        termText.innerHTML += `PUBLIC_IP: ${data.ip}\n`;
-                        termText.innerHTML += `OS_PLATFORM: ${navigator.platform}\n`;
-                        termText.innerHTML += `USER_AGENT: ${navigator.userAgent.substring(0, 40)}...\n`;
-                        termText.innerHTML += `RESOLUTION: ${window.screen.width}x${window.screen.height}\n`;
-                        termText.innerHTML += `<span style="color:yellow;">[DATA CAPTURE COMPLETE]</span>\n`;
-                        termOut.scrollTop = termOut.scrollHeight;
-                    })
-                    .catch(() => {
-                        termText.innerHTML += `<span style="color:red;">[CONNECTION FAILED]</span>\n`;
+            // Focus on terminal click
+            const xtermWin = document.getElementById('xterm-window');
+            if(xtermWin) xtermWin.addEventListener('mousedown', () => bringToFront('xterm-window'));
+            
+            const trashWin = document.getElementById('trash-window');
+            if(trashWin) trashWin.addEventListener('mousedown', () => bringToFront('trash-window'));
+
+            // Elements
+            const xtermBtn = document.getElementById('btn-xterm');
+            const termText = document.getElementById('term-text');
+            const termOut = document.getElementById('term-out');
+            const cmdIn = document.getElementById('cmd-in');
+
+            let trashStorage = []; 
+            let commandHistory = [];
+            let historyIndex = -1;
+
+            if (cmdIn) cmdIn.focus();
+
+            // --- WINDOW CONTROL FUNCTIONS ---
+            window.minimizeXterm = function() {
+                if (xtermWin) xtermWin.style.display = 'none';
+                if (xtermBtn) xtermBtn.classList.remove('active');
+            };
+
+            window.toggleXterm = function() {
+                if (!xtermWin) return;
+                if (xtermWin.style.display === 'none') {
+                    xtermWin.style.display = 'flex';
+                    if (xtermBtn) xtermBtn.classList.add('active');
+                    bringToFront('xterm-window');
+                    if (cmdIn) cmdIn.focus();
+                } else {
+                    window.minimizeXterm();
+                }
+            };
+
+            window.closeXterm = function() {
+                if (!termText) return;
+                const sessionContent = termText.innerHTML;
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = `<strong>Session closed at ${timestamp}</strong><br>${sessionContent}`;
+                
+                trashStorage.push(logEntry);
+
+                // Update Trash if open
+                if (trashWin && trashWin.style.display !== 'none') {
+                    window.renderTrashList();
+                }
+
+                // Reset Terminal
+                termText.innerHTML = "Welcome to ESBHANDARI.SYS\nType 'help' to see available commands.\n\n";
+                commandHistory = []; 
+                historyIndex = -1;
+
+                window.minimizeXterm();
+            };
+
+            window.renderTrashList = function() {
+                const trashList = document.getElementById('trash-list');
+                if (!trashList) return;
+
+                if (trashStorage.length === 0) {
+                    trashList.innerHTML = '<div style="color:#666; text-align:center; margin-top:20px;">Trash is empty</div>';
+                } else {
+                    trashList.innerHTML = '';
+                    trashStorage.forEach((entry) => {
+                        const div = document.createElement('div');
+                        div.className = 'trash-entry';
+                        div.innerHTML = entry;
+                        trashList.appendChild(div);
                     });
-                break;
-
-            // --- SYSTEM SIMULATION COMMANDS ---
-            case 'whoami':
-                termText.innerHTML += "root\n";
-                break;
-            case 'id':
-                termText.innerHTML += "uid=0(root) gid=0(root) groups=0(root)\n";
-                break;
-            case 'uname':
-                if (arg === '-a') termText.innerHTML += "Linux darkstar 2.0.36 #1 Sun Jan 18 18:00:00 2026 i386 GNU/Linux\n";
-                else termText.innerHTML += "Linux\n";
-                break;
-            case 'pwd':
-                termText.innerHTML += "/home/guest\n";
-                break;
-
-            // --- NETWORK SIMULATION COMMANDS ---
-            case 'ifconfig':
-                termText.innerHTML += `eth0      Link encap:Ethernet  HWaddr 00:0C:29:28:FD:45\n`;
-                termText.innerHTML += `          inet addr:192.168.1.105  Bcast:192.168.1.255  Mask:255.255.255.0\n`;
-                termText.innerHTML += `          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1\n`;
-                termText.innerHTML += `          RX packets:1248 errors:0 dropped:0 overruns:0 frame:0\n`;
-                termText.innerHTML += `          TX packets:945 errors:0 dropped:0 overruns:0 carrier:0\n`;
-                break;
-            case 'netstat':
-                termText.innerHTML += "Active Internet connections (w/o servers)\n";
-                termText.innerHTML += "Proto Recv-Q Send-Q Local Address           Foreign Address         State\n";
-                termText.innerHTML += "tcp        0      0 darkstar:43512          140.82.112.4:https      ESTABLISHED\n";
-                termText.innerHTML += "tcp        0      0 darkstar:ssh            192.168.1.55:54322      ESTABLISHED\n";
-                break;
-            case 'ping':
-                if (arg) {
-                    termText.innerHTML += `PING ${arg} (${arg}) 56(84) bytes of data.\n`;
-                    termText.innerHTML += `64 bytes from ${arg}: icmp_seq=1 ttl=118 time=24.2 ms\n`;
-                    termText.innerHTML += `64 bytes from ${arg}: icmp_seq=2 ttl=118 time=28.5 ms\n`;
-                    termText.innerHTML += `64 bytes from ${arg}: icmp_seq=3 ttl=118 time=22.1 ms\n`;
-                    termText.innerHTML += `--- ${arg} ping statistics ---\n3 packets transmitted, 3 received, 0% packet loss\n`;
-                } else {
-                    termText.innerHTML += "usage: ping [destination]\n";
+                    trashList.scrollTop = trashList.scrollHeight;
                 }
-                break;
+            };
 
-            // --- FILE MANIPULATION ---
-            case 'touch':
-                if (arg) {
-                    fileSystem[arg] = ""; // Create empty file
-                } else {
-                    termText.innerHTML += "touch: missing file operand\n";
+            window.openTrashWindow = function() {
+                if (trashWin) {
+                    trashWin.style.display = 'flex';
+                    bringToFront('trash-window');
+                    window.renderTrashList();
                 }
-                break;
-            case 'rm':
-                if (arg && fileSystem[arg] !== undefined) {
-                    delete fileSystem[arg];
-                } else if (arg) {
-                    termText.innerHTML += `rm: cannot remove '${arg}': No such file\n`;
-                } else {
-                    termText.innerHTML += "rm: missing operand\n";
-                }
-                break;
+            };
 
-            case '': 
-                break;
-            default:
-                termText.innerHTML += `bash: ${cmd}: command not found\n`;
-        }
-        
-        // Reset and Scroll
-        cmdIn.value = "";
-        termOut.scrollTop = termOut.scrollHeight;
-    }
-    
-    // [ARROW KEYS] HISTORY NAVIGATION
-    else if (e.key === 'ArrowUp') {
-        if (commandHistory.length > 0 && historyIndex > 0) {
-            historyIndex--;
-            cmdIn.value = commandHistory[historyIndex];
-            // Move cursor to end
-            setTimeout(() => { cmdIn.selectionStart = cmdIn.selectionEnd = cmdIn.value.length; }, 0);
-        }
-        e.preventDefault();
-    }
-    else if (e.key === 'ArrowDown') {
-        if (historyIndex < commandHistory.length - 1) {
-            historyIndex++;
-            cmdIn.value = commandHistory[historyIndex];
-        } else {
-            historyIndex = commandHistory.length;
-            cmdIn.value = "";
-        }
-        e.preventDefault();
-    }
-});
+            window.emptyTrash = function() {
+                trashStorage = [];
+                window.renderTrashList();
+            };
 
-        window.onload = () => cmdIn.focus();
+            // --- FILE SYSTEM & COMMANDS ---
+            const fileSystem = {
+                "about.txt": "I am a cybersecurity enthusiast focused on system hardening and network defense.",
+                "projects.md": "1. ESBHANDARI.SYS (Web Desktop)\n2. Python Malware Analysis Tool\n3. Home Lab Setup",
+                "contact.json": "{ \"github\": \"esbhandari\", \"email\": \"contact@example.com\" }"
+            };
+
+            const validCommands = [
+                'help', 'ls', 'cat', 'whoami', 'clear', 'date', 'history', 
+                'fetch-metadata', 'uname', 'id', 'ifconfig', 'netstat', 'ping', 'pwd', 'touch', 'rm'
+            ];
+
+            // --- TERMINAL EVENT LISTENER ---
+            if (cmdIn) {
+                cmdIn.addEventListener('keydown', (e) => {
+                    
+                    // [TAB] AUTO-COMPLETION
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        const input = cmdIn.value.trim();
+                        if (!input) return;
+
+                        const parts = input.split(' ');
+                        
+                        if (parts.length === 1) {
+                            const matches = validCommands.filter(c => c.startsWith(parts[0]));
+                            if (matches.length === 1) cmdIn.value = matches[0] + " ";
+                        } 
+                        else if (['cat', 'rm', 'touch'].includes(parts[0]) && parts[1]) {
+                            const matches = Object.keys(fileSystem).filter(f => f.startsWith(parts[1]));
+                            if (matches.length === 1) cmdIn.value = `${parts[0]} ${matches[0]}`;
+                        }
+                    }
+
+                    // [ENTER] EXECUTE
+                    else if (e.key === 'Enter') {
+                        const input = cmdIn.value.trim();
+                        
+                        if (input !== "") {
+                            commandHistory.push(input);
+                            historyIndex = commandHistory.length;
+                        }
+
+                        const parts = input.split(' ');
+                        const cmd = parts[0].toLowerCase();
+                        const arg = parts[1];
+
+                        termText.innerHTML += `guest@darkstar:~$ ${input}\n`;
+
+                        switch(cmd) {
+                            case 'help':
+                                termText.innerHTML += "Available commands:\n  ls, cat, whoami, clear, date, history\n  Network: fetch-metadata, ifconfig, netstat, ping\n  System: uname, id, pwd, touch, rm\n";
+                                break;
+                            case 'ls':
+                                termText.innerHTML += Object.keys(fileSystem).join('  ') + "\n";
+                                break;
+                            case 'cat':
+                                if(arg && fileSystem[arg]) termText.innerHTML += fileSystem[arg] + "\n";
+                                else termText.innerHTML += `cat: ${arg || ''}: No such file\n`;
+                                break;
+                            case 'clear':
+                                termText.innerHTML = "";
+                                break;
+                            case 'date':
+                                termText.innerHTML += new Date().toString() + "\n";
+                                break;
+                            case 'history':
+                                commandHistory.forEach((h, i) => termText.innerHTML += `  ${i + 1}  ${h}\n`);
+                                break;
+                            case 'whoami':
+                                termText.innerHTML += "root\n";
+                                break;
+                            case 'id':
+                                termText.innerHTML += "uid=0(root) gid=0(root) groups=0(root)\n";
+                                break;
+                            case 'uname':
+                                termText.innerHTML += (arg === '-a') ? "Linux darkstar 2.0.36 #1 Sun Jan 18 18:00:00 2026 i386 GNU/Linux\n" : "Linux\n";
+                                break;
+                            case 'pwd':
+                                termText.innerHTML += "/home/guest\n";
+                                break;
+                            case 'ifconfig':
+                                termText.innerHTML += `eth0      Link encap:Ethernet  HWaddr 00:0C:29:28:FD:45\n          inet addr:192.168.1.105  Bcast:192.168.1.255  Mask:255.255.255.0\n          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1\n`;
+                                break;
+                            case 'netstat':
+                                termText.innerHTML += "Active Internet connections (w/o servers)\nProto Recv-Q Send-Q Local Address           Foreign Address         State\ntcp        0      0 darkstar:43512          140.82.112.4:https      ESTABLISHED\n";
+                                break;
+                            case 'ping':
+                                if (arg) {
+                                    termText.innerHTML += `PING ${arg} (${arg}) 56(84) bytes of data.\n64 bytes from ${arg}: icmp_seq=1 ttl=118 time=24.2 ms\n64 bytes from ${arg}: icmp_seq=2 ttl=118 time=28.5 ms\n--- ${arg} ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss\n`;
+                                } else {
+                                    termText.innerHTML += "usage: ping [destination]\n";
+                                }
+                                break;
+                            case 'touch':
+                                if (arg) fileSystem[arg] = "";
+                                else termText.innerHTML += "touch: missing file operand\n";
+                                break;
+                            case 'rm':
+                                if (arg && fileSystem[arg] !== undefined) delete fileSystem[arg];
+                                else termText.innerHTML += `rm: cannot remove '${arg}': No such file\n`;
+                                break;
+                            case 'fetch-metadata':
+                                termText.innerHTML += `<span style="color:yellow;">[RECONNAISSANCE INITIATED]</span>\n`;
+                                fetch('https://api.ipify.org?format=json')
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        termText.innerHTML += `PUBLIC_IP: ${data.ip}\nOS_PLATFORM: ${navigator.platform}\nUSER_AGENT: ${navigator.userAgent.substring(0, 40)}...\nRESOLUTION: ${window.screen.width}x${window.screen.height}\n<span style="color:yellow;">[DATA CAPTURE COMPLETE]</span>\n`;
+                                        termOut.scrollTop = termOut.scrollHeight;
+                                    })
+                                    .catch(err => termText.innerHTML += `<span style="color:red;">[CONNECTION FAILED]</span>\n`);
+                                break;
+                            case '': 
+                                break;
+                            default:
+                                termText.innerHTML += `bash: ${cmd}: command not found\n`;
+                        }
+                        
+                        cmdIn.value = "";
+                        termOut.scrollTop = termOut.scrollHeight;
+                    }
+                    
+                    // [ARROWS] HISTORY
+                    else if (e.key === 'ArrowUp') {
+                        if (commandHistory.length > 0 && historyIndex > 0) {
+                            historyIndex--;
+                            cmdIn.value = commandHistory[historyIndex];
+                            setTimeout(() => { cmdIn.selectionStart = cmdIn.selectionEnd = cmdIn.value.length; }, 0);
+                        }
+                        e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowDown') {
+                        if (historyIndex < commandHistory.length - 1) {
+                            historyIndex++;
+                            cmdIn.value = commandHistory[historyIndex];
+                        } else {
+                            historyIndex = commandHistory.length;
+                            cmdIn.value = "";
+                        }
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
