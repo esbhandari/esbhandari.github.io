@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +10,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body class="home-page">
-
+    <svg style="display: none;">
+        <defs>
+            <symbol id="icon-x" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+            </symbol>
+            <symbol id="icon-linkedin" viewBox="0 0 24 24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
+            </symbol>
+            <symbol id="icon-github" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+            </symbol>
+        </defs>
+    </svg>
     <header class="glass-canopy">
         <div class="canopy-bound">
-
             <div class="canopy-left">
                 <span class="canopy-name">Sandeep Bhandari</span>
-
                 <button id="mobile-back-global" class="mobile-back-global" aria-label="Go back">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -28,34 +36,22 @@
                     </svg>
                     <span id="mobile-back-label">Back</span>
                 </button>
-
                 <nav class="canopy-nav desktop-only">
-                    <button class="nav-trigger" data-target="artifacts" aria-expanded="false" aria-controls="panel-artifacts">Artifacts</button>
+                    <button class="nav-trigger" data-target="artefacts" aria-expanded="false" aria-controls="panel-artefacts">Artefacts</button>
                     <button class="nav-trigger" data-target="trajectory" aria-expanded="false" aria-controls="panel-trajectory">Trajectory</button>
                     <button class="nav-trigger" data-target="signals" aria-expanded="false" aria-controls="panel-signals">Signals</button>
                 </nav>
             </div>
-
             <div class="canopy-right">
                 <div class="social-links">
                     <a href="https://x.com/esbhandari" target="_blank" rel="noopener noreferrer" aria-label="X" class="social-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
-                            </path>
-                        </svg>
+                        <svg fill="currentColor"><use href="#icon-x"></use></svg>
                     </a>
                     <a href="https://www.linkedin.com/in/esbhandari" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                        </svg>
+                        <svg fill="currentColor"><use href="#icon-linkedin"></use></svg>
                     </a>
                     <a href="https://github.com/esbhandari" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="social-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
-                            </path>
-                        </svg>
+                        <svg fill="currentColor"><use href="#icon-github"></use></svg>
                     </a>
                     <button class="mobile-trigger" id="mobile-trigger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-overlay">
                         <span class="line line-top"></span>
@@ -64,12 +60,31 @@
                 </div>
             </div>
         </div>
-
         <div class="mega-panel desktop-only" data-name="Sandeep Bhandari">
-            <div class="panel-content" id="panel-artifacts">
+            <div class="panel-content" id="panel-artefacts">
                 <a href="#">Software</a>
                 <a href="#">Hardware</a>
                 <a href="#">Systems Logic</a>
+                <a href="#">Mythos Automation</a>
+                <a href="#">Threat Modelling (STRIDE)</a>
+                <a href="#">OSINT Architecture</a>
+                <a href="#">Web Application Security</a>
+                <a href="#">Hyper-V Environments</a>
+                <a href="#">Kali Linux Deployments</a>
+                <a href="#">Proton Pass Routing</a>
+                <a href="#">SimpleLogin Aliasing</a>
+                <a href="#">Obsidian Vault Mapping</a>
+                <a href="#">Data Retention Audits</a>
+                <a href="#">Local LLM (Ollama)</a>
+                <a href="#">Gemini CLI Integration</a>
+                <a href="#">CVE Tracking Metrics</a>
+                <a href="#">CVSS & EPSS Scoring</a>
+                <a href="#">Zero-Trust Networks</a>
+                <a href="#">Telemetry Interception</a>
+                <a href="#">Encrypted Volumes</a>
+                <a href="#">Self-Hosted Infrastructure</a>
+                <a href="#">Hardware Exploitation</a>
+                <a href="#">Network Cryptography</a>
             </div>
             <div class="panel-content" id="panel-trajectory">
                 <a href="#">Current Focus</a>
@@ -83,68 +98,36 @@
             </div>
         </div>
     </header>
-
     <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true">
         <div class="mobile-view view-center" id="mobile-main">
-            <button class="mobile-item" data-target="m-artifacts" aria-expanded="false" aria-controls="m-artifacts">Artifacts</button>
+            <button class="mobile-item" data-target="m-artefacts" aria-expanded="false" aria-controls="m-artefacts">Artefacts</button>
             <button class="mobile-item" data-target="m-trajectory" aria-expanded="false" aria-controls="m-trajectory">Trajectory</button>
             <button class="mobile-item" data-target="m-signals" aria-expanded="false" aria-controls="m-signals">Signals</button>
         </div>
-
-        <div class="mobile-view view-right" id="m-artifacts">
-            <a href="#">Software</a>
-            <a href="#">Hardware</a>
-            <a href="#">Systems Logic</a>
-        </div>
-
-        <div class="mobile-view view-right" id="m-trajectory">
-            <a href="#">Current Focus</a>
-            <a href="#">Operating Principles</a>
-            <a href="#">The Archive</a>
-        </div>
-
-        <div class="mobile-view view-right" id="m-signals">
-            <a href="#">Essays</a>
-            <a href="#">Frameworks</a>
-            <a href="#">Reading List</a>
-        </div>
-
+        <div class="mobile-view view-right" id="m-artefacts"></div>
+        <div class="mobile-view view-right" id="m-trajectory"></div>
+        <div class="mobile-view view-right" id="m-signals"></div>
         <div class="mobile-socials">
             <a href="https://x.com/esbhandari" target="_blank" rel="noopener noreferrer" aria-label="X" class="social-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
-                    </path>
-                </svg>
+                <svg fill="currentColor"><use href="#icon-x"></use></svg>
             </a>
             <a href="https://www.linkedin.com/in/esbhandari" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
+                <svg fill="currentColor"><use href="#icon-linkedin"></use></svg>
             </a>
             <a href="https://github.com/esbhandari" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="social-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z">
-                    </path>
-                </svg>
+                <svg fill="currentColor"><use href="#icon-github"></use></svg>
             </a>
         </div>
     </div>
-
     <div class="focal-scrim desktop-only"></div>
-
     <main class="simulation-volume">
         <div class="status-message">Still chipping away at it</div>
     </main>
-
     <footer class="structural-baseline">
         <div class="baseline-bound">
             <p class="copyright">&copy; 2026 esbhandari</p>
         </div>
     </footer>
-
     <script src="script.js"></script>
 </body>
-
 </html>
