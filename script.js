@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const MENU_DEBOUNCE = 100;
     let timeoutId;
     let pinnedOpen = false;
+    let openedByHoverFor = null;
+    let lastHoverPointerType = null;
     const cloneNavigation = () => {
         ['artefacts', 'trajectory', 'signals'].forEach(panel => {
             const deskContent = document.getElementById(`panel-${panel}`);
@@ -37,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         megaPanel.style.height = "0px";
         scrim.classList.remove("active");
         updateAriaTriggers(null);
+        openedByHoverFor = null;
+        lastHoverPointerType = null;
     };
     const closeDeskMenu = (immediate = false) => {
         clearTimeout(timeoutId);
@@ -75,8 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     deskTriggers.forEach(trigger => {
         trigger.addEventListener("pointerenter", (e) => {
-            if (e.pointerType !== 'mouse') return;
+            if (e.pointerType === 'touch') return;
             openDeskMenu(trigger.getAttribute("data-target"));
+            openedByHoverFor = trigger.getAttribute("data-target");
+            lastHoverPointerType = e.pointerType;
         });
         trigger.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -84,6 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const panel = document.getElementById(`panel-${target}`);
             if (!panel) return;
             const isActive = canopy.classList.contains("active") && panel.classList.contains("active");
+            const isPenConfirmingHover =
+                isActive && lastHoverPointerType === 'pen' && openedByHoverFor === target;
+            openedByHoverFor = null;
+            lastHoverPointerType = null;
+            if (isPenConfirmingHover) {
+                // The pen's tap-down is the same physical gesture as its hover —
+                // treat it as a deliberate "open" click, not a toggle-close.
+                pinnedOpen = true;
+                return;
+            }
             if (isActive) {
                 pinnedOpen = false;
                 closeDeskMenu(true);
@@ -94,11 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     megaPanel.addEventListener("pointerenter", (e) => {
-        if (e.pointerType !== 'mouse') return;
+        if (e.pointerType === 'touch') return;
         clearTimeout(timeoutId);
     });
     canopy.addEventListener("pointerleave", (e) => {
-        if (e.pointerType !== 'mouse') return;
+        if (e.pointerType === 'touch') return;
         if (pinnedOpen) return;
         closeDeskMenu();
     });
@@ -208,3 +224,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     mobileBackGlobal.addEventListener("click", resetMobileViews);
 });
+
