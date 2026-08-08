@@ -224,4 +224,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     mobileBackGlobal.addEventListener("click", resetMobileViews);
 });
-
