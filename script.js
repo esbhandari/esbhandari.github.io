@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     deskTriggers.forEach(trigger => {
         trigger.addEventListener("pointerenter", (e) => {
-            if (e.pointerType === 'touch') return;
+            if (e.pointerType !== 'mouse') return;
             openDeskMenu(trigger.getAttribute("data-target"));
         });
         trigger.addEventListener("click", (e) => {
@@ -94,11 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     megaPanel.addEventListener("pointerenter", (e) => {
-        if (e.pointerType === 'touch') return;
+        if (e.pointerType !== 'mouse') return;
         clearTimeout(timeoutId);
     });
     canopy.addEventListener("pointerleave", (e) => {
-        if (e.pointerType === 'touch') return;
+        if (e.pointerType !== 'mouse') return;
         if (pinnedOpen) return;
         closeDeskMenu();
     });
