@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const scrim = document.querySelector(".focal-scrim");
     const MENU_DEBOUNCE = 100;
     let timeoutId;
+    let pinnedOpen = false;
     const cloneNavigation = () => {
         ['artefacts', 'trajectory', 'signals'].forEach(panel => {
             const deskContent = document.getElementById(`panel-${panel}`);
@@ -27,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
             trigger.setAttribute("aria-expanded", isExpanded ? "true" : "false");
         });
     };
+    const getActiveTrigger = () =>
+        Array.from(deskTriggers).find(t => t.getAttribute("aria-expanded") === "true") || null;
     const performDeskClose = () => {
         canopy.classList.remove("active");
         megaPanel.classList.remove("active");
@@ -82,8 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!panel) return;
             const isActive = canopy.classList.contains("active") && panel.classList.contains("active");
             if (isActive) {
+                pinnedOpen = false;
                 closeDeskMenu(true);
             } else {
+                pinnedOpen = true;
                 openDeskMenu(target);
             }
         });
@@ -94,9 +99,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     canopy.addEventListener("pointerleave", (e) => {
         if (e.pointerType === 'touch') return;
+        if (pinnedOpen) return;
         closeDeskMenu();
     });
-    scrim.addEventListener("click", () => closeDeskMenu(true));
+    document.addEventListener("click", (e) => {
+        if (!pinnedOpen) return;
+        if (canopy.contains(e.target)) return;
+        pinnedOpen = false;
+        closeDeskMenu(true);
+    });
+    scrim.addEventListener("click", () => {
+        pinnedOpen = false;
+        closeDeskMenu(true);
+    });
     const mobileTrigger = document.getElementById("mobile-trigger");
     const mobileOverlay = document.getElementById("mobile-overlay");
     const mobileMain = document.getElementById("mobile-main");
@@ -104,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const mobileBackGlobal = document.getElementById("mobile-back-global");
     const mobileBackLabel = document.getElementById("mobile-back-label");
     const mobileViews = document.querySelectorAll(".mobile-view");
-    let activeSubView = null;
     const trapFocus = (e) => {
         if (e.key !== "Tab") return;
         const focusable = [
@@ -134,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         mobileMain.classList.remove("view-left", "view-right");
         mobileMain.classList.add("view-center");
-        activeSubView = null;
         mobileItems.forEach(i => i.setAttribute("aria-expanded", "false"));
         mobileBackGlobal.classList.remove("is-visible");
     };
@@ -149,7 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
             if (megaPanel.classList.contains("active")) {
+                const trigger = getActiveTrigger();
+                pinnedOpen = false;
                 closeDeskMenu(true);
+                if (trigger) trigger.focus();
             }
             if (mobileOverlay.classList.contains("active")) {
                 closeMobileMenu();
@@ -182,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const targetPane = document.getElementById(targetId);
             if (!targetPane) return;
             mobileItems.forEach(i => i.setAttribute("aria-expanded", i === item ? "true" : "false"));
-            activeSubView = targetPane;
             mobileMain.classList.remove("view-center");
             mobileMain.classList.add("view-left");
             targetPane.classList.remove("view-right");
