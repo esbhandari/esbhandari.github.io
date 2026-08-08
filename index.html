@@ -28,18 +28,18 @@
         <div class="canopy-bound">
             <div class="canopy-left">
                 <span class="canopy-name">Sandeep Bhandari</span>
-                <button id="mobile-back-global" class="mobile-back-global" aria-label="Go back">
+                <button id="mobile-back-global" class="mobile-back-global" type="button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
                     <span id="mobile-back-label">Back</span>
                 </button>
                 <nav class="canopy-nav desktop-only">
-                    <button class="nav-trigger" data-target="artefacts" aria-expanded="false" aria-controls="panel-artefacts">Artefacts</button>
-                    <button class="nav-trigger" data-target="trajectory" aria-expanded="false" aria-controls="panel-trajectory">Trajectory</button>
-                    <button class="nav-trigger" data-target="signals" aria-expanded="false" aria-controls="panel-signals">Signals</button>
+                    <button class="nav-trigger" type="button" data-target="artefacts" aria-expanded="false" aria-controls="panel-artefacts">Artefacts</button>
+                    <button class="nav-trigger" type="button" data-target="trajectory" aria-expanded="false" aria-controls="panel-trajectory">Trajectory</button>
+                    <button class="nav-trigger" type="button" data-target="signals" aria-expanded="false" aria-controls="panel-signals">Signals</button>
                 </nav>
             </div>
             <div class="canopy-right">
@@ -53,7 +53,7 @@
                     <a href="https://github.com/esbhandari" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="social-icon">
                         <svg fill="currentColor"><use href="#icon-github"></use></svg>
                     </a>
-                    <button class="mobile-trigger" id="mobile-trigger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-overlay">
+                    <button class="mobile-trigger" type="button" id="mobile-trigger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-overlay">
                         <span class="line line-top"></span>
                         <span class="line line-bottom"></span>
                     </button>
@@ -80,9 +80,9 @@
     </header>
     <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true">
         <div class="mobile-view view-center" id="mobile-main">
-            <button class="mobile-item" data-target="m-artefacts" aria-expanded="false" aria-controls="m-artefacts">Artefacts</button>
-            <button class="mobile-item" data-target="m-trajectory" aria-expanded="false" aria-controls="m-trajectory">Trajectory</button>
-            <button class="mobile-item" data-target="m-signals" aria-expanded="false" aria-controls="m-signals">Signals</button>
+            <button class="mobile-item" type="button" data-target="m-artefacts" aria-expanded="false" aria-controls="m-artefacts">Artefacts</button>
+            <button class="mobile-item" type="button" data-target="m-trajectory" aria-expanded="false" aria-controls="m-trajectory">Trajectory</button>
+            <button class="mobile-item" type="button" data-target="m-signals" aria-expanded="false" aria-controls="m-signals">Signals</button>
         </div>
         <div class="mobile-view view-right" id="m-artefacts"></div>
         <div class="mobile-view view-right" id="m-trajectory"></div>
@@ -111,3 +111,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
