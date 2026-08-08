@@ -182,11 +182,8 @@ a {
     letter-spacing: -0.5px;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.panel-content:active a {
-    opacity: 0.4;
-}
 .panel-content a:active {
-    opacity: 1;
+    opacity: 0.4;
     transform: translateX(4px);
 }
 .focal-scrim {
@@ -426,7 +423,7 @@ a {
         font-size: 24px;
         font-weight: 500;
         cursor: pointer;
-        transition: opacity 0.2s ease, transform 0.2s ease;
+        transition: opacity 0.2s ease;
     }
     .mobile-socials {
         position: absolute;
@@ -448,14 +445,9 @@ a {
         transition-delay: 0.18s;
     }
 }
-.mobile-view:active .mobile-item,
-.mobile-view:active a {
-    opacity: 0.4;
-}
 .mobile-item:active,
 .mobile-view a:active {
-    opacity: 1;
-    transform: translateX(4px);
+    opacity: 0.4;
 }
 .mobile-socials:active .social-icon {
     opacity: 0.4;
@@ -471,11 +463,8 @@ a {
     .canopy-nav .nav-trigger:hover {
         opacity: 1;
     }
-    .panel-content:hover a {
-        opacity: 0.4;
-    }
     .panel-content a:hover {
-        opacity: 1;
+        opacity: 0.4;
         transform: translateX(4px);
     }
     .social-links:hover .social-icon,
@@ -489,14 +478,9 @@ a {
     .social-links .mobile-trigger:hover {
         opacity: 1;
     }
-    .mobile-overlay.active .mobile-view:hover .mobile-item,
-    .mobile-overlay.active .mobile-view:hover a {
+    .mobile-overlay.active #mobile-main .mobile-item:hover,
+    .mobile-view a:hover {
         opacity: 0.4;
-    }
-    .mobile-overlay.active .mobile-item:hover,
-    .mobile-overlay.active .mobile-view a:hover {
-        opacity: 1;
-        transform: translateX(4px);
     }
     .mobile-socials:hover .social-icon {
         opacity: 0.4;
