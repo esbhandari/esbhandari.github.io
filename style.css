@@ -127,6 +127,12 @@ a {
 .canopy-nav:has(.nav-trigger.is-pressed) .nav-trigger.is-pressed {
     opacity: 1;
 }
+.glass-canopy.active .nav-trigger {
+    opacity: 0.4;
+}
+.glass-canopy.active .nav-trigger[aria-expanded="true"] {
+    opacity: 1;
+}
 .mega-panel {
     width: 100%;
     max-width: 1040px;
@@ -181,12 +187,11 @@ a {
     font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.5px;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: opacity 0.2s ease;
 }
 .panel-content a:active,
 .panel-content a.is-pressed {
     opacity: 0.4;
-    transform: translateX(4px) scale(0.97);
 }
 .focal-scrim {
     position: fixed;
@@ -415,6 +420,10 @@ a {
     .mobile-overlay.active #mobile-main .mobile-item:nth-child(1) { transition-delay: 50ms; }
     .mobile-overlay.active #mobile-main .mobile-item:nth-child(2) { transition-delay: 90ms; }
     .mobile-overlay.active #mobile-main .mobile-item:nth-child(3) { transition-delay: 130ms; }
+    .mobile-overlay.active #mobile-main .mobile-item:active,
+    .mobile-overlay.active #mobile-main .mobile-item.is-pressed {
+        opacity: 0.4;
+    }
 
     .mobile-item {
         background: none;
@@ -475,7 +484,6 @@ a {
     }
     .panel-content a:hover {
         opacity: 0.4;
-        transform: translateX(4px);
     }
     .social-links:hover .social-icon,
     .social-links:hover .mobile-trigger {
