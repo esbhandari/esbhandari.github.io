@@ -119,10 +119,12 @@ a {
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
-.canopy-nav:active .nav-trigger {
+.canopy-nav:active .nav-trigger,
+.canopy-nav:has(.nav-trigger.is-pressed) .nav-trigger {
     opacity: 0.4;
 }
-.canopy-nav .nav-trigger:active {
+.canopy-nav .nav-trigger:active,
+.canopy-nav .nav-trigger.is-pressed {
     opacity: 1;
 }
 .mega-panel {
@@ -182,7 +184,8 @@ a {
     letter-spacing: -0.5px;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.panel-content a:active {
+.panel-content a:active,
+.panel-content a.is-pressed {
     opacity: 0.4;
     transform: translateX(4px);
 }
@@ -265,14 +268,18 @@ a {
     display: none;
 }
 .social-links:active .social-icon,
-.social-links:active .mobile-trigger {
+.social-links:active .mobile-trigger,
+.social-links:has(.is-pressed) .social-icon,
+.social-links:has(.is-pressed) .mobile-trigger {
     opacity: 0.4;
 }
-.social-links .social-icon:active {
+.social-links .social-icon:active,
+.social-links .social-icon.is-pressed {
     opacity: 1;
     transform: translateY(-1px);
 }
-.social-links .mobile-trigger:active {
+.social-links .mobile-trigger:active,
+.social-links .mobile-trigger.is-pressed {
     opacity: 1;
 }
 @media (max-width: 768px) {
@@ -446,47 +453,86 @@ a {
     }
 }
 .mobile-item:active,
-.mobile-view a:active {
+.mobile-view a:active,
+.mobile-item.is-pressed,
+.mobile-view a.is-pressed {
     opacity: 0.4;
 }
-.mobile-socials:active .social-icon {
+.mobile-socials:active .social-icon,
+.mobile-socials:has(.is-pressed) .social-icon {
     opacity: 0.4;
 }
-.mobile-socials .social-icon:active {
+.mobile-socials .social-icon:active,
+.mobile-socials .social-icon.is-pressed {
     opacity: 1;
     transform: translateY(-1px);
 }
 @media (hover: hover) {
-    .canopy-nav:hover .nav-trigger {
+    /* html:not(.pen-touch-mode) restricts these to genuine mouse input.
+       Without it, Chrome on Android applies :hover on pen proximity before
+       contact, stacking a hover stage in front of :active and producing a
+       hold-like delay for pen taps that finger taps don't have. */
+    html:not(.pen-touch-mode) .canopy-nav:hover .nav-trigger {
         opacity: 0.4;
     }
-    .canopy-nav .nav-trigger:hover {
+    html:not(.pen-touch-mode) .canopy-nav .nav-trigger:hover {
         opacity: 1;
     }
-    .panel-content a:hover {
+    html:not(.pen-touch-mode) .panel-content a:hover {
         opacity: 0.4;
         transform: translateX(4px);
     }
-    .social-links:hover .social-icon,
-    .social-links:hover .mobile-trigger {
+    html:not(.pen-touch-mode) .social-links:hover .social-icon,
+    html:not(.pen-touch-mode) .social-links:hover .mobile-trigger {
         opacity: 0.4;
     }
-    .social-links .social-icon:hover {
+    html:not(.pen-touch-mode) .social-links .social-icon:hover {
         opacity: 1;
         transform: translateY(-1px);
     }
-    .social-links .mobile-trigger:hover {
+    html:not(.pen-touch-mode) .social-links .mobile-trigger:hover {
         opacity: 1;
     }
-    .mobile-overlay.active #mobile-main .mobile-item:hover,
-    .mobile-view a:hover {
+    html:not(.pen-touch-mode) .mobile-overlay.active #mobile-main .mobile-item:hover,
+    html:not(.pen-touch-mode) .mobile-view a:hover {
         opacity: 0.4;
     }
-    .mobile-socials:hover .social-icon {
+    html:not(.pen-touch-mode) .mobile-socials:hover .social-icon {
         opacity: 0.4;
     }
-    .mobile-socials .social-icon:hover {
+    html:not(.pen-touch-mode) .mobile-socials .social-icon:hover {
         opacity: 1;
         transform: translateY(-1px);
+    }
+}
+
+/* Sub-page title + blinking cursor */
+.page-title {
+    position: fixed;
+    top: 78px;
+    left: 24px;
+    right: auto;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    z-index: 1500;
+}
+.page-cursor {
+    display: inline-block;
+    width: 2px;
+    height: clamp(24px, 4vw, 42px);
+    background-color: var(--ink-color);
+    animation: blink-caret 1s step-end infinite;
+}
+@keyframes blink-caret {
+    0%, 50% { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
+}
+@media (max-width: 768px) {
+    .page-title {
+        left: 0;
+        right: 0;
+        text-align: center;
     }
 }
