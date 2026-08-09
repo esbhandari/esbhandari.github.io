@@ -164,6 +164,7 @@ a {
     margin-right: 40px;
     visibility: hidden;
     pointer-events: none;
+    flex-shrink: 0;
 }
 .mega-panel.active {
     opacity: var(--solid-opacity);
