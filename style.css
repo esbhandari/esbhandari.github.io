@@ -475,7 +475,7 @@ a {
     opacity: 1;
     transform: translateY(-1px);
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
     .canopy-nav:hover .nav-trigger {
         opacity: 0.4;
     }
