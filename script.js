@@ -20,10 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let timeoutId;
     let pinnedOpen = false;
     const cloneNavigation = () => {
-        ['artefacts', 'trajectory', 'signals'].forEach(panel => {
-            const deskContent = document.getElementById(`panel-${panel}`);
-            const mobileContent = document.getElementById(`m-${panel}`);
-            if (deskContent && mobileContent) {
+        deskContents.forEach(deskContent => {
+            if (!deskContent.id.startsWith('panel-')) return;
+            const panelId = deskContent.id.substring(6); // remove 'panel-'
+            const mobileContent = document.getElementById(`m-${panelId}`);
+            if (mobileContent) {
                 mobileContent.innerHTML = deskContent.innerHTML;
             }
         });
