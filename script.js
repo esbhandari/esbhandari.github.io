@@ -1,3 +1,39 @@
+// Chrome on Android reports S-Pen (and similar styluses) as hover-capable,
+// so CSS :hover fires on pen proximity before contact, then :active fires on
+// touch-down — two stages instead of one, which reads as a hold delay.
+// Edge apparently routes pen through the touch path instead, skipping that
+// hover stage. To make behavior consistent across browsers, we track the
+// real pointer type ourselves and gate the CSS :hover rules (see style.css)
+// behind a class that's only absent for genuine mouse input.
+const setPointerMode = (pointerType) => {
+    document.documentElement.classList.toggle("pen-touch-mode", pointerType !== "mouse");
+};
+document.addEventListener("pointerdown", (e) => setPointerMode(e.pointerType), { passive: true });
+document.addEventListener("pointermove", (e) => setPointerMode(e.pointerType), { passive: true });
+
+// Separately: native :active timing is controlled by Chrome's own tap-vs-hold
+// gesture disambiguation, which can require a "hold" once the browser has
+// seen a hover-capable pointer (a pen) — and that slower mode can persist for
+// later finger input too, until the page reloads. That's a browser-engine
+// heuristic no CSS can override. So for touch/pen we skip native :active
+// entirely and drive the press-dim effect ourselves via Pointer Events,
+// which fire immediately regardless of Chrome's internal gesture state.
+// Mouse continues to rely on native :hover/:active, untouched — this only
+// applies to touch and pen. The companion CSS lives in style.css and uses
+// :has(.is-pressed) so the same dim/highlight pattern (group dims, pressed
+// item stays full opacity) applies as it does for :active.
+const PRESS_TARGETS = ".nav-trigger, .social-icon, .mobile-trigger, .panel-content a, .mobile-item, .mobile-view a";
+document.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse") return;
+    const el = e.target.closest(PRESS_TARGETS);
+    if (el) el.classList.add("is-pressed");
+}, { passive: true });
+const clearPressed = () => {
+    document.querySelectorAll(".is-pressed").forEach((el) => el.classList.remove("is-pressed"));
+};
+document.addEventListener("pointerup", clearPressed, { passive: true });
+document.addEventListener("pointercancel", clearPressed, { passive: true });
+
 document.addEventListener("DOMContentLoaded", () => {
     const canopy = document.querySelector(".glass-canopy");
     const deskTriggers = document.querySelectorAll(".nav-trigger");
@@ -17,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
     cloneNavigation();
-    document.addEventListener("touchstart", () => {}, { passive: true });
     document.addEventListener("click", (e) => {
         const link = e.target.closest('a[href="#"]');
         if (link) e.preventDefault();
