@@ -468,12 +468,6 @@ a {
     transform: translateY(-1px);
 }
 @media (hover: hover) {
-    /* Applies to any hover-capable pointer (mouse or pen) — touch has no
-       hover phase so it's naturally excluded. The earlier "hold" delay for
-       pen turned out to come from native :active timing, not from :hover
-       itself, so it's fixed by the pointerdown/pointerup .is-pressed logic
-       in script.js. Hover can stay on for pen, matching how sites like
-       apple.com behave with a stylus. */
     .canopy-nav:hover .nav-trigger {
         opacity: 0.4;
     }
@@ -507,9 +501,6 @@ a {
         transform: translateY(-1px);
     }
 }
-
-
-/* Sub-page title + blinking cursor */
 .page-title {
     position: fixed;
     top: 78px;
