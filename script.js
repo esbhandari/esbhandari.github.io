@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const currentHeight = megaPanel.offsetHeight;
             const distanceToTravel = Math.abs(currentHeight - targetHeight);
             const dynamicTime = Math.min(0.8, 0.2 + (Math.sqrt(distanceToTravel) * 0.015));
-            megaPanel.style.transitionDuration = `${dynamicTime}s, ${dynamicTime}s, ${dynamicTime}s, ${dynamicTime}s`;
+            megaPanel.style.transitionDuration = `${dynamicTime}s`;
             megaPanel.style.height = targetHeight + "px";
         }
     };
@@ -198,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
             canopy.classList.add("mobile-menu-open");
             mobileTrigger.setAttribute("aria-expanded", "true");
             mobileOverlay.removeAttribute("aria-hidden");
+            document.removeEventListener("keydown", trapFocus);
             document.addEventListener("keydown", trapFocus);
         } else {
             closeMobileMenu();
