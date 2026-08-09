@@ -124,7 +124,7 @@ a {
     opacity: 0.4;
 }
 .canopy-nav .nav-trigger:active,
-.canopy-nav .nav-trigger.is-pressed {
+.canopy-nav:has(.nav-trigger.is-pressed) .nav-trigger.is-pressed {
     opacity: 1;
 }
 .mega-panel {
@@ -468,35 +468,35 @@ a {
     transform: translateY(-1px);
 }
 @media (hover: hover) {
-    html:not(.pen-touch-mode) .canopy-nav:hover .nav-trigger {
+    .canopy-nav:hover .nav-trigger {
         opacity: 0.4;
     }
-    html:not(.pen-touch-mode) .canopy-nav .nav-trigger:hover {
+    .canopy-nav .nav-trigger:hover {
         opacity: 1;
     }
-    html:not(.pen-touch-mode) .panel-content a:hover {
+    .panel-content a:hover {
         opacity: 0.4;
         transform: translateX(4px);
     }
-    html:not(.pen-touch-mode) .social-links:hover .social-icon,
-    html:not(.pen-touch-mode) .social-links:hover .mobile-trigger {
+    .social-links:hover .social-icon,
+    .social-links:hover .mobile-trigger {
         opacity: 0.4;
     }
-    html:not(.pen-touch-mode) .social-links .social-icon:hover {
+    .social-links .social-icon:hover {
         opacity: 1;
         transform: translateY(-1px);
     }
-    html:not(.pen-touch-mode) .social-links .mobile-trigger:hover {
+    .social-links .mobile-trigger:hover {
         opacity: 1;
     }
-    html:not(.pen-touch-mode) .mobile-overlay.active #mobile-main .mobile-item:hover,
-    html:not(.pen-touch-mode) .mobile-view a:hover {
+    .mobile-overlay.active #mobile-main .mobile-item:hover,
+    .mobile-view a:hover {
         opacity: 0.4;
     }
-    html:not(.pen-touch-mode) .mobile-socials:hover .social-icon {
+    .mobile-socials:hover .social-icon {
         opacity: 0.4;
     }
-    html:not(.pen-touch-mode) .mobile-socials .social-icon:hover {
+    .mobile-socials .social-icon:hover {
         opacity: 1;
         transform: translateY(-1px);
     }
