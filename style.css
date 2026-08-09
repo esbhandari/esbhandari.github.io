@@ -468,10 +468,6 @@ a {
     transform: translateY(-1px);
 }
 @media (hover: hover) {
-    /* html:not(.pen-touch-mode) restricts these to genuine mouse input.
-       Without it, Chrome on Android applies :hover on pen proximity before
-       contact, stacking a hover stage in front of :active and producing a
-       hold-like delay for pen taps that finger taps don't have. */
     html:not(.pen-touch-mode) .canopy-nav:hover .nav-trigger {
         opacity: 0.4;
     }
@@ -505,8 +501,6 @@ a {
         transform: translateY(-1px);
     }
 }
-
-/* Sub-page title + blinking cursor */
 .page-title {
     position: fixed;
     top: 78px;
