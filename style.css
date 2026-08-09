@@ -134,11 +134,10 @@ a {
     height: 0;
     opacity: 0;
     overflow: hidden;
-    overflow-x: hidden;
     max-height: calc(100vh - 54px);
     max-height: calc(100dvh - 54px);
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
     transition: height 0.35s cubic-bezier(0.25, 1, 0.5, 1),
                 opacity 0.3s ease,
                 padding-top 0.35s cubic-bezier(0.25, 1, 0.5, 1),
@@ -187,7 +186,7 @@ a {
 .panel-content a:active,
 .panel-content a.is-pressed {
     opacity: 0.4;
-    transform: translateX(4px);
+    transform: translateX(4px) scale(0.97);
 }
 .focal-scrim {
     position: fixed;
