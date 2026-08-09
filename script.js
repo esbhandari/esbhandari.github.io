@@ -1,221 +1,541 @@
-const PRESS_TARGETS = ".nav-trigger, .social-icon, .mobile-trigger, .panel-content a, .mobile-item, .mobile-view a";
-document.addEventListener("pointerdown", (e) => {
-    if (e.pointerType === "mouse") return;
-    const el = e.target.closest(PRESS_TARGETS);
-    if (el) el.classList.add("is-pressed");
-}, { passive: true });
-const clearPressed = () => {
-    document.querySelectorAll(".is-pressed").forEach((el) => el.classList.remove("is-pressed"));
-};
-document.addEventListener("pointerup", clearPressed, { passive: true });
-document.addEventListener("pointercancel", clearPressed, { passive: true });
+:root {
+    --canvas-bg: #f5f5f7;
+    --ink-color: #1d1d1f;
+    --glass-panel: rgba(245, 245, 247, 0.6);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --scrim-tint: rgba(255, 255, 255, 0.3);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --canvas-bg: #000000;
+        --ink-color: #f5f5f7;
+        --glass-panel: rgba(0, 0, 0, 0.5);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --scrim-tint: rgba(0, 0, 0, 0.5);
+    }
+}
+body,
+html {
+    margin: 0;
+    padding: 0;
+    background-color: var(--canvas-bg);
+    color: var(--ink-color);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+* {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+svg {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.canopy-name,
+.nav-trigger,
+.mobile-item,
+.status-message {
+    user-select: none;
+    -webkit-user-select: none;
+}
+.baseline-bound {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.glass-canopy {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(var(--glass-panel), var(--glass-panel)),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+    backdrop-filter: blur(20px);
+    padding: 0 24px;
+    box-sizing: border-box;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s ease;
+}
+.glass-canopy.active,
+.glass-canopy.mobile-menu-open {
+    background: var(--canvas-bg);
+}
+.canopy-bound {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 54px;
+}
+.canopy-left {
+    display: flex;
+    align-items: center;
+}
+.canopy-right {
+    display: flex;
+    align-items: center;
+}
+.canopy-name {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+}
+.canopy-nav {
+    display: flex;
+    gap: 32px;
+    margin-left: 40px;
+}
+.nav-trigger {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+.canopy-nav:active .nav-trigger,
+.canopy-nav:has(.nav-trigger.is-pressed) .nav-trigger {
+    opacity: 0.4;
+}
+.canopy-nav .nav-trigger:active,
+.canopy-nav .nav-trigger.is-pressed {
+    opacity: 1;
+}
+.mega-panel {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    overflow-x: hidden;
+    max-height: calc(100vh - 54px);
+    max-height: calc(100dvh - 54px);
+    padding-top: 0px;
+    padding-bottom: 0px;
+    transition: height 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+                opacity 0.3s ease,
+                padding-top 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+                padding-bottom 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+.mega-panel::before {
+    content: attr(data-name);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-right: 40px;
+    visibility: hidden;
+    pointer-events: none;
+}
+.mega-panel.active {
+    opacity: 1;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+.panel-content {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 102px);
+    max-height: calc(100dvh - 102px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
+}
+.panel-content.active {
+    display: flex;
+}
+.panel-content a {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.panel-content a:active,
+.panel-content a.is-pressed {
+    opacity: 0.4;
+    transform: translateX(4px);
+}
+.focal-scrim {
+    position: fixed;
+    top: 54px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 54px);
+    height: calc(100dvh - 54px);
+    background: var(--scrim-tint);
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 900;
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.focal-scrim.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+.simulation-volume {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+.status-message {
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 500;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+}
+.structural-baseline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 24px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+.copyright {
+    display: none;
+    font-size: 12px;
+    opacity: 0.4;
+    letter-spacing: 0.2px;
+    margin: 0;
+}
+.home-page .copyright {
+    display: block;
+}
+.social-links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+}
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+.mobile-trigger {
+    display: none;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+.mobile-overlay {
+    display: none;
+}
+.mobile-back-global {
+    display: none;
+}
+.social-links:active .social-icon,
+.social-links:active .mobile-trigger,
+.social-links:has(.is-pressed) .social-icon,
+.social-links:has(.is-pressed) .mobile-trigger {
+    opacity: 0.4;
+}
+.social-links .social-icon:active,
+.social-links .social-icon.is-pressed {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+.social-links .mobile-trigger:active,
+.social-links .mobile-trigger.is-pressed {
+    opacity: 1;
+}
+@media (max-width: 768px) {
 
-document.addEventListener("DOMContentLoaded", () => {
-    const canopy = document.querySelector(".glass-canopy");
-    const deskTriggers = document.querySelectorAll(".nav-trigger");
-    const megaPanel = document.querySelector(".mega-panel");
-    const deskContents = document.querySelectorAll(".panel-content");
-    const scrim = document.querySelector(".focal-scrim");
-    const MENU_DEBOUNCE = 100;
-    let timeoutId;
-    let pinnedOpen = false;
-    const cloneNavigation = () => {
-        ['artefacts', 'trajectory', 'signals'].forEach(panel => {
-            const deskContent = document.getElementById(`panel-${panel}`);
-            const mobileContent = document.getElementById(`m-${panel}`);
-            if (deskContent && mobileContent) {
-                mobileContent.innerHTML = deskContent.innerHTML;
-            }
-        });
-    };
-    cloneNavigation();
-    document.addEventListener("click", (e) => {
-        const link = e.target.closest('a[href="#"]');
-        if (link) e.preventDefault();
-    });
-    const updateAriaTriggers = (activeTargetId = null) => {
-        deskTriggers.forEach(trigger => {
-            const isExpanded = trigger.getAttribute("data-target") === activeTargetId;
-            trigger.setAttribute("aria-expanded", isExpanded ? "true" : "false");
-        });
-    };
-    const getActiveTrigger = () =>
-        Array.from(deskTriggers).find(t => t.getAttribute("aria-expanded") === "true") || null;
-    const performDeskClose = () => {
-        canopy.classList.remove("active");
-        megaPanel.classList.remove("active");
-        megaPanel.style.transitionDuration = "";
-        megaPanel.style.height = "0px";
-        scrim.classList.remove("active");
-        updateAriaTriggers(null);
-    };
-    const closeDeskMenu = (immediate = false) => {
-        clearTimeout(timeoutId);
-        if (immediate) {
-            performDeskClose();
-        } else {
-            timeoutId = setTimeout(performDeskClose, MENU_DEBOUNCE);
-        }
-    };
-    megaPanel.addEventListener('transitionend', (e) => {
-        if (e.target !== e.currentTarget) return;
-        if (e.propertyName === 'opacity' && !megaPanel.classList.contains('active')) {
-            deskContents.forEach(c => c.classList.remove("active"));
-        }
-    });
-    const openDeskMenu = (targetId) => {
-        clearTimeout(timeoutId);
-        canopy.classList.add("active");
-        megaPanel.classList.add("active");
-        scrim.classList.add("active");
-        updateAriaTriggers(targetId);
-        let targetContent;
-        deskContents.forEach(content => {
-            const isActive = content.id === `panel-${targetId}`;
-            content.classList.toggle("active", isActive);
-            if (isActive) targetContent = content;
-        });
-        if (targetContent) {
-            const targetHeight = targetContent.scrollHeight + 48;
-            const currentHeight = megaPanel.offsetHeight;
-            const distanceToTravel = Math.abs(currentHeight - targetHeight);
-            const dynamicTime = Math.min(0.8, 0.2 + (Math.sqrt(distanceToTravel) * 0.015));
-            megaPanel.style.transitionDuration = `${dynamicTime}s, ${dynamicTime}s, ${dynamicTime}s, ${dynamicTime}s`;
-            megaPanel.style.height = targetHeight + "px";
-        }
-    };
-    deskTriggers.forEach(trigger => {
-        trigger.addEventListener("pointerenter", (e) => {
-            if (e.pointerType !== 'mouse') return;
-            openDeskMenu(trigger.getAttribute("data-target"));
-        });
-        trigger.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const target = trigger.getAttribute("data-target");
-            const panel = document.getElementById(`panel-${target}`);
-            if (!panel) return;
-            const isActive = canopy.classList.contains("active") && panel.classList.contains("active");
-            if (isActive) {
-                pinnedOpen = false;
-                closeDeskMenu(true);
-            } else {
-                pinnedOpen = true;
-                openDeskMenu(target);
-            }
-        });
-    });
-    megaPanel.addEventListener("pointerenter", (e) => {
-        if (e.pointerType !== 'mouse') return;
-        clearTimeout(timeoutId);
-    });
-    canopy.addEventListener("pointerleave", (e) => {
-        if (e.pointerType !== 'mouse') return;
-        if (pinnedOpen) return;
-        closeDeskMenu();
-    });
-    document.addEventListener("click", (e) => {
-        if (!pinnedOpen) return;
-        if (canopy.contains(e.target)) return;
-        pinnedOpen = false;
-        closeDeskMenu(true);
-    });
-    scrim.addEventListener("click", () => {
-        pinnedOpen = false;
-        closeDeskMenu(true);
-    });
-    const mobileTrigger = document.getElementById("mobile-trigger");
-    const mobileOverlay = document.getElementById("mobile-overlay");
-    const mobileMain = document.getElementById("mobile-main");
-    const mobileItems = document.querySelectorAll(".mobile-item");
-    const mobileBackGlobal = document.getElementById("mobile-back-global");
-    const mobileBackLabel = document.getElementById("mobile-back-label");
-    const mobileViews = document.querySelectorAll(".mobile-view");
-    const trapFocus = (e) => {
-        if (e.key !== "Tab") return;
-        const focusable = [
-            mobileTrigger,
-            mobileBackGlobal,
-            ...mobileOverlay.querySelectorAll("button, a[href]")
-        ].filter(el => {
-            return el.offsetParent !== null &&
-                   getComputedStyle(el).visibility !== "hidden" &&
-                   getComputedStyle(el).pointerEvents !== "none";
-        });
-        if (focusable.length < 2) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-        }
-    };
-    const resetMobileViews = () => {
-        mobileViews.forEach(view => {
-            view.classList.remove("view-left", "view-center");
-            view.classList.add("view-right");
-        });
-        mobileMain.classList.remove("view-left", "view-right");
-        mobileMain.classList.add("view-center");
-        mobileItems.forEach(i => i.setAttribute("aria-expanded", "false"));
-        mobileBackGlobal.classList.remove("is-visible");
-    };
-    const closeMobileMenu = () => {
-        mobileTrigger.classList.remove("active");
-        mobileOverlay.classList.remove("active");
-        canopy.classList.remove("mobile-menu-open");
-        mobileTrigger.setAttribute("aria-expanded", "false");
-        mobileOverlay.setAttribute("aria-hidden", "true");
-        document.removeEventListener("keydown", trapFocus);
-    };
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            if (megaPanel.classList.contains("active")) {
-                const trigger = getActiveTrigger();
-                pinnedOpen = false;
-                closeDeskMenu(true);
-                if (trigger) trigger.focus();
-            }
-            if (mobileOverlay.classList.contains("active")) {
-                closeMobileMenu();
-                mobileTrigger.focus();
-            }
-        }
-    });
-    mobileOverlay.addEventListener('transitionend', (e) => {
-        if (e.target !== e.currentTarget) return;
-        if (e.propertyName === 'opacity' && !mobileOverlay.classList.contains('active')) {
-            resetMobileViews();
-        }
-    });
-    mobileTrigger.addEventListener("click", () => {
-        const opening = !mobileOverlay.classList.contains("active");
-        if (opening) {
-            mobileTrigger.classList.add("active");
-            mobileOverlay.classList.add("active");
-            canopy.classList.add("mobile-menu-open");
-            mobileTrigger.setAttribute("aria-expanded", "true");
-            mobileOverlay.removeAttribute("aria-hidden");
-            document.addEventListener("keydown", trapFocus);
-        } else {
-            closeMobileMenu();
-        }
-    });
-    mobileItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const targetId = item.getAttribute("data-target");
-            const targetPane = document.getElementById(targetId);
-            if (!targetPane) return;
-            mobileItems.forEach(i => i.setAttribute("aria-expanded", i === item ? "true" : "false"));
-            mobileMain.classList.remove("view-center");
-            mobileMain.classList.add("view-left");
-            targetPane.classList.remove("view-right");
-            targetPane.classList.add("view-center");
-            mobileBackLabel.textContent = item.textContent;
-            mobileBackGlobal.classList.add("is-visible");
-        });
-    });
-    mobileBackGlobal.addEventListener("click", resetMobileViews);
-});
+    .desktop-only {
+        display: none;
+    }
+    .glass-canopy .social-icon {
+        display: none;
+    }
+    .glass-canopy.mobile-menu-open .canopy-name {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .mobile-back-global {
+        display: flex;
+        visibility: hidden;
+        pointer-events: none;
+        background: none;
+        border: none;
+        color: var(--ink-color);
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 500;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        padding: 0;
+        position: absolute;
+        left: 24px;
+        z-index: 2005;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: opacity 280ms cubic-bezier(0.25, 1, 0.5, 1),
+                    transform 280ms cubic-bezier(0.25, 1, 0.5, 1),
+                    visibility 0s 280ms;
+    }
+    .glass-canopy.mobile-menu-open .mobile-back-global.is-visible {
+        visibility: visible;
+        pointer-events: auto;
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 280ms cubic-bezier(0.25, 1, 0.5, 1),
+                    transform 280ms cubic-bezier(0.25, 1, 0.5, 1),
+                    visibility 0s 0s;
+    }
+    .mobile-trigger {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 2001;
+        width: 18px;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+    .mobile-trigger .line {
+        width: 100%;
+        height: 2px;
+        background-color: var(--ink-color);
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .mobile-trigger.active .line-top {
+        transform: translateY(5px) rotate(45deg);
+    }
+    .mobile-trigger.active .line-bottom {
+        transform: translateY(-5px) rotate(-45deg);
+    }
+    .mobile-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        background: var(--canvas-bg);
+        z-index: 1500;
+        box-sizing: border-box;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 240ms cubic-bezier(0.25, 1, 0.5, 1), visibility 0s 240ms;
+        overflow: hidden;
+    }
+    .mobile-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition: opacity 240ms cubic-bezier(0.25, 1, 0.5, 1), visibility 0s 0s;
+    }
+    .mobile-view {
+        position: absolute;
+        top: 54px;
+        left: 24px;
+        width: calc(100% - 48px);
+        max-height: calc(100dvh - 130px);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        box-sizing: border-box;
+        padding-top: 20px;
+        padding-bottom: 24px;
+        transition: opacity 280ms cubic-bezier(0.25, 1, 0.5, 1), transform 280ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .mobile-view.view-left {
+        opacity: 0;
+        transform: translateX(-24px);
+        pointer-events: none;
+    }
+    .mobile-view.view-center {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+    .mobile-view.view-right {
+        opacity: 0;
+        transform: translateX(24px);
+        pointer-events: none;
+    }
+    #mobile-main .mobile-item {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 300ms cubic-bezier(0.25, 1, 0.5, 1), transform 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .mobile-overlay.active #mobile-main .mobile-item {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .mobile-overlay.active #mobile-main .mobile-item:nth-child(1) { transition-delay: 50ms; }
+    .mobile-overlay.active #mobile-main .mobile-item:nth-child(2) { transition-delay: 90ms; }
+    .mobile-overlay.active #mobile-main .mobile-item:nth-child(3) { transition-delay: 130ms; }
+
+    .mobile-item {
+        background: none;
+        border: none;
+        padding: 0;
+        color: inherit;
+        font-family: inherit;
+        text-align: left;
+    }
+    .mobile-item,
+    .mobile-view a {
+        font-size: 24px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+    .mobile-socials {
+        position: absolute;
+        bottom: 24px;
+        left: 24px;
+        display: flex;
+        gap: 28px;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        pointer-events: none;
+        z-index: 2001;
+    }
+    .mobile-overlay.active .mobile-socials {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+        transition-delay: 0.18s;
+    }
+}
+.mobile-item:active,
+.mobile-view a:active,
+.mobile-item.is-pressed,
+.mobile-view a.is-pressed {
+    opacity: 0.4;
+}
+.mobile-socials:active .social-icon,
+.mobile-socials:has(.is-pressed) .social-icon {
+    opacity: 0.4;
+}
+.mobile-socials .social-icon:active,
+.mobile-socials .social-icon.is-pressed {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+@media (hover: hover) {
+    /* Applies to any hover-capable pointer (mouse or pen) — touch has no
+       hover phase so it's naturally excluded. The earlier "hold" delay for
+       pen turned out to come from native :active timing, not from :hover
+       itself, so it's fixed by the pointerdown/pointerup .is-pressed logic
+       in script.js. Hover can stay on for pen, matching how sites like
+       apple.com behave with a stylus. */
+    .canopy-nav:hover .nav-trigger {
+        opacity: 0.4;
+    }
+    .canopy-nav .nav-trigger:hover {
+        opacity: 1;
+    }
+    .panel-content a:hover {
+        opacity: 0.4;
+        transform: translateX(4px);
+    }
+    .social-links:hover .social-icon,
+    .social-links:hover .mobile-trigger {
+        opacity: 0.4;
+    }
+    .social-links .social-icon:hover {
+        opacity: 1;
+        transform: translateY(-1px);
+    }
+    .social-links .mobile-trigger:hover {
+        opacity: 1;
+    }
+    .mobile-overlay.active #mobile-main .mobile-item:hover,
+    .mobile-view a:hover {
+        opacity: 0.4;
+    }
+    .mobile-socials:hover .social-icon {
+        opacity: 0.4;
+    }
+    .mobile-socials .social-icon:hover {
+        opacity: 1;
+        transform: translateY(-1px);
+    }
+}
+
+
+/* Sub-page title + blinking cursor */
+.page-title {
+    position: fixed;
+    top: 78px;
+    left: 24px;
+    right: auto;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    z-index: 1500;
+}
+.page-cursor {
+    display: inline-block;
+    width: 2px;
+    height: clamp(24px, 4vw, 42px);
+    background-color: var(--ink-color);
+    animation: blink-caret 1s step-end infinite;
+}
+@keyframes blink-caret {
+    0%, 50% { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
+}
+@media (max-width: 768px) {
+    .page-title {
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+}
