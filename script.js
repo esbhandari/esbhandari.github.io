@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const MENU_DEBOUNCE = 100;
     let timeoutId;
     let pinnedOpen = false;
-    let lastHoverOpenTime = 0;
     const cloneNavigation = () => {
         ['artefacts', 'trajectory', 'signals'].forEach(panel => {
             const deskContent = document.getElementById(`panel-${panel}`);
@@ -89,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         trigger.addEventListener("pointerenter", (e) => {
             if (e.pointerType !== 'mouse') return;
             openDeskMenu(trigger.getAttribute("data-target"));
-            lastHoverOpenTime = Date.now();
         });
         trigger.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -97,13 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const panel = document.getElementById(`panel-${target}`);
             if (!panel) return;
             const isActive = canopy.classList.contains("active") && panel.classList.contains("active");
-            if (isActive) {
-                if (Date.now() - lastHoverOpenTime < 300) {
-                    pinnedOpen = true;
-                } else {
-                    pinnedOpen = false;
-                    closeDeskMenu(true);
-                }
+            if (isActive && pinnedOpen) {
+                pinnedOpen = false;
+                closeDeskMenu(true);
             } else {
                 pinnedOpen = true;
                 openDeskMenu(target);
