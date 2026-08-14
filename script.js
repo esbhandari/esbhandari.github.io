@@ -30,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const panelId = deskContent.id.substring(6); // remove 'panel-'
             const mobileContent = document.getElementById(`m-${panelId}`);
             if (mobileContent) {
-                mobileContent.innerHTML = deskContent.innerHTML;
+                const clonedNodes = Array.from(deskContent.childNodes).map(node => node.cloneNode(true));
+                mobileContent.replaceChildren(...clonedNodes);
             }
         });
         const desktopSocials = document.querySelectorAll('.social-links .social-icon');
