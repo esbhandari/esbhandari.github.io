@@ -1,11 +1,16 @@
 const PRESS_TARGETS = ".nav-trigger, .social-icon, .mobile-trigger, .panel-content a, .mobile-item, .mobile-view a";
+const pressedElements = new Set();
 document.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse") return;
     const el = e.target.closest(PRESS_TARGETS);
-    if (el) el.classList.add("is-pressed");
+    if (el) {
+        el.classList.add("is-pressed");
+        pressedElements.add(el);
+    }
 }, { passive: true });
 const clearPressed = () => {
-    document.querySelectorAll(".is-pressed").forEach((el) => el.classList.remove("is-pressed"));
+    pressedElements.forEach((el) => el.classList.remove("is-pressed"));
+    pressedElements.clear();
 };
 document.addEventListener("pointerup", clearPressed, { passive: true });
 document.addEventListener("pointercancel", clearPressed, { passive: true });
