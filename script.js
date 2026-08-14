@@ -10,6 +10,13 @@ const clearPressed = () => {
 document.addEventListener("pointerup", clearPressed, { passive: true });
 document.addEventListener("pointercancel", clearPressed, { passive: true });
 
+const updateAriaTriggers = (triggers, activeTargetId = null) => {
+    triggers.forEach(trigger => {
+        const isExpanded = trigger.getAttribute("data-target") === activeTargetId;
+        trigger.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+    });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const canopy = document.querySelector(".glass-canopy");
     const deskTriggers = document.querySelectorAll(".nav-trigger");
@@ -34,12 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const link = e.target.closest('a[href="#"]');
         if (link) e.preventDefault();
     });
-    const updateAriaTriggers = (activeTargetId = null) => {
-        deskTriggers.forEach(trigger => {
-            const isExpanded = trigger.getAttribute("data-target") === activeTargetId;
-            trigger.setAttribute("aria-expanded", isExpanded ? "true" : "false");
-        });
-    };
     const getActiveTrigger = () =>
         Array.from(deskTriggers).find(t => t.getAttribute("aria-expanded") === "true") || null;
     const performDeskClose = () => {
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         megaPanel.style.transitionDuration = "";
         megaPanel.style.height = "0px";
         scrim.classList.remove("active");
-        updateAriaTriggers(null);
+        updateAriaTriggers(deskTriggers, null);
     };
     const closeDeskMenu = (immediate = false) => {
         clearTimeout(timeoutId);
@@ -69,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         canopy.classList.add("active");
         megaPanel.classList.add("active");
         scrim.classList.add("active");
-        updateAriaTriggers(targetId);
+        updateAriaTriggers(deskTriggers, targetId);
         let targetContent;
         deskContents.forEach(content => {
             const isActive = content.id === `panel-${targetId}`;
@@ -221,3 +222,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     mobileBackGlobal.addEventListener("click", resetMobileViews);
 });
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = {
+        updateAriaTriggers
+    };
+}
