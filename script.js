@@ -138,9 +138,9 @@ document.addEventListener("DOMContentLoaded", () => {
             mobileBackGlobal,
             ...mobileOverlay.querySelectorAll("button, a[href]")
         ].filter(el => {
-            return el.offsetParent !== null &&
-                   getComputedStyle(el).visibility !== "hidden" &&
-                   getComputedStyle(el).pointerEvents !== "none";
+            if (el.offsetParent === null) return false;
+            const style = getComputedStyle(el);
+            return style.visibility !== "hidden" && style.pointerEvents !== "none";
         });
         if (focusable.length < 2) return;
         const first = focusable[0];
