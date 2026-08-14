@@ -28,6 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 mobileContent.innerHTML = deskContent.innerHTML;
             }
         });
+        const desktopSocials = document.querySelectorAll('.social-links .social-icon');
+        const mobileSocialsContainer = document.querySelector('.mobile-socials');
+        if (desktopSocials.length > 0 && mobileSocialsContainer) {
+            desktopSocials.forEach(icon => {
+                mobileSocialsContainer.appendChild(icon.cloneNode(true));
+            });
+        }
     };
     cloneNavigation();
     document.addEventListener("click", (e) => {
