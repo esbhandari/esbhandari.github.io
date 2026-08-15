@@ -15,6 +15,26 @@ const clearPressed = () => {
 document.addEventListener("pointerup", clearPressed, { passive: true });
 document.addEventListener("pointercancel", clearPressed, { passive: true });
 
+const cloneNavigation = () => {
+    const deskContents = document.querySelectorAll(".panel-content");
+    deskContents.forEach(deskContent => {
+        if (!deskContent.id.startsWith('panel-')) return;
+        const panelId = deskContent.id.substring(6); // remove 'panel-'
+        const mobileContent = document.getElementById(`m-${panelId}`);
+        if (mobileContent) {
+            const clonedNodes = Array.from(deskContent.childNodes).map(node => node.cloneNode(true));
+            mobileContent.replaceChildren(...clonedNodes);
+        }
+    });
+    const desktopSocials = document.querySelectorAll('.social-links .social-icon');
+    const mobileSocialsContainer = document.querySelector('.mobile-socials');
+    if (desktopSocials.length > 0 && mobileSocialsContainer) {
+        desktopSocials.forEach(icon => {
+            mobileSocialsContainer.appendChild(icon.cloneNode(true));
+        });
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const canopy = document.querySelector(".glass-canopy");
     const deskTriggers = document.querySelectorAll(".nav-trigger");
@@ -24,24 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const MENU_DEBOUNCE = 100;
     let timeoutId;
     let pinnedOpen = false;
-    const cloneNavigation = () => {
-        deskContents.forEach(deskContent => {
-            if (!deskContent.id.startsWith('panel-')) return;
-            const panelId = deskContent.id.substring(6); // remove 'panel-'
-            const mobileContent = document.getElementById(`m-${panelId}`);
-            if (mobileContent) {
-                const clonedNodes = Array.from(deskContent.childNodes).map(node => node.cloneNode(true));
-                mobileContent.replaceChildren(...clonedNodes);
-            }
-        });
-        const desktopSocials = document.querySelectorAll('.social-links .social-icon');
-        const mobileSocialsContainer = document.querySelector('.mobile-socials');
-        if (desktopSocials.length > 0 && mobileSocialsContainer) {
-            desktopSocials.forEach(icon => {
-                mobileSocialsContainer.appendChild(icon.cloneNode(true));
-            });
-        }
-    };
     cloneNavigation();
     document.addEventListener("click", (e) => {
         const link = e.target.closest('a[href="#"]');
@@ -235,3 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     mobileBackGlobal.addEventListener("click", resetMobileViews);
 });
+
+// Conditionally export functions for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        cloneNavigation
+    };
+}
