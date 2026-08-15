@@ -15,7 +15,27 @@ const clearPressed = () => {
 document.addEventListener("pointerup", clearPressed, { passive: true });
 document.addEventListener("pointercancel", clearPressed, { passive: true });
 
-document.addEventListener("DOMContentLoaded", () => {
+const initNavigationClone = () => {
+    const deskContents = document.querySelectorAll(".panel-content");
+    deskContents.forEach(deskContent => {
+        if (!deskContent.id.startsWith('panel-')) return;
+        const panelId = deskContent.id.substring(6); // remove 'panel-'
+        const mobileContent = document.getElementById(`m-${panelId}`);
+        if (mobileContent) {
+            const clonedNodes = Array.from(deskContent.childNodes).map(node => node.cloneNode(true));
+            mobileContent.replaceChildren(...clonedNodes);
+        }
+    });
+    const desktopSocials = document.querySelectorAll('.social-links .social-icon');
+    const mobileSocialsContainer = document.querySelector('.mobile-socials');
+    if (desktopSocials.length > 0 && mobileSocialsContainer) {
+        desktopSocials.forEach(icon => {
+            mobileSocialsContainer.appendChild(icon.cloneNode(true));
+        });
+    }
+};
+
+const initDesktopMenu = () => {
     const canopy = document.querySelector(".glass-canopy");
     const deskTriggers = document.querySelectorAll(".nav-trigger");
     const megaPanel = document.querySelector(".mega-panel");
@@ -24,29 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const MENU_DEBOUNCE = 100;
     let timeoutId;
     let pinnedOpen = false;
-    const cloneNavigation = () => {
-        deskContents.forEach(deskContent => {
-            if (!deskContent.id.startsWith('panel-')) return;
-            const panelId = deskContent.id.substring(6); // remove 'panel-'
-            const mobileContent = document.getElementById(`m-${panelId}`);
-            if (mobileContent) {
-                const clonedNodes = Array.from(deskContent.childNodes).map(node => node.cloneNode(true));
-                mobileContent.replaceChildren(...clonedNodes);
-            }
-        });
-        const desktopSocials = document.querySelectorAll('.social-links .social-icon');
-        const mobileSocialsContainer = document.querySelector('.mobile-socials');
-        if (desktopSocials.length > 0 && mobileSocialsContainer) {
-            desktopSocials.forEach(icon => {
-                mobileSocialsContainer.appendChild(icon.cloneNode(true));
-            });
-        }
-    };
-    cloneNavigation();
-    document.addEventListener("click", (e) => {
-        const link = e.target.closest('a[href="#"]');
-        if (link) e.preventDefault();
-    });
+
     const updateAriaTriggers = (activeTargetId = null) => {
         deskTriggers.forEach(trigger => {
             const isExpanded = trigger.getAttribute("data-target") === activeTargetId;
@@ -137,6 +135,20 @@ document.addEventListener("DOMContentLoaded", () => {
         pinnedOpen = false;
         closeDeskMenu(true);
     });
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            if (megaPanel.classList.contains("active")) {
+                const trigger = getActiveTrigger();
+                pinnedOpen = false;
+                closeDeskMenu(true);
+                if (trigger) trigger.focus();
+            }
+        }
+    });
+};
+
+const initMobileMenu = () => {
+    const canopy = document.querySelector(".glass-canopy");
     const mobileTrigger = document.getElementById("mobile-trigger");
     const mobileOverlay = document.getElementById("mobile-overlay");
     const mobileMain = document.getElementById("mobile-main");
@@ -187,12 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
-            if (megaPanel.classList.contains("active")) {
-                const trigger = getActiveTrigger();
-                pinnedOpen = false;
-                closeDeskMenu(true);
-                if (trigger) trigger.focus();
-            }
             if (mobileOverlay.classList.contains("active")) {
                 closeMobileMenu();
                 mobileTrigger.focus();
@@ -234,4 +240,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     mobileBackGlobal.addEventListener("click", resetMobileViews);
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    initNavigationClone();
+    initDesktopMenu();
+    initMobileMenu();
+
+    document.addEventListener("click", (e) => {
+        const link = e.target.closest('a[href="#"]');
+        if (link) e.preventDefault();
+    });
 });
